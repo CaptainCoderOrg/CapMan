@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapMan.Console", "CapMan.Console\CapMan.Console.csproj", "{93920EC2-63E8-4623-8FB1-C9BFEB852D2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapMan.Raylib", "CapMan.Raylib\CapMan.Raylib.csproj", "{B966F9B5-2751-45A1-AAC5-2DF9453930C4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93920EC2-63E8-4623-8FB1-C9BFEB852D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93920EC2-63E8-4623-8FB1-C9BFEB852D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93920EC2-63E8-4623-8FB1-C9BFEB852D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93920EC2-63E8-4623-8FB1-C9BFEB852D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B966F9B5-2751-45A1-AAC5-2DF9453930C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B966F9B5-2751-45A1-AAC5-2DF9453930C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B966F9B5-2751-45A1-AAC5-2DF9453930C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B966F9B5-2751-45A1-AAC5-2DF9453930C4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
