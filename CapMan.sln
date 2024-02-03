@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapMan.Console", "CapMan.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapMan.Raylib", "CapMan.Raylib\CapMan.Raylib.csproj", "{B966F9B5-2751-45A1-AAC5-2DF9453930C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapMan.Tests", "CapMan.Tests\CapMan.Tests.csproj", "{2FC0E22D-1879-4920-A269-86C86FCD78B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{B966F9B5-2751-45A1-AAC5-2DF9453930C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B966F9B5-2751-45A1-AAC5-2DF9453930C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B966F9B5-2751-45A1-AAC5-2DF9453930C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FC0E22D-1879-4920-A269-86C86FCD78B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FC0E22D-1879-4920-A269-86C86FCD78B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FC0E22D-1879-4920-A269-86C86FCD78B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FC0E22D-1879-4920-A269-86C86FCD78B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

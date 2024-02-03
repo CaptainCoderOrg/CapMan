@@ -1,0 +1,42 @@
+using Raylib_cs;
+public class BoardRenderer
+{
+    public const int CellSize = 16;
+    private static Dictionary<Element, Texture2D>? s_textures;
+    public static IReadOnlyDictionary<Element, Texture2D> Textures => LoadTextures().AsReadOnly();
+
+    public void Render(Board board, int top, int left)
+    {
+        foreach ((Position pos, Element el) in board.Elements)
+        {
+            Raylib.DrawTexture(Textures[el], left + pos.Col*CellSize, top + pos.Row*CellSize, Color.White);
+        }
+    }
+
+    public static Dictionary<Element, Texture2D> LoadTextures()
+    {
+        if (s_textures == null)
+        {
+            s_textures = new();
+            foreach (Element element in Enum.GetValues(typeof(Element)))
+            {
+                Image image = Raylib.LoadImage(AssetPath(element));
+                Texture2D texture = Raylib.LoadTextureFromImage(image);
+                s_textures[element] = texture;
+                Raylib.UnloadImage(image);
+            }
+        }
+        return s_textures;
+    }
+
+    private static string AssetPath(Element element)
+    {
+        return "assets/sprites/" + element switch
+        {
+            Element.Wall => "wall.png",
+            Element.Dot => "dot.png",
+            Element.PowerPill => "powerpill.png",
+            _ => throw new ArgumentException($"Invalid chess piece: {element}"),
+        };
+    }
+}
