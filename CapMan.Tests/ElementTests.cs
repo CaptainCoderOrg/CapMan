@@ -7,7 +7,12 @@ public class ElementTests
     [Theory]
     [InlineData('.', Element.Dot)]
     [InlineData('O', Element.PowerPill)]
-    [InlineData('#', Element.Wall)]
+    [InlineData('│', Element.Vertical)]
+    [InlineData('─', Element.Horizontal)]
+    [InlineData('╭', Element.TopLeft)]
+    [InlineData('╮', Element.TopRight)]
+    [InlineData('╰', Element.BottomLeft)]
+    [InlineData('╯', Element.BottomRight)]
     public void should_parse_char_to_element(char ch, Element result)
     {
         ch.ToElement().ShouldBe(result);

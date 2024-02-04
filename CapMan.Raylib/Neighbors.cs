@@ -22,12 +22,21 @@ public static class NeighborExtensions
     {
         return neighbors switch
         {
-            DownLeft => WallTile.TopRight,
-            DownRight => WallTile.TopLeft,
-            UpLeft => WallTile.BottomRight,
-            UpRight => WallTile.BottomLeft,
-            LeftRight => WallTile.Horizontal,
-            UpDown => WallTile.Vertical,
+            Up => WallTile.Vertical,                      // 0b0001
+            Right => WallTile.Horizontal,                 // 0b0010
+            Up | Right => WallTile.BottomLeft,            // 0b0011            
+            Down => WallTile.Vertical,                    // 0b0100
+            Down | Up => WallTile.Vertical,               // 0b0101
+            Down | Up | Right => WallTile.TopLeft,        // 0b0111
+            Left  => WallTile.TopLeft,                    // 0b1000
+            Left | Up => WallTile.TopLeft,                // 0b1001
+            Left | Right => WallTile.TopLeft,             // 0b1010
+            Left | Right | Up => WallTile.TopLeft,        // 0b1011
+            Left | Down => WallTile.TopLeft,              // 0b1100
+            Left | Down | Up => WallTile.TopLeft,         // 0b1101
+            Left | Down | Right => WallTile.TopLeft,      // 0b1110
+            Left | Down | Right | Up => WallTile.TopLeft, // 0b1110
+
             _ => throw new ArgumentException($"Could not determine wall type from: {neighbors}"),
         };
     }

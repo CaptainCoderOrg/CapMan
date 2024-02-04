@@ -33,7 +33,12 @@ public class BoardRenderer
     {
         return "assets/sprites/" + element switch
         {
-            Element.Wall => "wall.png",
+            Element.Horizontal => "horizontal.png",
+            Element.Vertical => "vertical.png",
+            Element.TopLeft => "top-left.png",
+            Element.TopRight => "top-right.png",
+            Element.BottomLeft => "bottom-left.png",
+            Element.BottomRight => "bottom-right.png",
             Element.Dot => "dot.png",
             Element.PowerPill => "powerpill.png",
             _ => throw new ArgumentException($"Invalid chess piece: {element}"),
