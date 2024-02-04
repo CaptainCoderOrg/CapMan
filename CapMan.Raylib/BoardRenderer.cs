@@ -26,7 +26,7 @@ public class BoardRenderer
                 Raylib.UnloadImage(image);
             }
         }
-        return s_textures;
+        return s_textures;        
     }
 
     private static string AssetPath(Element element)
