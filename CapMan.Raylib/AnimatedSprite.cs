@@ -1,0 +1,21 @@
+using Raylib_cs;
+
+public class AnimatedSprite
+{
+    public double FramesPerSecond { get; init; } = 10f;
+    private (int Row, int Column)[] _frames;
+    private SpriteSheet _sheet;
+
+    public AnimatedSprite(SpriteSheet spriteSheet, IEnumerable<(int row, int col)> frames)
+    {
+        _sheet = spriteSheet;
+        _frames = [.. frames];
+    }
+
+    public void Draw(int x, int y)
+    {
+        int currentFrame = ((int)(Raylib.GetTime() * FramesPerSecond)) % _frames.Length;
+        (int row, int column) = _frames[currentFrame];
+        _sheet.DrawSprite(row, column, x, y);
+    }
+}

@@ -36,6 +36,10 @@ Raylib.SetWindowMonitor(1);
 Raylib.SetWindowSize(screenWidth, screenHeight);
 Raylib.SetTargetFPS(60);
 
+int ticks = 0;
+
+SpriteSheet sheet = SpriteSheet.Load("assets/sprites/capman.png", 1, 3);
+AnimatedSprite capman = new AnimatedSprite(sheet, [(0, 0), (0, 1), (0, 2), (0, 1)]);
 
 // Main game loop
 while (!Raylib.WindowShouldClose())
@@ -43,7 +47,10 @@ while (!Raylib.WindowShouldClose())
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.Black);
     boardRenderer.Render(board, 0, 0);
+    capman.Draw(50, 50);
+
     Raylib.EndDrawing();
+    ticks++;
 }
 
 Raylib.CloseWindow();
