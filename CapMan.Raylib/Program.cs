@@ -39,18 +39,48 @@ Raylib.SetTargetFPS(60);
 int ticks = 0;
 
 SpriteSheet sheet = SpriteSheet.Load("assets/sprites/capman.png", 1, 3);
-AnimatedSprite capman = new AnimatedSprite(sheet, [(0, 0), (0, 1), (0, 2), (0, 1)]);
+AnimatedSprite capmanSprite = new AnimatedSprite(sheet, [(0, 0), (0, 1), (0, 2), (0, 1)]);
+CapMan capMan = new CapMan();
+capMan.Y = 23 * BoardRenderer.CellSize;
+capMan.X = 14 * BoardRenderer.CellSize;
 
 // Main game loop
 while (!Raylib.WindowShouldClose())
 {
+    HandleInput();
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.Black);
     boardRenderer.Render(board, 0, 0);
-    capman.Draw(50, 50);
-
+    DoThing();
     Raylib.EndDrawing();
     ticks++;
 }
 
 Raylib.CloseWindow();
+
+void DoThing()
+{
+    capMan.Update(Raylib.GetFrameTime());
+    capmanSprite.Draw((int)capMan.X, (int)capMan.Y);
+}
+
+void HandleInput()
+{
+    if (Raylib.IsKeyDown(KeyboardKey.W))
+    {
+        capMan.CurrentDirection = Direction.Up;
+    }
+    if (Raylib.IsKeyDown(KeyboardKey.D))
+    {
+        capMan.CurrentDirection = Direction.Right;
+    }
+    if (Raylib.IsKeyDown(KeyboardKey.A))
+    {
+        capMan.CurrentDirection = Direction.Left;
+    }
+    if (Raylib.IsKeyDown(KeyboardKey.S))
+    {
+        capMan.CurrentDirection = Direction.Down;
+    }
+}
+
