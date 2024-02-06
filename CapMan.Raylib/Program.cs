@@ -66,7 +66,7 @@ void RenderCapMan()
 
     Raylib.DrawText($"X: {game.Player.X:#.##}, Y: {game.Player.Y:#.##}, {game.Player.CurrentDirection}", 0, 0, 24, Color.White);
     Raylib.DrawText($"Col: {game.Player.Column}, Row: {game.Player.Row}", 0, 24, 24, Color.White);
-    Raylib.DrawText($"NCol: {game.Player.NextColumn(Raylib.GetFrameTime())}, NRow: {game.Player.NextRow(Raylib.GetFrameTime())}", 0, 48, 24, Color.White);
+    Raylib.DrawText($"Current: {game.Player.CurrentDirection}, Next: {game.Player.NextDirection}", 0, 48, 24, Color.White);
 }
 
 // void DoThing()
