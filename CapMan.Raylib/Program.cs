@@ -25,11 +25,12 @@ using Raylib_cs;
 //--------------------------------------------------------------------------------------
 
 
-Board board = new (Board.StandardBoard);
+// Board board = new (Board.StandardBoard);
+Game game = new Game();
 BoardRenderer boardRenderer = new ();
 
-int screenWidth = board.Columns * BoardRenderer.CellSize;
-int screenHeight = board.Rows * BoardRenderer.CellSize;
+int screenWidth = game.Board.Columns * BoardRenderer.CellSize;
+int screenHeight = game.Board.Rows * BoardRenderer.CellSize;
 
 Raylib.InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 Raylib.SetWindowMonitor(1);
@@ -40,47 +41,57 @@ int ticks = 0;
 
 SpriteSheet sheet = SpriteSheet.Load("assets/sprites/capman.png", 1, 3);
 AnimatedSprite capmanSprite = new AnimatedSprite(sheet, [(0, 0), (0, 1), (0, 2), (0, 1)]);
-CapMan capMan = new CapMan();
-capMan.Y = 23 * BoardRenderer.CellSize;
-capMan.X = 14 * BoardRenderer.CellSize;
+game.Player.Y = 23; // * BoardRenderer.CellSize;
+game.Player.X = 14; // * BoardRenderer.CellSize;
 
 // Main game loop
 while (!Raylib.WindowShouldClose())
 {
     HandleInput();
+    game.Update(Raylib.GetFrameTime());
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.Black);
-    boardRenderer.Render(board, 0, 0);
-    DoThing();
+    boardRenderer.Render(game.Board, 0, 0);
+    RenderCapMan();
     Raylib.EndDrawing();
-    ticks++;
 }
 
 Raylib.CloseWindow();
 
-void DoThing()
+void RenderCapMan()
 {
-    capMan.Update(Raylib.GetFrameTime());
-    capmanSprite.Draw((int)capMan.X, (int)capMan.Y);
+    
+    capmanSprite.Draw((int)(game.Player.X * BoardRenderer.CellSize) - 5, (int)(game.Player.Y * BoardRenderer.CellSize) - 5);
+    Raylib.DrawRectangleLines((int)(game.Player.X * BoardRenderer.CellSize), (int)(game.Player.Y * BoardRenderer.CellSize), BoardRenderer.CellSize, BoardRenderer.CellSize, Color.Yellow);
+
+    Raylib.DrawText($"X: {game.Player.X:#.##}, Y: {game.Player.Y:#.##}, {game.Player.CurrentDirection}", 0, 0, 24, Color.White);
+    Raylib.DrawText($"Col: {game.Player.Column}, Row: {game.Player.Row}", 0, 24, 24, Color.White);
+    Raylib.DrawText($"NCol: {game.Player.NextColumn(Raylib.GetFrameTime())}, NRow: {game.Player.NextRow(Raylib.GetFrameTime())}", 0, 48, 24, Color.White);
 }
+
+// void DoThing()
+// {
+//     capMan.Update(Raylib.GetFrameTime());
+//     capmanSprite.Draw((int)(capMan.X * BoardRenderer.CellSize), (int)(capMan.Y * BoardRenderer.CellSize));
+// }
 
 void HandleInput()
 {
     if (Raylib.IsKeyDown(KeyboardKey.W))
     {
-        capMan.CurrentDirection = Direction.Up;
+        game.Player.NextDirection = Direction.Up;
     }
     if (Raylib.IsKeyDown(KeyboardKey.D))
     {
-        capMan.CurrentDirection = Direction.Right;
+        game.Player.NextDirection = Direction.Right;
     }
     if (Raylib.IsKeyDown(KeyboardKey.A))
     {
-        capMan.CurrentDirection = Direction.Left;
+        game.Player.NextDirection = Direction.Left;
     }
     if (Raylib.IsKeyDown(KeyboardKey.S))
     {
-        capMan.CurrentDirection = Direction.Down;
+        game.Player.NextDirection = Direction.Down;
     }
 }
 

@@ -1,3 +1,4 @@
+
 public class Board
 {
     public int Rows { get; private init; }
@@ -33,7 +34,9 @@ public class Board
             }
         }
         return elements;
-    }    
+    }
+
+    public bool IsWall(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element.IsWall();
 
     public static readonly string[] StandardBoard = [
         "╭────────────╮╭────────────╮",
