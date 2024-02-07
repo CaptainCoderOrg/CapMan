@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 public class Game
 {
     public CapMan Player { get; } = new CapMan();
@@ -12,7 +14,7 @@ public class Game
 
     private void CheckEatDots()
     {
-        if(Board.IsDot(Player.Row, Player.Column))
+        if (Board.IsDot(Player.Row, Player.Column))
         {
             Board.RemoveElement(Player.Row, Player.Column);
             Score += 10;
@@ -27,26 +29,12 @@ public class Game
 
     private void UpdateCapMan(double delta)
     {
-        Func<CapMan, double, double> NextX = Player.CurrentDirection switch
-        {
-            Direction.Left => MoveLeft,
-            Direction.Right => MoveRight,
-            _ => (actor, _) => actor.Column,
-        };
-
-        Func<CapMan, double, double> NextY = Player.CurrentDirection switch
-        {
-            Direction.Up => MoveUp,
-            Direction.Down => MoveDown,
-            _ => (actor, _) => actor.Row,
-        };
-
+        
         double distance = Player.Speed * delta;
-        Direction next = NextDirection(Player, distance);
+        Direction next = NextDirection(Player.CurrentDirection, Player.NextDirection, Board, Player.X, Player.Y, distance);
         if (next == Player.CurrentDirection)
         {
-            Player.X = NextX(Player, distance);
-            Player.Y = NextY(Player, distance);
+            (Player.X, Player.Y) = CalculateMove(Board, Player.CurrentDirection, Player.X, Player.Y, distance);
         }
         else
         {
@@ -61,35 +49,23 @@ public class Game
 
     public void BoundsCheck(CapMan actor)
     {
-        double delay = 1;
+        double transitionDistance = 1;
         double width = Board.Columns;
-        if (actor.X < -delay)
+        if (actor.X < -transitionDistance)
         {
-            actor.X += width + 2*delay;
+            actor.X += width + 2 * transitionDistance;
         }
-        else if (actor.X > width + delay)
+        else if (actor.X > width + transitionDistance)
         {
-            actor.X -= width + 2*delay;
+            actor.X -= width + 2 * transitionDistance;
         }
     }
 
     private void SwitchDirection(CapMan actor, double distance)
     {
-        if (actor.CurrentDirection is Direction.Up && actor.NextDirection is Direction.Down)
+        if (actor.CurrentDirection.IsOpposite(actor.NextDirection))
         {
-            actor.Y = MoveDown(actor, distance);
-        }
-        else if (actor.CurrentDirection is Direction.Down && actor.NextDirection is Direction.Up)
-        {
-            actor.Y = MoveUp(actor, distance);
-        }
-        else if (actor.CurrentDirection is Direction.Left && actor.NextDirection is Direction.Right)
-        {
-            actor.X = MoveRight(actor, distance);
-        }
-        else if (actor.CurrentDirection is Direction.Right && actor.NextDirection is Direction.Left)
-        {
-            actor.X = MoveLeft(actor, distance);
+            (actor.X, actor.Y) = CalculateMove(Board, actor.CurrentDirection, actor.X, actor.Y, distance);
         }
         else if (actor.CurrentDirection is Direction.Up)
         {
@@ -128,131 +104,83 @@ public class Game
             throw new Exception("Invalid state.");
         }
 
-
         actor.CurrentDirection = actor.NextDirection;
     }
 
-    private Direction NextDirectionIfGoingUp(CapMan actor, double distance)
+    public static Direction NextDirection(Direction current, Direction next, Board board, double x, double y, double distance)
     {
-        if (actor.NextDirection is Direction.Down or Direction.Up) { return actor.NextDirection; }
-        double endPosition = actor.Y - distance;
-        if (((int)actor.Y) != ((int)Math.Ceiling(endPosition))) { return actor.CurrentDirection; }
-        (int row, int col) = actor.NextDirection switch
+        // You can always turn around / continue in the same direction
+        if (current == next || current.IsOpposite(next)) { return next; }
+        
+        (double endX, double endY) = CalculateMove(board, current, x, y, distance);
+
+        bool isCrossingCenter = current switch
         {
-            Direction.Left => ((int)Math.Ceiling(endPosition), (int)(actor.X - 1)),
-            Direction.Right => ((int)Math.Ceiling(endPosition), (int)(actor.X + 1)),
-            _ => throw new Exception($"Invalid directino (spanish for direction): {actor.NextDirection}"),
+            Direction.Up => (int)y == (int)Math.Ceiling(endY),
+            Direction.Down => (int)Math.Ceiling(y) == (int)endY,
+            Direction.Right => (int)Math.Ceiling(x) == (int)endX,
+            Direction.Left => (int)x == (int)Math.Ceiling(endX),
+            _ => throw new Exception($"Unknown direction {current}"),
         };
-        if (Board.IsWall(row, col)) { return actor.CurrentDirection; }
-        return actor.NextDirection;
-    }
 
-    private Direction NextDirectionIfGoingDown(CapMan actor, double distance)
-    {
-        if (actor.NextDirection is Direction.Down or Direction.Up) { return actor.NextDirection; }
-        double endPosition = actor.Y + distance;
-        if (((int)Math.Ceiling(actor.Y)) != ((int)endPosition)) { return actor.CurrentDirection; }
-        (int row, int col) = actor.NextDirection switch
+        // If this move would not cross the center of a tile
+        // it is not possible to turn.
+        if (!isCrossingCenter) { return current; }
+
+        // Check possible 90 degree turns
+        (int row, int col) = (current, next) switch
         {
-            Direction.Left => ((int)endPosition, (int)(actor.X - 1)),
-            Direction.Right => ((int)endPosition, (int)(actor.X + 1)),
-            _ => throw new Exception($"Invalid directino (spanish for direction): {actor.NextDirection}"),
+            (Direction.Up, Direction.Left) => ((int)Math.Ceiling(endY), (int)x - 1),
+            (Direction.Up, Direction.Right) => ((int)Math.Ceiling(endY), (int)x + 1),
+            (Direction.Down, Direction.Left) => ((int)endY, (int)x - 1),
+            (Direction.Down, Direction.Right) => ((int)endY, (int)x + 1),
+            (Direction.Right, Direction.Up) => ((int)y - 1, (int)endX),
+            (Direction.Right, Direction.Down) => ((int)y + 1, (int)endX),
+            (Direction.Left, Direction.Up) => ((int)y - 1, (int)Math.Ceiling(endX)),
+            (Direction.Left, Direction.Down) => ((int)y + 1, (int)Math.Ceiling(endX)),
+            _ => throw new Exception($"Unknown 90 degree turn: {current} to {next}"),
         };
-        if (Board.IsWall(row, col)) { return actor.CurrentDirection; }
-        return actor.NextDirection;
+        
+        // If there is a wall or if we are trying to move out of the board, keep going 
+        // in the current direction
+        if (!board.Contains(row, col) || board.IsWall(row, col)) { return current; }
+
+        // Otherwise, change directions
+        return next;
     }
 
-    private Direction NextDirectionIfGoingRight(CapMan actor, double distance)
+    public static (double, double) CalculateMove(Board board, Direction moving, double x, double y, double distance)
     {
-        if (actor.NextDirection is Direction.Left or Direction.Right) { return actor.NextDirection; }
-        double endPosition = actor.X + distance;
-        if (((int)Math.Ceiling(actor.X)) != ((int)endPosition)) { return actor.CurrentDirection; }
-        (int row, int col) = actor.NextDirection switch
+        (double nextX, double nextY) = moving switch
         {
-            Direction.Up => ((int)(actor.Y - 1), (int)endPosition),
-            Direction.Down => ((int)(actor.Y + 1), (int)endPosition),
-            _ => throw new Exception($"Invalid directino (spanish for direction): {actor.NextDirection}"),
+            Direction.Right => (x + distance, y),
+            Direction.Left => (x - distance, y),
+            Direction.Up => (x, y - distance),
+            Direction.Down => (x, y + distance),
+            _ => throw new Exception($"Unknown direction {moving}."),
         };
-        if (Board.IsWall(row, col)) { return actor.CurrentDirection; }
-        return actor.NextDirection;
-    }
 
-    private Direction NextDirectionIfGoingLeft(CapMan actor, double distance)
-    {
-        if (actor.NextDirection is Direction.Left or Direction.Right) { return actor.NextDirection; }
-        double endPosition = actor.X - distance;
-        if (((int)actor.X) != ((int)Math.Ceiling(endPosition))) { return actor.CurrentDirection; }
-        (int row, int col) = actor.NextDirection switch
+        (int nextCol, int nextRow) = moving switch
         {
-            Direction.Up => ((int)(actor.Y - 1), (int)Math.Ceiling(endPosition)),
-            Direction.Down => ((int)(actor.Y + 1), (int)Math.Ceiling(endPosition)),
-            _ => throw new Exception($"Invalid directino (spanish for direction): {actor.NextDirection}"),
+            Direction.Right => ((int)Math.Ceiling(nextX), (int)nextY),
+            Direction.Left => ((int)nextX, (int)nextY),
+            Direction.Up => ((int)nextX, (int)nextY),
+            Direction.Down => ((int)nextX, (int)Math.Ceiling(nextY)),
+            _ => throw new Exception($"Unknown direction {moving}."),
         };
-        if (Board.IsWall(row, col)) { return actor.CurrentDirection; }
-        return actor.NextDirection;
-    }
 
-    public Direction NextDirection(CapMan actor, double distance)
-    {
-        if (actor.NextDirection == actor.CurrentDirection) { return actor.CurrentDirection; }
+        // If there is no wall, return move
+        if (!board.IsWall(nextRow, nextCol)) { return (nextX, nextY); }
 
-        if (actor.CurrentDirection is Direction.Up)
+        // Otherwise, snap to the specific wall
+        return moving switch
         {
-            return NextDirectionIfGoingUp(actor, distance);
-        }
-        else if (actor.CurrentDirection is Direction.Down)
-        {
-            return NextDirectionIfGoingDown(actor, distance);
-        }
-        else if (actor.CurrentDirection is Direction.Right)
-        {
-            return NextDirectionIfGoingRight(actor, distance);
-        }
-        else if (actor.CurrentDirection is Direction.Left)
-        {
-            return NextDirectionIfGoingLeft(actor, distance);
-        }
-        else
-        {
-            throw new Exception($"Invalid current direction: {actor.CurrentDirection}");
-        }
-    }
-
-
-    public double MoveUp(CapMan actor, double distance)
-    {
-        if (Board.IsWall((int)(actor.Y - distance), actor.Column))
-        {
-            return (int)(actor.Y - distance) + 1;
-        }
-        return actor.Y - distance;
-    }
-
-    public double MoveDown(CapMan actor, double distance)
-    {
-        if (Board.IsWall((int)Math.Ceiling(actor.Y + distance), actor.Column))
-        {
-            return (int)Math.Ceiling(actor.Y + distance) - 1;
-        }
-        return actor.Y + distance;
-    }
-
-    public double MoveLeft(CapMan actor, double distance)
-    {
-        if (Board.IsWall(actor.Row, (int)(actor.X - distance)))
-        {
-            return (int)(actor.X - distance) + 1;
-        }
-        return actor.X - distance;
-    }
-
-    public double MoveRight(CapMan actor, double distance)
-    {
-        if (Board.IsWall(actor.Row, (int)Math.Ceiling(actor.X + distance)))
-        {
-            return (int)Math.Ceiling(actor.X + distance) - 1;
-        }
-        return actor.X + distance;
+            Direction.Right => (nextCol - 1, nextY),
+            Direction.Left => (nextCol + 1, nextY),
+            Direction.Up => (nextX, nextRow + 1),
+            Direction.Down => (nextX, nextRow - 1),
+            _ => throw new Exception($"Unknown direction {moving}."),
+        };
     }
 
 }

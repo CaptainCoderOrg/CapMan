@@ -41,6 +41,7 @@ public class Board
     public bool IsPowerPill(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element is Element.PowerPill;
 
     public bool IsWall(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element.IsWall();
+    public bool Contains(int row, int col) => row >= 0 && row < Rows && col >= 0 && col < Columns;
 
     public static readonly string[] StandardBoard = [
         "╭────────────╮╭────────────╮",
