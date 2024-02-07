@@ -2,10 +2,31 @@ public class Game
 {
     public CapMan Player { get; } = new CapMan();
     public Board Board { get; } = new Board(Board.StandardBoard);
+    public int Score { get; private set; }
 
     public void Update(double delta)
     {
+        UpdateCapMan(delta);
+        CheckEatDots();
+    }
 
+    private void CheckEatDots()
+    {
+        if(Board.IsDot(Player.Row, Player.Column))
+        {
+            Board.RemoveElement(Player.Row, Player.Column);
+            Score += 10;
+        }
+
+        if (Board.IsPowerPill(Player.Row, Player.Column))
+        {
+            Board.RemoveElement(Player.Row, Player.Column);
+            Score += 50;
+        }
+    }
+
+    private void UpdateCapMan(double delta)
+    {
         Func<CapMan, double, double> NextX = Player.CurrentDirection switch
         {
             Direction.Left => MoveLeft,
@@ -34,7 +55,6 @@ public class Game
             // And how much to move in my new direction
             SwitchDirection(Player, distance);
         }
-
     }
 
     private void SwitchDirection(CapMan actor, double distance)

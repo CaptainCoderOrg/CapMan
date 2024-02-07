@@ -23,7 +23,7 @@ using Raylib_cs;
 
 // Initialization
 //--------------------------------------------------------------------------------------
-
+bool DebugText = false;
 
 // Board board = new (Board.StandardBoard);
 Game game = new Game();
@@ -32,12 +32,14 @@ BoardRenderer boardRenderer = new ();
 int screenWidth = game.Board.Columns * BoardRenderer.CellSize;
 int screenHeight = game.Board.Rows * BoardRenderer.CellSize;
 
+double lastX = 0;
+double lastY = 0;
+
 Raylib.InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 Raylib.SetWindowMonitor(1);
 Raylib.SetWindowSize(screenWidth, screenHeight);
 Raylib.SetTargetFPS(60);
 
-int ticks = 0;
 
 SpriteSheet sheet = SpriteSheet.Load("assets/sprites/capman.png", 1, 3);
 AnimatedSprite capmanSprite = new AnimatedSprite(sheet, [(0, 0), (0, 1), (0, 2), (0, 1)]);
@@ -53,27 +55,43 @@ while (!Raylib.WindowShouldClose())
     Raylib.ClearBackground(Color.Black);
     boardRenderer.Render(game.Board, 0, 0);
     RenderCapMan();
+    RenderDebugText();
     Raylib.EndDrawing();
 }
 
 Raylib.CloseWindow();
 
 void RenderCapMan()
-{
-    
-    capmanSprite.Draw((int)(game.Player.X * BoardRenderer.CellSize) - 5, (int)(game.Player.Y * BoardRenderer.CellSize) - 5);
-    Raylib.DrawRectangleLines((int)(game.Player.X * BoardRenderer.CellSize), (int)(game.Player.Y * BoardRenderer.CellSize), BoardRenderer.CellSize, BoardRenderer.CellSize, Color.Yellow);
-
-    Raylib.DrawText($"X: {game.Player.X:#.##}, Y: {game.Player.Y:#.##}, {game.Player.CurrentDirection}", 0, 0, 24, Color.White);
-    Raylib.DrawText($"Col: {game.Player.Column}, Row: {game.Player.Row}", 0, 24, 24, Color.White);
-    Raylib.DrawText($"Current: {game.Player.CurrentDirection}, Next: {game.Player.NextDirection}", 0, 48, 24, Color.White);
+{    
+    if ((lastX, lastY) != (game.Player.X, game.Player.Y))
+    {
+        capmanSprite.CurrentTime += Raylib.GetFrameTime();
+        (lastX, lastY) = (game.Player.X, game.Player.Y);
+    }
+    capmanSprite.Rotation = game.Player.CurrentDirection switch {
+        Direction.Left => 0,
+        Direction.Up => 90,
+        Direction.Right => 180,
+        Direction.Down => 270,
+        _ => throw new Exception($"Unexpected direction {game.Player.CurrentDirection}"),
+    };
+    capmanSprite.Draw((int)(game.Player.X * BoardRenderer.CellSize) + BoardRenderer.CellSize/2, (int)(game.Player.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize/2);
 }
 
-// void DoThing()
-// {
-//     capMan.Update(Raylib.GetFrameTime());
-//     capmanSprite.Draw((int)(capMan.X * BoardRenderer.CellSize), (int)(capMan.Y * BoardRenderer.CellSize));
-// }
+void RenderDebugText()
+{
+    if (Raylib.IsKeyPressed(KeyboardKey.I))
+    {
+        DebugText = !DebugText;
+    }
+    if (DebugText)
+    {
+        Raylib.DrawText($"X: {game.Player.X:#.##}, Y: {game.Player.Y:#.##}, {game.Player.CurrentDirection}", 0, 0, 24, Color.White);
+        Raylib.DrawText($"Col: {game.Player.Column}, Row: {game.Player.Row}", 0, 24, 24, Color.White);
+        Raylib.DrawText($"Current: {game.Player.CurrentDirection}, Next: {game.Player.NextDirection}", 0, 48, 24, Color.White);
+    }
+}
+
 
 void HandleInput()
 {

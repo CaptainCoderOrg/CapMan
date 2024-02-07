@@ -13,8 +13,9 @@ public class Board
         Columns = data[0].Length;
         _elements = InitElements(asciiLayout);
     }
-    
+  
     public void RemoveElement(Position pos) => _elements.Remove(pos);
+    public void RemoveElement(int row, int col) => RemoveElement(new Position(row, col));
     public Element GetElement(Position pos) => _elements[pos];
     public bool TryGetElement(Position pos, out Element element) => _elements.TryGetValue(pos, out element);
 
@@ -35,6 +36,9 @@ public class Board
         }
         return elements;
     }
+
+    public bool IsDot(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element is Element.Dot;
+    public bool IsPowerPill(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element is Element.PowerPill;
 
     public bool IsWall(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element.IsWall();
 
