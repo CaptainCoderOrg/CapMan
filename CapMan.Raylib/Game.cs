@@ -55,6 +55,22 @@ public class Game
             // And how much to move in my new direction
             SwitchDirection(Player, distance);
         }
+
+        BoundsCheck(Player);
+    }
+
+    public void BoundsCheck(CapMan actor)
+    {
+        double delay = 1;
+        double width = Board.Columns;
+        if (actor.X < -delay)
+        {
+            actor.X += width + 2*delay;
+        }
+        else if (actor.X > width + delay)
+        {
+            actor.X -= width + 2*delay;
+        }
     }
 
     private void SwitchDirection(CapMan actor, double distance)
