@@ -2,7 +2,7 @@ public class CapMan
 {
     public double X { get; set; }
     public double Y { get; set; }
-    public double Speed { get; set; } = 3;
+    public double Speed { get; set; } = 6;
     public Direction CurrentDirection { get; set; } = Direction.Left;
     public Direction NextDirection { get; set; } = Direction.Left;
 

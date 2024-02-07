@@ -5,21 +5,21 @@ public class Game
 
     public void Update(double delta)
     {
-        
+
         Func<CapMan, double, double> NextX = Player.CurrentDirection switch
         {
             Direction.Left => MoveLeft,
             Direction.Right => MoveRight,
-            _ => (actor,_) => actor.Column,
+            _ => (actor, _) => actor.Column,
         };
-        
+
         Func<CapMan, double, double> NextY = Player.CurrentDirection switch
         {
             Direction.Up => MoveUp,
             Direction.Down => MoveDown,
-            _ => (actor,_) => actor.Row,
+            _ => (actor, _) => actor.Row,
         };
-        
+
         double distance = Player.Speed * delta;
         Direction next = NextDirection(Player, distance);
         if (next == Player.CurrentDirection)
@@ -28,37 +28,70 @@ public class Game
             Player.Y = NextY(Player, distance);
         }
         else
-        {        
+        {
             // If I change direction, this means I am passing a threshold
             // I need to determine how much to move in my previous direction
             // And how much to move in my new direction
             SwitchDirection(Player, distance);
-            // Player.CurrentDirection = next;
-            // Player.X = NextX(Player, distance);
-            // Player.Y = NextY(Player, distance);
         }
 
     }
 
     private void SwitchDirection(CapMan actor, double distance)
     {
-        if (actor.CurrentDirection is Direction.Up && actor.NextDirection is Direction.Down) 
-        { 
-            actor.Y += distance; 
+        if (actor.CurrentDirection is Direction.Up && actor.NextDirection is Direction.Down)
+        {
+            actor.Y = MoveDown(actor, distance);
+        }
+        else if (actor.CurrentDirection is Direction.Down && actor.NextDirection is Direction.Up)
+        {
+            actor.Y = MoveUp(actor, distance);
+        }
+        else if (actor.CurrentDirection is Direction.Left && actor.NextDirection is Direction.Right)
+        {
+            actor.X = MoveRight(actor, distance);
+        }
+        else if (actor.CurrentDirection is Direction.Right && actor.NextDirection is Direction.Left)
+        {
+            actor.X = MoveLeft(actor, distance);
         }
         else if (actor.CurrentDirection is Direction.Up)
         {
             // 10.1 => 10
-            Console.WriteLine($"Moving Up {distance}");
-            Console.WriteLine($"Was: {actor.Y}");
             double start = actor.Y;
             actor.Y = (int)actor.Y;
-            Console.WriteLine($"IsNow: {actor.Y}");
             double leftOverDistance = start - actor.Y;
-            Console.WriteLine($"Leftover: {leftOverDistance}");
-            
-            actor.X += actor.NextDirection is Direction.Left ? -leftOverDistance : leftOverDistance;             
+            actor.X += actor.NextDirection is Direction.Left ? -leftOverDistance : leftOverDistance;
         }
+        else if (actor.CurrentDirection is Direction.Down)
+        {
+            // 10.1 => 10
+            double start = actor.Y;
+            actor.Y = (int)Math.Ceiling(actor.Y);
+            double leftOverDistance = actor.Y - start;
+            actor.X += actor.NextDirection is Direction.Left ? -leftOverDistance : leftOverDistance;
+        }
+        else if (actor.CurrentDirection is Direction.Right)
+        {
+            // 10.1 => 10
+            double start = actor.X;
+            actor.X = (int)Math.Ceiling(actor.X);
+            double leftOverDistance = actor.X - start;
+            actor.Y += actor.NextDirection is Direction.Up ? -leftOverDistance : leftOverDistance;
+        }
+        else if (actor.CurrentDirection is Direction.Left)
+        {
+            // 10.1 => 10
+            double start = actor.X;
+            actor.X = (int)actor.X;
+            double leftOverDistance = start - actor.X;
+            actor.Y += actor.NextDirection is Direction.Up ? -leftOverDistance : leftOverDistance;
+        }
+        else
+        {
+            throw new Exception("Invalid state.");
+        }
+
 
         actor.CurrentDirection = actor.NextDirection;
     }
@@ -66,14 +99,57 @@ public class Game
     private Direction NextDirectionIfGoingUp(CapMan actor, double distance)
     {
         if (actor.NextDirection is Direction.Down or Direction.Up) { return actor.NextDirection; }
-        // start   th    end
-        // 10.1 => 10 => 9.9 
-        double endPosition = actor.Y - distance; 
-        if(((int)actor.Y) != ((int)Math.Ceiling(endPosition))) { return actor.CurrentDirection; }
+        double endPosition = actor.Y - distance;
+        if (((int)actor.Y) != ((int)Math.Ceiling(endPosition))) { return actor.CurrentDirection; }
         (int row, int col) = actor.NextDirection switch
         {
-            Direction.Left => ((int)endPosition + 1, (int)(actor.X - 1)),
-            Direction.Right => ((int)endPosition + 1, (int)(actor.X + 1)),
+            Direction.Left => ((int)Math.Ceiling(endPosition), (int)(actor.X - 1)),
+            Direction.Right => ((int)Math.Ceiling(endPosition), (int)(actor.X + 1)),
+            _ => throw new Exception($"Invalid directino (spanish for direction): {actor.NextDirection}"),
+        };
+        if (Board.IsWall(row, col)) { return actor.CurrentDirection; }
+        return actor.NextDirection;
+    }
+
+    private Direction NextDirectionIfGoingDown(CapMan actor, double distance)
+    {
+        if (actor.NextDirection is Direction.Down or Direction.Up) { return actor.NextDirection; }
+        double endPosition = actor.Y + distance;
+        if (((int)Math.Ceiling(actor.Y)) != ((int)endPosition)) { return actor.CurrentDirection; }
+        (int row, int col) = actor.NextDirection switch
+        {
+            Direction.Left => ((int)endPosition, (int)(actor.X - 1)),
+            Direction.Right => ((int)endPosition, (int)(actor.X + 1)),
+            _ => throw new Exception($"Invalid directino (spanish for direction): {actor.NextDirection}"),
+        };
+        if (Board.IsWall(row, col)) { return actor.CurrentDirection; }
+        return actor.NextDirection;
+    }
+
+    private Direction NextDirectionIfGoingRight(CapMan actor, double distance)
+    {
+        if (actor.NextDirection is Direction.Left or Direction.Right) { return actor.NextDirection; }
+        double endPosition = actor.X + distance;
+        if (((int)Math.Ceiling(actor.X)) != ((int)endPosition)) { return actor.CurrentDirection; }
+        (int row, int col) = actor.NextDirection switch
+        {
+            Direction.Up => ((int)(actor.Y - 1), (int)endPosition),
+            Direction.Down => ((int)(actor.Y + 1), (int)endPosition),
+            _ => throw new Exception($"Invalid directino (spanish for direction): {actor.NextDirection}"),
+        };
+        if (Board.IsWall(row, col)) { return actor.CurrentDirection; }
+        return actor.NextDirection;
+    }
+
+    private Direction NextDirectionIfGoingLeft(CapMan actor, double distance)
+    {
+        if (actor.NextDirection is Direction.Left or Direction.Right) { return actor.NextDirection; }
+        double endPosition = actor.X - distance;
+        if (((int)actor.X) != ((int)Math.Ceiling(endPosition))) { return actor.CurrentDirection; }
+        (int row, int col) = actor.NextDirection switch
+        {
+            Direction.Up => ((int)(actor.Y - 1), (int)Math.Ceiling(endPosition)),
+            Direction.Down => ((int)(actor.Y + 1), (int)Math.Ceiling(endPosition)),
             _ => throw new Exception($"Invalid directino (spanish for direction): {actor.NextDirection}"),
         };
         if (Board.IsWall(row, col)) { return actor.CurrentDirection; }
@@ -83,49 +159,51 @@ public class Game
     public Direction NextDirection(CapMan actor, double distance)
     {
         if (actor.NextDirection == actor.CurrentDirection) { return actor.CurrentDirection; }
-        
+
         if (actor.CurrentDirection is Direction.Up)
         {
             return NextDirectionIfGoingUp(actor, distance);
         }
-
-        (int row, int col) = actor.NextDirection switch
+        else if (actor.CurrentDirection is Direction.Down)
         {
-            Direction.Up => ((int)(actor.Y - 1), actor.Column),
-            Direction.Down => ((int)Math.Ceiling(actor.Y + 1), actor.Column),
-            Direction.Left => (actor.Row, (int)(actor.X - 1)),
-            Direction.Right => (actor.Row, (int)Math.Ceiling(actor.X + 1)),
-            _ => throw new Exception($"Invalid directino (spanish for direction): {actor.NextDirection}"),
-        };
-        if (Board.IsWall(row, col)) { return actor.CurrentDirection; }
-        // TODO: Did the player cross a boundary for which they should
-        //       change directions? If so, by how much?
-        return actor.NextDirection;
-        
+            return NextDirectionIfGoingDown(actor, distance);
+        }
+        else if (actor.CurrentDirection is Direction.Right)
+        {
+            return NextDirectionIfGoingRight(actor, distance);
+        }
+        else if (actor.CurrentDirection is Direction.Left)
+        {
+            return NextDirectionIfGoingLeft(actor, distance);
+        }
+        else
+        {
+            throw new Exception($"Invalid current direction: {actor.CurrentDirection}");
+        }
     }
 
 
     public double MoveUp(CapMan actor, double distance)
     {
-        if(Board.IsWall((int)(actor.Y - distance), actor.Column))
+        if (Board.IsWall((int)(actor.Y - distance), actor.Column))
         {
             return (int)(actor.Y - distance) + 1;
         }
-        return actor.Y - distance;        
+        return actor.Y - distance;
     }
 
     public double MoveDown(CapMan actor, double distance)
     {
-        if(Board.IsWall((int)Math.Ceiling(actor.Y + distance), actor.Column))
+        if (Board.IsWall((int)Math.Ceiling(actor.Y + distance), actor.Column))
         {
             return (int)Math.Ceiling(actor.Y + distance) - 1;
         }
-        return actor.Y + distance;        
+        return actor.Y + distance;
     }
 
     public double MoveLeft(CapMan actor, double distance)
     {
-        if(Board.IsWall(actor.Row, (int)(actor.X - distance)))
+        if (Board.IsWall(actor.Row, (int)(actor.X - distance)))
         {
             return (int)(actor.X - distance) + 1;
         }
@@ -134,7 +212,7 @@ public class Game
 
     public double MoveRight(CapMan actor, double distance)
     {
-        if(Board.IsWall(actor.Row, (int)Math.Ceiling(actor.X + distance)))
+        if (Board.IsWall(actor.Row, (int)Math.Ceiling(actor.X + distance)))
         {
             return (int)Math.Ceiling(actor.X + distance) - 1;
         }
