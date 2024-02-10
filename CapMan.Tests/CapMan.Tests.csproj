@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CapMan.Raylib\CapMan.Raylib.csproj" />
+    <ProjectReference Include="..\CapMan\CapMan.csproj" />
   </ItemGroup>
 
 </Project>
