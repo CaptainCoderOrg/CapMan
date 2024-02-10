@@ -1,6 +1,6 @@
 public class Game
 {
-    public CapMan Player { get; } = new CapMan();
+    public Actor Player { get; } = new Actor();
     public Board Board { get; } = new Board(Board.StandardBoard);
     public int Score { get; private set; }
 
@@ -31,7 +31,7 @@ public class Game
         Direction nextDirection = NextDirection(Player.CurrentDirection, Player.NextDirection, Board, Player.X, Player.Y, distance);
         if (nextDirection == Player.CurrentDirection)
         {
-            (Player.X, Player.Y) = CalculateMove(Board, Player.CurrentDirection, Player.X, Player.Y, distance);
+            (Player.X, Player.Y) = Board.CalculateMove(Player.CurrentDirection, Player.X, Player.Y, distance);
         }
         else
         {
@@ -42,7 +42,7 @@ public class Game
         BoundsCheck(Player);
     }
 
-    public void BoundsCheck(CapMan actor)
+    public void BoundsCheck(Actor actor)
     {
         double transitionDistance = 1;
         double width = Board.Columns;
@@ -59,8 +59,8 @@ public class Game
     public static (double, double) CalculateTurn(Direction current, Direction next, Board board, double x, double y, double distance)
     {
         // This method assumes the move is valid and the distance <= 1
-        if (current == next) { return CalculateMove(board, current, x, y, distance); }
-        if (current.IsOpposite(next)) { return CalculateMove(board, next, x, y, distance); }
+        if (current == next) { return board.CalculateMove(current, x, y, distance); }
+        if (current.IsOpposite(next)) { return board.CalculateMove(next, x, y, distance); }
 
         (int col, int row) = current switch
         {
@@ -87,7 +87,7 @@ public class Game
         // You can always turn around / continue in the same direction
         if (currentDir == nextDir || currentDir.IsOpposite(nextDir)) { return nextDir; }
         // Calculate the position, if you move straight
-        (double endX, double endY) = CalculateMove(board, currentDir, x, y, distance);
+        (double endX, double endY) = board.CalculateMove(currentDir, x, y, distance);
         bool isCrossingCenter = currentDir switch
         {
             Direction.Up => (int)y == (int)Math.Ceiling(endY),
@@ -123,37 +123,5 @@ public class Game
         return nextDir;
     }
 
-    public static (double, double) CalculateMove(Board board, Direction moving, double x, double y, double distance)
-    {
-        (double nextX, double nextY) = moving switch
-        {
-            Direction.Right => (x + distance, y),
-            Direction.Left => (x - distance, y),
-            Direction.Up => (x, y - distance),
-            Direction.Down => (x, y + distance),
-            _ => throw new Exception($"Unknown direction {moving}."),
-        };
-
-        (int nextCol, int nextRow) = moving switch
-        {
-            Direction.Right => ((int)Math.Ceiling(nextX), (int)nextY),
-            Direction.Left => ((int)nextX, (int)nextY),
-            Direction.Up => ((int)nextX, (int)nextY),
-            Direction.Down => ((int)nextX, (int)Math.Ceiling(nextY)),
-            _ => throw new Exception($"Unknown direction {moving}."),
-        };
-
-        // If there is no wall, return move
-        if (!board.IsWall(nextRow, nextCol)) { return (nextX, nextY); }
-
-        // Otherwise, snap to the specific wall
-        return moving switch
-        {
-            Direction.Right => (nextCol - 1, nextY),
-            Direction.Left => (nextCol + 1, nextY),
-            Direction.Up => (nextX, nextRow + 1),
-            Direction.Down => (nextX, nextRow - 1),
-            _ => throw new Exception($"Unknown direction {moving}."),
-        };
-    }
+    
 }

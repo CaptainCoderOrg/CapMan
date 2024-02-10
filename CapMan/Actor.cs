@@ -1,4 +1,4 @@
-public class CapMan
+public class Actor
 {
     public double X { get; set; }
     public double Y { get; set; }

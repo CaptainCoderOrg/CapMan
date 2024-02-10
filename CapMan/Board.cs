@@ -76,3 +76,40 @@ public class Board
         "╰──────────────────────────╯",
     ];
 }
+
+public static class BoardExtensions
+{
+    public static (double, double) CalculateMove(this Board board, Direction moving, double x, double y, double distance)
+    {
+        (double nextX, double nextY) = moving switch
+        {
+            Direction.Right => (x + distance, y),
+            Direction.Left => (x - distance, y),
+            Direction.Up => (x, y - distance),
+            Direction.Down => (x, y + distance),
+            _ => throw new Exception($"Unknown direction {moving}."),
+        };
+
+        (int nextCol, int nextRow) = moving switch
+        {
+            Direction.Right => ((int)Math.Ceiling(nextX), (int)nextY),
+            Direction.Left => ((int)nextX, (int)nextY),
+            Direction.Up => ((int)nextX, (int)nextY),
+            Direction.Down => ((int)nextX, (int)Math.Ceiling(nextY)),
+            _ => throw new Exception($"Unknown direction {moving}."),
+        };
+
+        // If there is no wall, return move
+        if (!board.IsWall(nextRow, nextCol)) { return (nextX, nextY); }
+
+        // Otherwise, snap to the specific wall
+        return moving switch
+        {
+            Direction.Right => (nextCol - 1, nextY),
+            Direction.Left => (nextCol + 1, nextY),
+            Direction.Up => (nextX, nextRow + 1),
+            Direction.Down => (nextX, nextRow - 1),
+            _ => throw new Exception($"Unknown direction {moving}."),
+        };
+    }
+}
