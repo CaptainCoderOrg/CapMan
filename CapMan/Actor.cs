@@ -1,3 +1,5 @@
+namespace CapMan;
+
 public class Actor
 {
     public double X { get; set; }

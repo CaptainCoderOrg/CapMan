@@ -15,6 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="..\assets\sprites\blinkus.png" Link="assets\sprites\blinkus.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\assets\sprites\bottom-left.png" Link="assets\sprites\bottom-left.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -49,9 +52,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\assets\sprites\walls.png" Link="assets\sprites\walls.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\blinkus.png" Link="assets\sprites\blinkus.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
