@@ -1,5 +1,3 @@
-using Shouldly;
-
 namespace CapMan.Tests;
 
 public class ElementTests
@@ -9,6 +7,7 @@ public class ElementTests
     [InlineData('O', Element.PowerPill)]
     [InlineData('│', Element.Vertical)]
     [InlineData('─', Element.Horizontal)]
+    [InlineData('+', Element.Corner)]
     [InlineData('╭', Element.TopLeft)]
     [InlineData('╮', Element.TopRight)]
     [InlineData('╰', Element.BottomLeft)]

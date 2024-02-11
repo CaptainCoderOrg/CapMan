@@ -1,4 +1,7 @@
-using static Neighbors;
+using static CapMan.Neighbors;
+
+namespace CapMan;
+
 [Flags]
 public enum Neighbors
 {
