@@ -17,13 +17,13 @@ public class Board_should
     public void allow_move_when_space_is_empty(Direction direction, double startX, double startY, double distance, double endX, double endY)
     {
         Board board = new Board(
-            [
-                "╭───╮",
-                "│...│",
-                "│...│",
-                "│...│",
-                "╰───╯",
-            ]
+            """
+            ╭───╮
+            │...│
+            │...│
+            │...│
+            ╰───╯
+            """
         );
 
         (double newX, double newY) = board.CalculateMove(direction, startX, startY, distance);
@@ -46,13 +46,13 @@ public class Board_should
     {
 
         Board board = new Board(
-            [
-                "╭───╮",
-                "│...│",
-                "│...│",
-                "│...│",
-                "╰───╯",
-            ]
+            """
+            ╭───╮
+            │...│
+            │...│
+            │...│
+            ╰───╯
+            """
         );
 
         (double newX, double newY) = board.CalculateMove(direction, startX, startY, distance);
