@@ -26,13 +26,14 @@ public class SpriteSheet
         return new SpriteSheet(image, rows, columns);
     }
 
-    public void DrawSprite(int row, int col, int x, int y, float rotation)
+    public void DrawSprite(int row, int col, int x, int y, float rotation, bool flipX)
     {
-        Rectangle crop = new Rectangle(col * SpriteWidth, row * SpriteHeight, SpriteWidth, SpriteHeight);
+        float width = flipX ? -SpriteWidth : SpriteWidth;
+        Rectangle crop = new Rectangle(col * SpriteWidth, row * SpriteHeight, width, SpriteHeight);
         Rectangle dest = new Rectangle(x, y, SpriteWidth, SpriteHeight);
         System.Numerics.Vector2 center = new (SpriteWidth/2, SpriteHeight/2);
         Raylib.DrawTexturePro(_spriteSheet, crop, dest, center, rotation, Color.White);
     }
 
-    public void DrawSprite(int row, int col, int x, int y) => DrawSprite(row, col, x, y, 0);
+    public void DrawSprite(int row, int col, int x, int y) => DrawSprite(row, col, x, y, 0, false);
 }

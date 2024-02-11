@@ -48,10 +48,8 @@ Raylib.SetWindowMonitor(1);
 Raylib.SetWindowSize(screenWidth, screenHeight);
 Raylib.SetTargetFPS(60);
 
-
 SpriteSheet sheet = SpriteSheet.Load("assets/sprites/capman.png", 1, 3);
 AnimatedSprite capmanSprite = new AnimatedSprite(sheet, [(0, 0), (0, 1), (0, 2), (0, 1)]);
-
 
 RenderTexture2D boardTexture = Raylib.LoadRenderTexture(boardWidth, boardHeight);
 Rectangle screenRect = new Rectangle(0, 0, boardWidth, -boardHeight);
@@ -73,8 +71,8 @@ while (!Raylib.WindowShouldClose())
     Raylib.EndTextureMode();
 
     Raylib.BeginDrawing();
-    Rectangle screenRect2 = new Rectangle(0, 0, Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
-    Raylib.DrawTexturePro(boardTexture.Texture, screenRect, screenRect2, centerScreen, 0, Color.White);
+    Rectangle scaledResolution = new Rectangle(0, 0, Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+    Raylib.DrawTexturePro(boardTexture.Texture, screenRect, scaledResolution, centerScreen, 0, Color.White);
     RenderDebugText();
     Raylib.EndDrawing();
 }
@@ -109,11 +107,14 @@ void RenderCapMan()
     {
         Direction.Left => 0,
         Direction.Up => 90,
-        Direction.Right => 180,
+        Direction.Right => 0,
         Direction.Down => 270,
         _ => throw new Exception($"Unexpected direction {game.Player.CurrentDirection}"),
     };
-    capmanSprite.Draw((int)(game.Player.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2, (int)(game.Player.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2);
+    capmanSprite.FlipX = game.Player.CurrentDirection == Direction.Right ? true : false;
+    int x = (int)(game.Player.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+    int y = (int)(game.Player.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+    capmanSprite.Draw(x, y);
 }
 
 void RenderDebugText()
@@ -137,22 +138,21 @@ void Reset()
     game.Player.X = 14; // * BoardRenderer.CellSize;
 }
 
-
 void HandleInput()
 {
-    if (Raylib.IsKeyDown(KeyboardKey.W))
+    if (Raylib.IsKeyDown(KeyboardKey.W) || Raylib.IsKeyDown(KeyboardKey.Up))
     {
         game.Player.NextDirection = Direction.Up;
     }
-    if (Raylib.IsKeyDown(KeyboardKey.D))
+    if (Raylib.IsKeyDown(KeyboardKey.D) || Raylib.IsKeyDown(KeyboardKey.Right))
     {
         game.Player.NextDirection = Direction.Right;
     }
-    if (Raylib.IsKeyDown(KeyboardKey.A))
+    if (Raylib.IsKeyDown(KeyboardKey.A) || Raylib.IsKeyDown(KeyboardKey.Left))
     {
         game.Player.NextDirection = Direction.Left;
     }
-    if (Raylib.IsKeyDown(KeyboardKey.S))
+    if (Raylib.IsKeyDown(KeyboardKey.S) || Raylib.IsKeyDown(KeyboardKey.Down))
     {
         game.Player.NextDirection = Direction.Down;
     }
@@ -177,4 +177,3 @@ void HandleInput()
         Reset();
     }
 }
-
