@@ -79,6 +79,7 @@ public class Board
 
 public static class BoardExtensions
 {
+    
     public static (double, double) CalculateMove(this Board board, Direction moving, double x, double y, double distance)
     {
         (double nextX, double nextY) = moving switch
@@ -113,16 +114,28 @@ public static class BoardExtensions
         };
     }
 
+    /// <summary>
+    /// Given a deltaTime representing the number of seconds passed, calculates
+    /// the specified actor's next position.
+    /// </summary>
+    public static (double, double, Direction) CalculateActorMove(this Board board, double deltaTime, Actor actor)
+    {
+        double distance = actor.Speed * deltaTime;
+        var (nextX, nextY) = CalculateMoveWithTurn(board, actor.CurrentDirection, actor.NextDirection, actor.X, actor.Y, distance);
+        var nextDir = NextDirection(board, actor.CurrentDirection, actor.NextDirection, actor.X, actor.Y, distance);
+        return (nextX, nextY, nextDir);
+    }
     
     /// <summary>
     /// Calculates the next position of an actor on the board if they were to
     /// make a 90 degree turn from current to next.
     /// </summary>
-    public static (double, double) CalculateMoveWithTurn(this Board board, Direction current, Direction next,  double x, double y, double distance)
+    public static (double, double) CalculateMoveWithTurn(this Board board, Direction current, Direction queuedDirection,  double x, double y, double distance)
     {
+        Direction nextDirection = NextDirection(board, current, queuedDirection, x, y, distance);
         // This method assumes the move is valid and the distance <= 1
-        if (current == next) { return board.CalculateMove(current, x, y, distance); }
-        if (current.IsOpposite(next)) { return board.CalculateMove(next, x, y, distance); }
+        if (current == nextDirection) { return board.CalculateMove(current, x, y, distance); }
+        if (current.IsOpposite(nextDirection)) { return board.CalculateMove(nextDirection, x, y, distance); }
 
         (double snapToX, double snapToY) = current switch
         {
@@ -134,20 +147,24 @@ public static class BoardExtensions
 
         // (distance - Math.Abs(y - snapToY)) represents the remaining distance
         // after the move this should be added in the new direction
-        return next switch
+        return queuedDirection switch
         {
             Direction.Left => (snapToX - (distance - Math.Abs(y - snapToY)), snapToY),
             Direction.Right => (snapToX + (distance - Math.Abs(y - snapToY)), snapToY),
             Direction.Up => (snapToX, snapToY - (distance - Math.Abs(x - snapToX))),
             Direction.Down => (snapToX, snapToY + (distance - Math.Abs(x - snapToX))),
-            _ => throw new Exception($"Unknown direction: {next}"),
+            _ => throw new Exception($"Unknown direction: {queuedDirection}"),
         };
     }
 
+    /// <summary>
+    /// Calculates the direction at the end of this movement.
+    /// </summary>
     public static Direction NextDirection
         (this Board board, Direction currentDir, Direction nextDir, 
          double x, double y, double distance)
     {
+        
         // You can always turn around / continue in the same direction
         if (currentDir == nextDir || currentDir.IsOpposite(nextDir)) { return nextDir; }
         // Calculate the position, if you move straight

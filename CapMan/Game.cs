@@ -25,20 +25,9 @@ public class Game
         }
     }
 
-    private void UpdateCapMan(double delta)
+    private void UpdateCapMan(double deltaTime)
     {
-        double distance = Player.Speed * delta;
-        Direction nextDirection = Board.NextDirection(Player.CurrentDirection, Player.NextDirection, Player.X, Player.Y, distance);
-        if (nextDirection == Player.CurrentDirection)
-        {
-            (Player.X, Player.Y) = Board.CalculateMove(Player.CurrentDirection, Player.X, Player.Y, distance);
-        }
-        else
-        {
-            (Player.X, Player.Y) = Board.CalculateMoveWithTurn(Player.CurrentDirection, Player.NextDirection, Player.X, Player.Y, distance);
-            Player.CurrentDirection = nextDirection;
-        }
-
+        (Player.X, Player.Y, Player.CurrentDirection) = Board.CalculateActorMove(deltaTime, Player);
         BoundsCheck(Player);
     }
 
