@@ -32,17 +32,19 @@ public class BoardRenderer
 
     private static string AssetPath(Element element)
     {
-        return "assets/sprites/" + element switch
+        
+        return Path.Combine("assets", "sprites", element switch
         {
-            Element.Horizontal => "horizontal.png",
-            Element.Vertical => "vertical.png",
-            Element.TopLeft => "top-left.png",
-            Element.TopRight => "top-right.png",
-            Element.BottomLeft => "bottom-left.png",
+            Element.Horizontal  => "horizontal.png",
+            Element.Vertical    => "vertical.png",
+            Element.TopLeft     => "top-left.png",
+            Element.TopRight    => "top-right.png",
+            Element.BottomLeft  => "bottom-left.png",
             Element.BottomRight => "bottom-right.png",
-            Element.Dot => "dot.png",
-            Element.PowerPill => "powerpill.png",
-            _ => throw new ArgumentException($"Invalid chess piece: {element}"),
-        };
+            Element.Dot         => "dot.png",
+            Element.PowerPill   => "powerpill.png",
+            Element.Corner      => "",
+            _ => throw new ArgumentException($"Invalid board element: {element}"),
+        });
     }
 }

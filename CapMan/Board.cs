@@ -35,11 +35,42 @@ public class Board
                 elements[new Position(row, col)] = ch.ToElement();
             }
         }
+
+        foreach ((Position position, Element corner) in elements.Where(e => e.Value is Element.Corner))
+        {
+            int row = position.Row;
+            int col = position.Col;
+            _ = elements.TryGetValue(new Position(row - 1, col),     out Element above);
+            _ = elements.TryGetValue(new Position(row + 1, col),     out Element below);
+            _ = elements.TryGetValue(new Position(row    , col - 1), out Element left);
+            _ = elements.TryGetValue(new Position(row    , col + 1), out Element right);
+
+            elements[position] = true switch
+            {
+                _ when left  is Element.Horizontal && below is Element.Vertical => Element.TopRight,
+                _ when left  is Element.Horizontal && above is Element.Vertical => Element.BottomRight,
+                _ when right is Element.Horizontal && below is Element.Vertical => Element.TopLeft,
+                _ when right is Element.Horizontal && above is Element.Vertical => Element.BottomLeft,
+
+                _ when left  is Element.Corner or Element.TopLeft     && below is Element.Vertical => Element.TopRight,
+                _ when left  is Element.Corner or Element.BottomLeft  && above is Element.Vertical => Element.BottomRight,
+                _ when right is Element.Corner or Element.TopRight    && below is Element.Vertical => Element.TopLeft,
+                _ when right is Element.Corner or Element.BottomRight && above is Element.Vertical => Element.BottomLeft,
+
+                _ when left  is Element.Horizontal && below is Element.Corner or Element.BottomRight => Element.TopRight,
+                _ when left  is Element.Horizontal && above is Element.Corner or Element.TopRight    => Element.BottomRight,
+                _ when right is Element.Horizontal && below is Element.Corner or Element.BottomLeft  => Element.TopLeft,
+                _ when right is Element.Horizontal && above is Element.Corner or Element.TopLeft     => Element.BottomLeft,
+
+                _ => throw new NotImplementedException(),
+            };
+        }
+
         return elements;
     }
 
-    public bool IsDot(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element is Element.Dot;
-    public bool IsPowerPill(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element is Element.PowerPill;
+    public bool IsDot(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element.IsDot();
+    public bool IsPowerPill(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element.IsPowerPill();
 
     public bool IsWall(int row, int col) => TryGetElement(new Position(row, col), out Element element) && element.IsWall();
     public bool Contains(int row, int col) => row >= 0 && row < Rows && col >= 0 && col < Columns;
