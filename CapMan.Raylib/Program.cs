@@ -37,8 +37,8 @@ BoardRenderer boardRenderer = new();
 int boardWidth = game.Board.Columns * BoardRenderer.CellSize;
 int boardHeight = game.Board.Rows * BoardRenderer.CellSize;
 Console.WriteLine($"{boardWidth}x{boardHeight}");
-int screenWidth = (int)(boardWidth * 1.5);
-int screenHeight = (int)(boardHeight * 1.5);
+int screenWidth = (int)(boardWidth * 2);
+int screenHeight = (int)(boardHeight * 2);
 
 Raylib.InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 Raylib.SetWindowState(ConfigFlags.ResizableWindow);
@@ -47,6 +47,7 @@ Raylib.SetWindowSize(screenWidth, screenHeight);
 Raylib.SetTargetFPS(60);
 
 CapManRenderer capManRenderer = new();
+EnemyRenderer blinkus = new();
 
 RenderTexture2D boardTexture = Raylib.LoadRenderTexture(boardWidth, boardHeight);
 Rectangle screenRect = new Rectangle(0, 0, boardWidth, -boardHeight);
@@ -64,6 +65,7 @@ while (!Raylib.WindowShouldClose())
     Raylib.ClearBackground(Color.Black);
     boardRenderer.Render(game.Board, 0, 0);
     capManRenderer.Render(game);
+    blinkus.Render(game);
     DrawGrid();
     Raylib.EndTextureMode();
 
