@@ -1,3 +1,5 @@
+namespace CapMan;
+
 public enum WallTile
 {
     Vertical = '│',

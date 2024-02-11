@@ -1,3 +1,5 @@
+namespace CapMan;
+
 public enum Element : ushort
 {
     Dot         = '.',
@@ -15,22 +17,16 @@ public static class ElementExtensions
 {
     public static Element ToElement(this char ch)
     {
-        Element el = (Element)ch;
-        if (Enum.IsDefined(el))
-        {
-            return el;
-        }
-
         return ch switch
         {
+            _ when (Element)ch is Element el && Enum.IsDefined(el) => el,
             '|' => Element.Vertical,
             '-' => Element.Horizontal,
-            _ => throw new ArgumentException($"Invalid Element '{ch}'"),
+            _   => throw new ArgumentException($"Invalid Element '{ch}'"),
         };
     }
 
     public static bool IsWall(this Element element) => element is Element.Vertical or Element.Horizontal or Element.TopLeft or Element.TopRight or Element.BottomLeft or Element.BottomRight or Element.Corner;
     public static bool IsDot(this Element element) => element is Element.Dot;
     public static bool IsPowerPill(this Element element) => element is Element.PowerPill;
-    
 }

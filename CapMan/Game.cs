@@ -1,3 +1,5 @@
+namespace CapMan;
+
 public class Game
 {
     public Actor Player { get; } = new Actor();

@@ -1,3 +1,5 @@
+namespace CapMan;
+
 public class Board
 {
     public int Rows { get; private init; }

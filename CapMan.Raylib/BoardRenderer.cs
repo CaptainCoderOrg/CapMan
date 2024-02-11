@@ -1,5 +1,6 @@
 namespace CapMan.Raylib;
 using Raylib_cs;
+
 public class BoardRenderer
 {
     public const int CellSize = 16;
