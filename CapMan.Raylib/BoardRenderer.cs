@@ -1,3 +1,4 @@
+namespace CapMan.Raylib;
 using Raylib_cs;
 public class BoardRenderer
 {

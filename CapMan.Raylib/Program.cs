@@ -20,6 +20,7 @@
 ********************************************************************************************/
 
 using Raylib_cs;
+using CapMan.Raylib;
 
 // Initialization
 //--------------------------------------------------------------------------------------
@@ -39,17 +40,13 @@ Console.WriteLine($"{boardWidth}x{boardHeight}");
 int screenWidth = (int)(boardWidth * 1.5);
 int screenHeight = (int)(boardHeight * 1.5);
 
-double lastX = 0;
-double lastY = 0;
-
 Raylib.InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 Raylib.SetWindowState(ConfigFlags.ResizableWindow);
 Raylib.SetWindowMonitor(1);
 Raylib.SetWindowSize(screenWidth, screenHeight);
 Raylib.SetTargetFPS(60);
 
-SpriteSheet sheet = SpriteSheet.Load("assets/sprites/capman.png", 1, 3);
-AnimatedSprite capmanSprite = new AnimatedSprite(sheet, [(0, 0), (0, 1), (0, 2), (0, 1)]);
+CapManRenderer capManRenderer = new();
 
 RenderTexture2D boardTexture = Raylib.LoadRenderTexture(boardWidth, boardHeight);
 Rectangle screenRect = new Rectangle(0, 0, boardWidth, -boardHeight);
@@ -66,7 +63,7 @@ while (!Raylib.WindowShouldClose())
     Raylib.BeginTextureMode(boardTexture);
     Raylib.ClearBackground(Color.Black);
     boardRenderer.Render(game.Board, 0, 0);
-    RenderCapMan();
+    capManRenderer.Render(game);
     DrawGrid();
     Raylib.EndTextureMode();
 
@@ -96,26 +93,6 @@ void DrawGrid()
     }
 }
 
-void RenderCapMan()
-{
-    if ((lastX, lastY) != (game.Player.X, game.Player.Y))
-    {
-        capmanSprite.CurrentTime += Raylib.GetFrameTime();
-        (lastX, lastY) = (game.Player.X, game.Player.Y);
-    }
-    capmanSprite.Rotation = game.Player.CurrentDirection switch
-    {
-        Direction.Left => 0,
-        Direction.Up => 90,
-        Direction.Right => 0,
-        Direction.Down => 270,
-        _ => throw new Exception($"Unexpected direction {game.Player.CurrentDirection}"),
-    };
-    capmanSprite.FlipX = game.Player.CurrentDirection == Direction.Right ? true : false;
-    int x = (int)(game.Player.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-    int y = (int)(game.Player.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-    capmanSprite.Draw(x, y);
-}
 
 void RenderDebugText()
 {

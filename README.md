@@ -13,7 +13,7 @@ Dunce Cap: Power Down
 What should Dots / Power Pills be?
 What should Enemies be?
 
-# TODO: "Fix" Cap Man to flip rather than rotate
+# We "Fixed" Cap Man to flip rather than rotate
 
 We voted on it! https://clips.twitch.tv/InexpensiveFitPrariedogShazBotstix-f3rtsBDRI1KQ0UOX
 

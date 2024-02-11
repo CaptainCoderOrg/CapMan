@@ -1,5 +1,5 @@
+namespace CapMan.Raylib;
 using Raylib_cs;
-
 public class SpriteSheet
 {
     private Texture2D _spriteSheet;
