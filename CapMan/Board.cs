@@ -12,6 +12,8 @@ public class Board
         Columns = data[0].Length;
         _elements = InitElements(asciiLayout);
     }
+
+    public Board(string asciiLayout) : this(asciiLayout.ReplaceLineEndings().Split(Environment.NewLine)) { }
   
     public void RemoveElement(Position pos) => _elements.Remove(pos);
     public void RemoveElement(int row, int col) => RemoveElement(new Position(row, col));
