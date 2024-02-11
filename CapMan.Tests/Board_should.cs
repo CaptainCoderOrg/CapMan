@@ -61,4 +61,48 @@ public class Board_should
         newY.ShouldBe(endY, .01);
 
     }
+
+    [Theory]
+    // Given a start position, distance to travel, and 90 degree turn
+    // where should we end our move?
+    //              start   d    end     90 degree turn direction
+    [InlineData(2.0, 2.9, 1.0, 2.1, 2.0, Direction.Up, Direction.Right)]
+    [InlineData(2.0, 2.2, 0.3, 2.1, 2.0, Direction.Up, Direction.Right)]
+    [InlineData(2.0, 2.9, 1.0, 1.9, 2.0, Direction.Up, Direction.Left)]
+    [InlineData(2.0, 2.2, 0.3, 1.9, 2.0, Direction.Up, Direction.Left)]
+    [InlineData(2.0, 1.9, 0.3, 2.2, 2.0, Direction.Down, Direction.Right)]
+    [InlineData(2.0, 1.5, 1.0, 2.5, 2.0, Direction.Down, Direction.Right)]
+    [InlineData(2.0, 1.9, 0.3, 1.8, 2.0, Direction.Down, Direction.Left)]
+    [InlineData(2.0, 1.5, 1.0, 1.5, 2.0, Direction.Down, Direction.Left)]
+    [InlineData(1.5, 2.0, 1.0, 2.0, 2.5, Direction.Right, Direction.Down)]
+    [InlineData(1.8, 2.0, 0.3, 2.0, 2.1, Direction.Right, Direction.Down)]
+    [InlineData(1.5, 2.0, 1.0, 2.0, 1.5, Direction.Right, Direction.Up)]
+    [InlineData(1.8, 2.0, 0.3, 2.0, 1.9, Direction.Right, Direction.Up)]
+    [InlineData(2.5, 2.0, 1.0, 2.0, 2.5, Direction.Left, Direction.Down)]
+    [InlineData(2.2, 2.0, 0.3, 2.0, 2.1, Direction.Left, Direction.Down)]
+    [InlineData(2.5, 2.0, 1.0, 2.0, 1.5, Direction.Left, Direction.Up)]
+    [InlineData(2.2, 2.0, 0.3, 2.0, 1.9, Direction.Left, Direction.Up)]
+    public void allow_90degree_turn_when_intersection_is_open(
+        double startX, double startY, double distance, 
+        double endX, double endY, 
+        Direction current, Direction next)
+    {
+
+            Board board = new Board(
+            [
+              // 01234  
+                " │.│",  // 0
+                "─╯.╰─", // 1
+                ".....", // 2
+                "─╮.╭─", // 3
+                " │.│",  // 4
+            ]
+        );
+
+        (double newX, double newY) = board.CalculateMoveWithTurn(current, next, startX, startY, distance);
+
+        newX.ShouldBe(endX, 0.01);
+        newY.ShouldBe(endY, 0.01);
+
+    }
 }

@@ -112,4 +112,77 @@ public static class BoardExtensions
             _ => throw new Exception($"Unknown direction {moving}."),
         };
     }
+
+    
+    /// <summary>
+    /// Calculates the next position of an actor on the board.
+    /// </summary>
+    public static (double, double) CalculateMoveWithTurn(this Board board, Direction current, Direction next,  double x, double y, double distance)
+    {
+        // This method assumes the move is valid and the distance <= 1
+        if (current == next) { return board.CalculateMove(current, x, y, distance); }
+        if (current.IsOpposite(next)) { return board.CalculateMove(next, x, y, distance); }
+
+        (double snapToX, double snapToY) = current switch
+        {
+            Direction.Down => (Math.Floor(x), Math.Ceiling(y)),
+            Direction.Right => (Math.Ceiling(x), Math.Floor(y)),
+            Direction.Up or Direction.Left => (Math.Floor(x), Math.Floor(y)),
+            _ => throw new Exception($"Unknown direction: {current}"),
+        };
+
+        // (distance - Math.Abs(y - snapToY)) represents the remaining distance
+        // after the move this should be added in the new direction
+        return next switch
+        {
+            Direction.Left => (snapToX - (distance - Math.Abs(y - snapToY)), snapToY),
+            Direction.Right => (snapToX + (distance - Math.Abs(y - snapToY)), snapToY),
+            Direction.Up => (snapToX, snapToY - (distance - Math.Abs(x - snapToX))),
+            Direction.Down => (snapToX, snapToY + (distance - Math.Abs(x - snapToX))),
+            _ => throw new Exception($"Unknown direction: {next}"),
+        };
+    }
+
+    public static Direction NextDirection
+        (this Board board, Direction currentDir, Direction nextDir, 
+         double x, double y, double distance)
+    {
+        // You can always turn around / continue in the same direction
+        if (currentDir == nextDir || currentDir.IsOpposite(nextDir)) { return nextDir; }
+        // Calculate the position, if you move straight
+        (double endX, double endY) = board.CalculateMove(currentDir, x, y, distance);
+        bool isCrossingCenter = currentDir switch
+        {
+            Direction.Up => (int)y == (int)Math.Ceiling(endY),
+            Direction.Down => (int)Math.Ceiling(y) == (int)endY,
+            Direction.Right => (int)Math.Ceiling(x) == (int)endX,
+            Direction.Left => (int)x == (int)Math.Ceiling(endX),
+            _ => throw new Exception($"Unknown direction {currentDir}"),
+        };
+
+        // If this move would not cross the center of a tile
+        // it is not possible to turn.
+        if (!isCrossingCenter) { return currentDir; }
+
+        // Check possible 90 degree turns
+        (int row, int col) = (currentDir, nextDir) switch
+        {
+            (Direction.Up, Direction.Left) => ((int)Math.Ceiling(endY), (int)x - 1),
+            (Direction.Up, Direction.Right) => ((int)Math.Ceiling(endY), (int)x + 1),
+            (Direction.Down, Direction.Left) => ((int)endY, (int)x - 1),
+            (Direction.Down, Direction.Right) => ((int)endY, (int)x + 1),
+            (Direction.Right, Direction.Up) => ((int)y - 1, (int)endX),
+            (Direction.Right, Direction.Down) => ((int)y + 1, (int)endX),
+            (Direction.Left, Direction.Up) => ((int)y - 1, (int)Math.Ceiling(endX)),
+            (Direction.Left, Direction.Down) => ((int)y + 1, (int)Math.Ceiling(endX)),
+            _ => throw new Exception($"Unknown 90 degree turn: {currentDir} to {nextDir}"),
+        };
+
+        // If there is a wall or if we are trying to move out of the board, keep going 
+        // in the current direction
+        if (!board.Contains(row, col) || board.IsWall(row, col)) { return currentDir; }
+
+        // Otherwise, change directions
+        return nextDir;
+    }
 }
