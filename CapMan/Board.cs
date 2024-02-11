@@ -115,7 +115,8 @@ public static class BoardExtensions
 
     
     /// <summary>
-    /// Calculates the next position of an actor on the board.
+    /// Calculates the next position of an actor on the board if they were to
+    /// make a 90 degree turn from current to next.
     /// </summary>
     public static (double, double) CalculateMoveWithTurn(this Board board, Direction current, Direction next,  double x, double y, double distance)
     {
