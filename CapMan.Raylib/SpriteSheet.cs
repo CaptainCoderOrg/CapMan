@@ -2,6 +2,7 @@ namespace CapMan.Raylib;
 using Raylib_cs;
 public class SpriteSheet
 {
+    private static readonly Dictionary<(string, int, int), SpriteSheet> s_cache = new ();
     private Texture2D _spriteSheet;
     public int Rows { get; }
     public int Columns { get; }
@@ -20,11 +21,17 @@ public class SpriteSheet
     /// Given a path to an image file, returns a sprite sheet that is
     /// evenly sliced into the specified number of rows and columns.
     /// </summary>
-    public static SpriteSheet Load(string path, int rows, int columns)
+    public static SpriteSheet Get(string path, int rows, int columns)
     {
-        Texture2D image = Raylib.LoadTexture(path);
-        return new SpriteSheet(image, rows, columns);
+        if (!s_cache.TryGetValue((path, rows, columns), out SpriteSheet? sheet))
+        {
+            Texture2D image = Raylib.LoadTexture(path);
+            sheet = new SpriteSheet(image, rows, columns);
+            s_cache[(path, rows, columns)] = sheet;            
+        }
+        return sheet;
     }
+
 
     public void DrawSprite(int row, int col, int x, int y, float rotation, bool flipX)
     {

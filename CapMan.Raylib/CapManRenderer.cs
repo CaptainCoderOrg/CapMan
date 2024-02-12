@@ -12,7 +12,7 @@ public class CapManRenderer
         {
             if (_spriteSheet == null)
             {
-                _spriteSheet = SpriteSheet.Load("assets/sprites/capman.png", 1, 3);
+                _spriteSheet = SpriteSheet.Get("assets/sprites/capman.png", 1, 3);
             }
             return _spriteSheet;
         }
