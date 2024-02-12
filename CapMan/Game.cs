@@ -3,8 +3,14 @@ namespace CapMan;
 public class Game
 {
     public Actor Player { get; } = new Actor();
+    public Actor[] Enemies { get; init; }
     public Board Board { get; } = new Board(Board.StandardBoard);
     public int Score { get; private set; }
+
+    public Game(IEnumerable<Actor> enemies)
+    {
+        Enemies = [.. enemies];
+    }
 
     public void Update(double delta)
     {

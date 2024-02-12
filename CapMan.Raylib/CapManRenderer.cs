@@ -1,9 +1,10 @@
 namespace CapMan.Raylib;
-
 using Raylib_cs;
 
 public class CapManRenderer
 {
+    private double lastX;
+    private double lastY;
     private static SpriteSheet? _spriteSheet;
     public static SpriteSheet s_SpriteSheet
     {
@@ -30,30 +31,24 @@ public class CapManRenderer
         }
     }
 
-    private double lastX;
-    private double lastY;
-
-    public void Render(Game game)
+    public void Render(Actor capman, int left, int top)
     {
-        if ((lastX, lastY) != (game.Player.X, game.Player.Y))
+        if ((lastX, lastY) != (capman.X, capman.Y))
         {
             Sprite.CurrentTime += Raylib.GetFrameTime();
-            (lastX, lastY) = (game.Player.X, game.Player.Y);
+            (lastX, lastY) = (capman.X, capman.Y);
         }
-        Sprite.Rotation = game.Player.CurrentDirection switch
+        Sprite.Rotation = capman.CurrentDirection switch
         {
             Direction.Left => 0,
             Direction.Up => 90,
             Direction.Right => 0,
             Direction.Down => 270,
-            _ => throw new Exception($"Unexpected direction {game.Player.CurrentDirection}"),
+            _ => throw new Exception($"Unexpected direction {capman.CurrentDirection}"),
         };
-        Sprite.FlipX = game.Player.CurrentDirection == Direction.Right ? true : false;
-        int x = (int)(game.Player.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-        int y = (int)(game.Player.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-        Sprite.Draw(x, y);
+        Sprite.FlipX = capman.CurrentDirection == Direction.Right ? true : false;
+        int x = (int)(capman.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        int y = (int)(capman.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        Sprite.Draw(left + x, top + y);
     }
-
-
-
 }

@@ -3,8 +3,8 @@ namespace CapMan.Raylib;
 public class AnimatedSprite
 {
     public double FramesPerSecond { get; init; } = 10f;
-    private (int Row, int Column)[] _frames;
-    private SpriteSheet _sheet;
+    private readonly (int Row, int Column)[] _frames;
+    private readonly SpriteSheet _sheet;
     public float Rotation { get; set; } = 0;
     public bool FlipX { get; set; } = false;
     public double CurrentTime { get; set; } = 0;

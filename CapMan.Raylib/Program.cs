@@ -26,10 +26,10 @@ bool DrawLines = false;
 bool Paused = false;
 
 // Board board = new (Board.StandardBoard);
-Game game = new Game();
+Actor blinkus = new() { X = 13, Y = 14 };
+Game game = new([blinkus]);
 game.Player.Y = 23; // * BoardRenderer.CellSize;
 game.Player.X = 14; // * BoardRenderer.CellSize;
-BoardRenderer boardRenderer = new();
 
 int boardWidth = game.Board.Columns * BoardRenderer.CellSize;
 int boardHeight = game.Board.Rows * BoardRenderer.CellSize;
@@ -43,11 +43,9 @@ Raylib.SetWindowMonitor(1);
 Raylib.SetWindowSize(screenWidth, screenHeight);
 Raylib.SetTargetFPS(60);
 
-CapManRenderer capManRenderer = new();
-EnemyRenderer blinkus = new();
-
+GameRenderer gameRenderer = new();
 RenderTexture2D boardTexture = Raylib.LoadRenderTexture(boardWidth, boardHeight);
-Rectangle screenRect = new Rectangle(0, 0, boardWidth, -boardHeight);
+Rectangle screenRect = new(0, 0, boardWidth, -boardHeight);
 
 System.Numerics.Vector2 centerScreen = new(0, 0);
 // Main game loop
@@ -60,14 +58,12 @@ while (!Raylib.WindowShouldClose())
     }
     Raylib.BeginTextureMode(boardTexture);
     Raylib.ClearBackground(Color.Black);
-    boardRenderer.Render(game.Board, 0, 0);
-    capManRenderer.Render(game);
-    blinkus.Render(game);
+    gameRenderer.Render(game, 0, 0);
     DrawGrid();
     Raylib.EndTextureMode();
 
     Raylib.BeginDrawing();
-    Rectangle scaledResolution = new Rectangle(0, 0, Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+    Rectangle scaledResolution = new(0, 0, Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
     Raylib.DrawTexturePro(boardTexture.Texture, screenRect, scaledResolution, centerScreen, 0, Color.White);
     RenderDebugText();
     Raylib.EndDrawing();
@@ -109,7 +105,8 @@ void RenderDebugText()
 
 void Reset()
 {
-    game = new Game();
+    Actor blinkus = new() { X = 13, Y = 14 };
+    game = new Game([blinkus]);
     game.Player.Y = 23; // * BoardRenderer.CellSize;
     game.Player.X = 14; // * BoardRenderer.CellSize;
 }
