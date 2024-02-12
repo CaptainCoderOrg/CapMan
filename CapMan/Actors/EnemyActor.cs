@@ -6,7 +6,8 @@ public class EnemyActor : Actor
 
     public override void Update(Board board, double delta)
     {
-        if (board.ValidTurns(delta, this) is Direction[] turns && turns.Length > 0)
+        Direction[] turns = [.. board.ValidTurns(delta, this).Where(d => d != CurrentDirection.Opposite())];
+        if (turns.Length > 0)
         {
             NextDirection = turns[Random.Shared.Next(turns.Length)];
         }
