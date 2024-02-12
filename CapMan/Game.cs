@@ -36,20 +36,6 @@ public class Game
     private void UpdateCapMan(double deltaTime)
     {
         (Player.X, Player.Y, Player.CurrentDirection) = Board.CalculateActorMove(deltaTime, Player);
-        BoundsCheck(Player);
-    }
-
-    public void BoundsCheck(Actor actor)
-    {
-        double transitionDistance = 1;
-        double width = Board.Columns;
-        if (actor.X < -transitionDistance)
-        {
-            actor.X += width + 2 * transitionDistance;
-        }
-        else if (actor.X > width + transitionDistance)
-        {
-            actor.X -= width + 2 * transitionDistance;
-        }
+        (Player.X, Player.Y) = Board.BoundsCheck(Player);
     }
 }
