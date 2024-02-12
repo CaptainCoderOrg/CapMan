@@ -6,8 +6,8 @@ public static class BlinkusSprites
     private static SpriteSheet s_sheet => SpriteSheet.Get(AssetPath("blinkus.png"), 2, 5);
     private static AnimatedSprite? _blinkusSearching;
 
-    public static AnimatedSprite Searching 
-    { 
+    public static AnimatedSprite Searching
+    {
         get
         {
             if (_blinkusSearching is null)
@@ -19,13 +19,13 @@ public static class BlinkusSprites
                      (0, 4), (0, 4),
                      (0, 3), (0, 2), (0, 1)]
                 )
-                { FramesPerSecond = 3f };
+                { FramesPerSecond = 1f };
             }
             return _blinkusSearching;
         }
     }
 
-    private static AnimatedSprite? _blinkusChasing; 
+    private static AnimatedSprite? _blinkusChasing;
     public static AnimatedSprite Chasing
     {
         get
@@ -42,7 +42,7 @@ public static class BlinkusSprites
         }
     }
 
-    private static AnimatedSprite? _blinkusFleeing; 
+    private static AnimatedSprite? _blinkusFleeing;
     public static AnimatedSprite Fleeing
     {
         get

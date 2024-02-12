@@ -107,8 +107,11 @@ void RenderDebugText()
 
 Game InitGame()
 {
-    EnemyActor blinkus = new() { X = 6, Y = 14, Speed = 4 };
-    Game game = new ([blinkus]);
+    EnemyActor blinkus = new() { X = 1, Y = 1, Speed = 4 };
+    EnemyActor blinkus2 = new() { X = 26, Y = 1, Speed = 4 };
+    EnemyActor blinkus3 = new() { X = 1, Y = 29, Speed = 4 };
+    EnemyActor blinkus4 = new() { X = 26, Y = 29, Speed = 4 };
+    Game game = new([blinkus, blinkus2, blinkus3, blinkus4]);
     game.Player.Y = 23; // * BoardRenderer.CellSize;
     game.Player.X = 14; // * BoardRenderer.CellSize;
     return game;
