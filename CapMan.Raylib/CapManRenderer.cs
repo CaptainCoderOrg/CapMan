@@ -33,7 +33,7 @@ public class CapManRenderer
     private double lastX;
     private double lastY;
 
-    public void Render(Game game)
+    public void Render(Game game, int top, int left)
     {
         if ((lastX, lastY) != (game.Player.X, game.Player.Y))
         {
@@ -51,6 +51,8 @@ public class CapManRenderer
         Sprite.FlipX = game.Player.CurrentDirection == Direction.Right ? true : false;
         int x = (int)(game.Player.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
         int y = (int)(game.Player.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        x += left;
+        y += top;
         Sprite.Draw(x, y);
     }
 

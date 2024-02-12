@@ -29,15 +29,16 @@ bool Paused = false;
 Game game = new Game();
 game.Player.Y = 23; // * BoardRenderer.CellSize;
 game.Player.X = 14; // * BoardRenderer.CellSize;
+InfoRenderer infoRenderer = new();
 BoardRenderer boardRenderer = new();
 
 int boardWidth = game.Board.Columns * BoardRenderer.CellSize;
 int boardHeight = game.Board.Rows * BoardRenderer.CellSize;
 Console.WriteLine($"{boardWidth}x{boardHeight}");
 int screenWidth = (int)(boardWidth * 1.5);
-int screenHeight = (int)(boardHeight * 1.5);
+int screenHeight = (int)(boardHeight * 1.5) + InfoRenderer.BlockedHeight;
 
-Raylib.InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+Raylib.InitWindow(screenWidth, screenHeight, "CapMan | Main Window");
 Raylib.SetWindowState(ConfigFlags.ResizableWindow);
 Raylib.SetWindowMonitor(1);
 Raylib.SetWindowSize(screenWidth, screenHeight);
@@ -59,9 +60,8 @@ while (!Raylib.WindowShouldClose())
     }
     Raylib.BeginTextureMode(boardTexture);
     Raylib.ClearBackground(Color.Black);
-    boardRenderer.Render(game.Board, 0, 0);
-    capManRenderer.Render(game);
-    DrawGrid();
+    infoRenderer.Render(game, 0, 0);
+    RenderGameArea(InfoRenderer.BlockedHeight, 0);
     Raylib.EndTextureMode();
 
     Raylib.BeginDrawing();
@@ -73,7 +73,14 @@ while (!Raylib.WindowShouldClose())
 
 Raylib.CloseWindow();
 
-void DrawGrid()
+void RenderGameArea(int top, int left)
+{
+    boardRenderer.Render(game.Board, top, left);
+    capManRenderer.Render(game, top, left);
+    DrawGrid(top, left);
+}
+
+void DrawGrid(int top, int left)
 {
     if (DrawLines)
     {
@@ -81,11 +88,11 @@ void DrawGrid()
         int height = game.Board.Rows * BoardRenderer.CellSize;
         for (int row = 0; row < game.Board.Rows; row++)
         {
-            Raylib.DrawLine(0, row * BoardRenderer.CellSize, width, row * BoardRenderer.CellSize, Color.DarkGreen);
+            Raylib.DrawLine(top, left + (row * BoardRenderer.CellSize) , width, row * BoardRenderer.CellSize, Color.DarkGreen);
         }
         for (int col = 0; col < game.Board.Columns; col++)
         {
-            Raylib.DrawLine(col * BoardRenderer.CellSize, 0, col * BoardRenderer.CellSize, height, Color.DarkGreen);
+            Raylib.DrawLine(top + (col * BoardRenderer.CellSize), left, col * BoardRenderer.CellSize, height, Color.DarkGreen);
         }
     }
 }
