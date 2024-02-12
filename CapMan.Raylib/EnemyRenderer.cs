@@ -25,8 +25,8 @@ public class EnemyRenderer(AnimatedSprite searchingSprite, AnimatedSprite chasin
             _ => sprite.FlipX,
         };
 
-        int x = (int)(enemy.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-        int y = (int)(enemy.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        int x = (int)(enemy.Position.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        int y = (int)(enemy.Position.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
         sprite.Draw(boardLeft + x, boardTop + y);
     }
 }

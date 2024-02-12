@@ -1,6 +1,6 @@
 namespace CapMan;
 
-public class EnemyActor : Actor
+public class EnemyActor(Position position, double speed, Direction direction) : Actor(position, speed, direction)
 {
     public EnemyState State { get; set; } = EnemyState.Searching;
 

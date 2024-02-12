@@ -28,13 +28,11 @@ bool Paused = false;
 Console.WriteLine(Environment.CurrentDirectory);
 
 // Board board = new (Board.StandardBoard);
-EnemyActor blinkus = new() { X = 13, Y = 14 };
 Game game = InitGame();
-game.Player.Y = 23; // * BoardRenderer.CellSize;
-game.Player.X = 14; // * BoardRenderer.CellSize;
+game.Player.Position = new(14, 23);
 
-int boardWidth = game.Board.Columns * BoardRenderer.CellSize;
-int boardHeight = game.Board.Rows * BoardRenderer.CellSize;
+int boardWidth = game.Board.Width * BoardRenderer.CellSize;
+int boardHeight = game.Board.Height * BoardRenderer.CellSize;
 Console.WriteLine($"{boardWidth}x{boardHeight}");
 int screenWidth = (int)(boardWidth * 2);
 int screenHeight = (int)(boardHeight * 2);
@@ -77,15 +75,15 @@ void DrawGrid()
 {
     if (DrawLines)
     {
-        int width = game.Board.Columns * BoardRenderer.CellSize;
-        int height = game.Board.Rows * BoardRenderer.CellSize;
-        for (int row = 0; row < game.Board.Rows; row++)
+        int width = game.Board.Width * BoardRenderer.CellSize;
+        int height = game.Board.Height * BoardRenderer.CellSize;
+        for (int y = 0; y < game.Board.Height; y++)
         {
-            Raylib.DrawLine(0, row * BoardRenderer.CellSize, width, row * BoardRenderer.CellSize, Color.DarkGreen);
+            Raylib.DrawLine(0, y * BoardRenderer.CellSize, width, y * BoardRenderer.CellSize, Color.DarkGreen);
         }
-        for (int col = 0; col < game.Board.Columns; col++)
+        for (int x = 0; x < game.Board.Width; x++)
         {
-            Raylib.DrawLine(col * BoardRenderer.CellSize, 0, col * BoardRenderer.CellSize, height, Color.DarkGreen);
+            Raylib.DrawLine(x * BoardRenderer.CellSize, 0, x * BoardRenderer.CellSize, height, Color.DarkGreen);
         }
     }
 }
@@ -99,21 +97,20 @@ void RenderDebugText()
     }
     if (DebugText)
     {
-        Raylib.DrawText($"X: {game.Player.X:0.0}, Y: {game.Player.Y:0.0}", 0, 0, 24, Color.White);
-        Raylib.DrawText($"Col: {game.Player.Column}, Row: {game.Player.Row}", 0, 24, 24, Color.White);
+        Raylib.DrawText($"X: {game.Player.Position.X:0.0}, Y: {game.Player.Position.Y:0.0}", 0, 0, 24, Color.White);
+        Raylib.DrawText($"BX: {game.Player.Tile.X}, BY: {game.Player.Tile.Y}", 0, 24, 24, Color.White);
         Raylib.DrawText($"Current: {game.Player.CurrentDirection}, Next: {game.Player.NextDirection}", 0, 48, 24, Color.White);
     }
 }
 
 Game InitGame()
 {
-    EnemyActor blinkus = new() { X = 1, Y = 1, Speed = 4 };
-    EnemyActor blinkus2 = new() { X = 26, Y = 1, Speed = 4 };
-    EnemyActor blinkus3 = new() { X = 1, Y = 29, Speed = 4 };
-    EnemyActor blinkus4 = new() { X = 26, Y = 29, Speed = 4 };
+    EnemyActor blinkus = new(new Position(1, 1), 4, Direction.Right);
+    EnemyActor blinkus2 = new(new Position(26, 1), 4, Direction.Left);
+    EnemyActor blinkus3 = new(new Position(1, 29), 4, Direction.Right);
+    EnemyActor blinkus4 = new(new Position(26, 29), 4, Direction.Left);
     Game game = new([blinkus, blinkus2, blinkus3, blinkus4]);
-    game.Player.Y = 23; // * BoardRenderer.CellSize;
-    game.Player.X = 14; // * BoardRenderer.CellSize;
+    game.Player.Position = new(14, 23);
     return game;
 }
 

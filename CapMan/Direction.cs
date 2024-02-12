@@ -33,19 +33,4 @@ public static class DirectionExtensions
 
     public static Direction[] Turns(this Direction currentDirection) => [.. Enum.GetValues<Direction>().Where(d => d != currentDirection)];
 
-    public static (int X, int Y) SnapPosition(this Direction movingDirection, double x, double y) => movingDirection switch
-    {
-        Up => ((int)x, (int)Math.Ceiling(y)),
-        Left => ((int)Math.Ceiling(x), (int)y),
-        _ => ((int)x, (int)y),
-    };
-
-    public static (int X, int Y) Step(this Direction movingDirection, int x, int y) => movingDirection switch
-    {
-        Up => (x, y - 1),
-        Down => (x, y + 1),
-        Left => (x - 1, y),
-        Right => (x + 1, y),
-        _ => throw new Exception($"Unknown direction {movingDirection}"),
-    };
 }

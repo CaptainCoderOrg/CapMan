@@ -1,12 +1,5 @@
 namespace CapMan;
 
-public class PlayerActor : Actor
+public class PlayerActor() : Actor(new Position(14, 23), 8, Direction.Left)
 {
-
-    public PlayerActor(int speed)
-    {
-        Speed = speed;
-        CurrentDirection = Direction.Left;
-        NextDirection = Direction.Left;
-    }
 }

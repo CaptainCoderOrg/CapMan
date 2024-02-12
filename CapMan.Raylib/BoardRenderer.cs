@@ -9,9 +9,9 @@ public class BoardRenderer
 
     public void Render(Board board, int top, int left)
     {
-        foreach ((Position pos, Element el) in board.Elements)
+        foreach ((Tile pos, Element el) in board.Elements)
         {
-            Raylib.DrawTexture(Textures[el], left + pos.Col * CellSize, top + pos.Row * CellSize, Color.White);
+            Raylib.DrawTexture(Textures[el], left + pos.X * CellSize, top + pos.Y * CellSize, Color.White);
         }
     }
 

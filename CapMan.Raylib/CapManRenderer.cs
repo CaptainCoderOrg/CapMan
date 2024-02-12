@@ -33,10 +33,10 @@ public class CapManRenderer
 
     public void Render(PlayerActor capman, int left, int top)
     {
-        if ((lastX, lastY) != (capman.X, capman.Y))
+        if ((lastX, lastY) != (capman.Position.X, capman.Position.Y))
         {
             Sprite.CurrentTime += Raylib.GetFrameTime();
-            (lastX, lastY) = (capman.X, capman.Y);
+            (lastX, lastY) = (capman.Position.X, capman.Position.Y);
         }
         Sprite.Rotation = capman.CurrentDirection switch
         {
@@ -47,8 +47,8 @@ public class CapManRenderer
             _ => throw new Exception($"Unexpected direction {capman.CurrentDirection}"),
         };
         Sprite.FlipX = capman.CurrentDirection == Direction.Right ? true : false;
-        int x = (int)(capman.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-        int y = (int)(capman.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        int x = (int)(capman.Position.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        int y = (int)(capman.Position.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
         Sprite.Draw(left + x, top + y);
     }
 }
