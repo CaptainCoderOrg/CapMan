@@ -7,7 +7,7 @@ public class Board
     private readonly Dictionary<Position, Element> _elements;
     public IReadOnlyDictionary<Position, Element> Elements => _elements.AsReadOnly();
 
-    public Board(IEnumerable<string> asciiLayout) 
+    public Board(IEnumerable<string> asciiLayout)
     {
         string[] data = [.. asciiLayout];
         Rows = data.Length;
@@ -16,7 +16,7 @@ public class Board
     }
 
     public Board(string asciiLayout) : this(asciiLayout.ReplaceLineEndings().Split(Environment.NewLine)) { }
-  
+
     public void RemoveElement(Position pos) => _elements.Remove(pos);
     public void RemoveElement(int row, int col) => RemoveElement(new Position(row, col));
     public Element GetElement(Position pos) => _elements[pos];
@@ -42,27 +42,27 @@ public class Board
         {
             int row = position.Row;
             int col = position.Col;
-            _ = elements.TryGetValue(new Position(row - 1, col),     out Element above);
-            _ = elements.TryGetValue(new Position(row + 1, col),     out Element below);
-            _ = elements.TryGetValue(new Position(row    , col - 1), out Element left);
-            _ = elements.TryGetValue(new Position(row    , col + 1), out Element right);
+            _ = elements.TryGetValue(new Position(row - 1, col), out Element above);
+            _ = elements.TryGetValue(new Position(row + 1, col), out Element below);
+            _ = elements.TryGetValue(new Position(row, col - 1), out Element left);
+            _ = elements.TryGetValue(new Position(row, col + 1), out Element right);
 
             elements[position] = true switch
             {
-                _ when left  is Element.Horizontal && below is Element.Vertical => Element.TopRight,
-                _ when left  is Element.Horizontal && above is Element.Vertical => Element.BottomRight,
+                _ when left is Element.Horizontal && below is Element.Vertical => Element.TopRight,
+                _ when left is Element.Horizontal && above is Element.Vertical => Element.BottomRight,
                 _ when right is Element.Horizontal && below is Element.Vertical => Element.TopLeft,
                 _ when right is Element.Horizontal && above is Element.Vertical => Element.BottomLeft,
 
-                _ when left  is Element.Corner or Element.TopLeft     && below is Element.Vertical => Element.TopRight,
-                _ when left  is Element.Corner or Element.BottomLeft  && above is Element.Vertical => Element.BottomRight,
-                _ when right is Element.Corner or Element.TopRight    && below is Element.Vertical => Element.TopLeft,
+                _ when left is Element.Corner or Element.TopLeft && below is Element.Vertical => Element.TopRight,
+                _ when left is Element.Corner or Element.BottomLeft && above is Element.Vertical => Element.BottomRight,
+                _ when right is Element.Corner or Element.TopRight && below is Element.Vertical => Element.TopLeft,
                 _ when right is Element.Corner or Element.BottomRight && above is Element.Vertical => Element.BottomLeft,
 
-                _ when left  is Element.Horizontal && below is Element.Corner or Element.BottomRight => Element.TopRight,
-                _ when left  is Element.Horizontal && above is Element.Corner or Element.TopRight    => Element.BottomRight,
-                _ when right is Element.Horizontal && below is Element.Corner or Element.BottomLeft  => Element.TopLeft,
-                _ when right is Element.Horizontal && above is Element.Corner or Element.TopLeft     => Element.BottomLeft,
+                _ when left is Element.Horizontal && below is Element.Corner or Element.BottomRight => Element.TopRight,
+                _ when left is Element.Horizontal && above is Element.Corner or Element.TopRight => Element.BottomRight,
+                _ when right is Element.Horizontal && below is Element.Corner or Element.BottomLeft => Element.TopLeft,
+                _ when right is Element.Horizontal && above is Element.Corner or Element.TopLeft => Element.BottomLeft,
 
                 _ => throw new NotImplementedException(),
             };
@@ -114,7 +114,8 @@ public class Board
 
 public static class BoardExtensions
 {
-    
+    public const double WrapDistance = 1;
+
     public static (double, double) CalculateMove(this Board board, Direction moving, double x, double y, double distance)
     {
         (double nextX, double nextY) = moving switch
@@ -160,12 +161,12 @@ public static class BoardExtensions
         var nextDir = NextDirection(board, actor.CurrentDirection, actor.NextDirection, actor.X, actor.Y, distance);
         return (nextX, nextY, nextDir);
     }
-    
+
     /// <summary>
     /// Calculates the next position of an actor on the board if they were to
     /// make a 90 degree turn from current to next.
     /// </summary>
-    public static (double, double) CalculateMoveWithTurn(this Board board, Direction current, Direction queuedDirection,  double x, double y, double distance)
+    public static (double, double) CalculateMoveWithTurn(this Board board, Direction current, Direction queuedDirection, double x, double y, double distance)
     {
         Direction nextDirection = NextDirection(board, current, queuedDirection, x, y, distance);
         // This method assumes the move is valid and the distance <= 1
@@ -196,10 +197,10 @@ public static class BoardExtensions
     /// Calculates the direction at the end of this movement.
     /// </summary>
     public static Direction NextDirection
-        (this Board board, Direction currentDir, Direction nextDir, 
+        (this Board board, Direction currentDir, Direction nextDir,
          double x, double y, double distance)
     {
-        
+
         // You can always turn around / continue in the same direction
         if (currentDir == nextDir || currentDir.IsOpposite(nextDir)) { return nextDir; }
         // Calculate the position, if you move straight
@@ -237,5 +238,25 @@ public static class BoardExtensions
 
         // Otherwise, change directions
         return nextDir;
+    }
+
+    /// <summary>
+    /// Given an actor, returns their position on this board applying a wrap if necessary.
+    /// </summary>
+    public static (double, double) BoundsCheck(this Board board, Actor actor)
+    {
+        return (actor.X, actor.Y) switch
+        {
+            // Wrap on Left
+            var (x, _) when x < -WrapDistance => (x + board.Columns + 2 * WrapDistance, actor.Y),
+            // Wrap on Right
+            var (x, _) when x > (board.Columns + WrapDistance) => (x - (board.Columns + 2 * WrapDistance), actor.Y),
+            // Wrap on Top
+            var (_, y) when y < -WrapDistance => (actor.X, y + board.Rows + 2 * WrapDistance),
+            // Wrap on Bottom
+            var (_, y) when y > (board.Rows + WrapDistance) => (actor.X, y - (board.Rows + 2 * WrapDistance)),
+            // No wrap
+            _ => (actor.X, actor.Y)
+        };
     }
 }
