@@ -3,14 +3,15 @@ using Raylib_cs;
 public class InfoRenderer
 {
     private readonly int padding = 5;
-    public Font PixelFont = Raylib.LoadFont("");
+    private static Font pixelplay = Raylib.LoadFont("fonts/pixelplay.png");
+    public static Font PixelPlay => pixelplay;
 
-    public const int BlockedHeight = 30;
+    public static int BlockedHeight => pixelplay.BaseSize * 2;
 
     public void Render(Game game, int top, int left)
     {
-        var half = BlockedHeight / 2;
-        Raylib.DrawText("HIGH SCORE", left + padding, top, half, Color.White);
-        Raylib.DrawText($"{game.Score}", left + padding, top + half, half, Color.White);
+        int size = pixelplay.BaseSize;
+        Raylib.DrawText("HIGH SCORE", left + padding, top, size, Color.White);
+        Raylib.DrawText($"{game.Score}", left + padding, top + size, size, Color.White);
     }
 }
