@@ -36,8 +36,8 @@ public class EnemyRenderer
         }
     }
 
-     private AnimatedSprite? _attacking;
-    public AnimatedSprite AttackingSprite
+    private AnimatedSprite? _attacking;
+    public AnimatedSprite ChasingSprite
     {
         get
         {
@@ -52,12 +52,17 @@ public class EnemyRenderer
         }
     }
 
-    public void Render(Game game)
+    public void Render(EnemyActor enemy, int boardLeft, int boardTop)
     {
-        SearchingSprite.CurrentTime += Raylib.GetFrameTime();
-        AttackingSprite.CurrentTime += Raylib.GetFrameTime();
-        SearchingSprite.Draw(50, 50);
-        AttackingSprite.Draw(80, 50);
+        AnimatedSprite sprite = enemy.State switch
+        {
+            EnemyState.Searching => SearchingSprite,
+            EnemyState.Chasing => ChasingSprite,
+            _ => throw new NotImplementedException($"No sprite implemented for state {enemy.State}."),
+        };
+        sprite.CurrentTime += Raylib.GetFrameTime();
+        (int x, int y) = ((int)(enemy.X * BoardRenderer.CellSize), (int)(enemy.Y * BoardRenderer.CellSize)); 
+        sprite.Draw(boardLeft + x, boardTop + y);
         // if ((lastX, lastY) != (game.Player.X, game.Player.Y))
         // {
         //     Sprite.CurrentTime += Raylib.GetFrameTime();

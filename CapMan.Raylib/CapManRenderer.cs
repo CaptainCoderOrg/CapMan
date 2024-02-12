@@ -31,7 +31,7 @@ public class CapManRenderer
         }
     }
 
-    public void Render(Actor capman, int left, int top)
+    public void Render(PlayerActor capman, int left, int top)
     {
         if ((lastX, lastY) != (capman.X, capman.Y))
         {

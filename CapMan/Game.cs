@@ -2,12 +2,12 @@ namespace CapMan;
 
 public class Game
 {
-    public Actor Player { get; } = new Actor();
-    public Actor[] Enemies { get; init; }
+    public PlayerActor Player { get; } = new (8);
+    public EnemyActor[] Enemies { get; init; }
     public Board Board { get; } = new Board(Board.StandardBoard);
     public int Score { get; private set; }
 
-    public Game(IEnumerable<Actor> enemies)
+    public Game(IEnumerable<EnemyActor> enemies)
     {
         Enemies = [.. enemies];
     }
@@ -39,7 +39,7 @@ public class Game
         BoundsCheck(Player);
     }
 
-    public void BoundsCheck(Actor actor)
+    public void BoundsCheck(PlayerActor actor)
     {
         double transitionDistance = 1;
         double width = Board.Columns;

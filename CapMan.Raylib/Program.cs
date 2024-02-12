@@ -26,8 +26,8 @@ bool DrawLines = false;
 bool Paused = false;
 
 // Board board = new (Board.StandardBoard);
-Actor blinkus = new() { X = 13, Y = 14 };
-Game game = new([blinkus]);
+EnemyActor blinkus = new() { X = 13, Y = 14 };
+Game game = InitGame();
 game.Player.Y = 23; // * BoardRenderer.CellSize;
 game.Player.X = 14; // * BoardRenderer.CellSize;
 
@@ -103,12 +103,13 @@ void RenderDebugText()
     }
 }
 
-void Reset()
+Game InitGame()
 {
-    Actor blinkus = new() { X = 13, Y = 14 };
-    game = new Game([blinkus]);
+    EnemyActor blinkus = new() { X = 13, Y = 14 };
+    Game game = new ([blinkus]);
     game.Player.Y = 23; // * BoardRenderer.CellSize;
     game.Player.X = 14; // * BoardRenderer.CellSize;
+    return game;
 }
 
 void HandleInput()
@@ -147,6 +148,6 @@ void HandleInput()
     }
     if (Raylib.IsKeyDown(KeyboardKey.R))
     {
-        Reset();
+        game = InitGame();
     }
 }
