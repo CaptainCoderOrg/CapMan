@@ -14,8 +14,12 @@ public class Game
 
     public void Update(double delta)
     {
-        UpdateCapMan(delta);
+        Player.Update(Board, delta);
         CheckEatDots();
+        foreach (EnemyActor enemy in Enemies)
+        {
+            enemy.Update(Board, delta);
+        }
     }
 
     private void CheckEatDots()
@@ -31,11 +35,5 @@ public class Game
             Board.RemoveElement(Player.Row, Player.Column);
             Score += 50;
         }
-    }
-
-    private void UpdateCapMan(double deltaTime)
-    {
-        (Player.X, Player.Y, Player.CurrentDirection) = Board.CalculateActorMove(deltaTime, Player);
-        (Player.X, Player.Y) = Board.BoundsCheck(Player);
     }
 }

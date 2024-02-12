@@ -193,6 +193,30 @@ public static class BoardExtensions
         };
     }
 
+    public static Direction[] ValidTurns(this Board board, double deltaTime, Actor actor) =>
+        ValidTurns(board, actor.CurrentDirection, actor.X, actor.Y, actor.Speed * deltaTime);
+
+    public static Direction[] ValidTurns(this Board board, Direction currentDir, double x, double y, double distance)
+    {
+        (double endX, double endY) = board.CalculateMove(currentDir, x, y, distance);
+        bool isCrossing = currentDir switch
+        {
+            Direction.Up => (int)y == (int)Math.Ceiling(endY),
+            Direction.Down => (int)Math.Ceiling(y) == (int)endY,
+            Direction.Right => (int)Math.Ceiling(x) == (int)endX,
+            Direction.Left => (int)x == (int)Math.Ceiling(endX),
+            _ => throw new Exception($"Unknown direction {currentDir}"),
+        };
+        // If we are not crossing an intersection, we can only turn around
+        if (!isCrossing) { return [currentDir.Opposite()]; }
+
+        (int snapX, int snapY) = currentDir.SnapPosition(endX, endY);
+        return [..currentDir.Turns().Where(dir => {
+            (int nx, int ny) = dir.Step(snapX, snapY);
+            return board.Contains(ny, nx) && !board.IsWall(ny, nx);
+        })];
+    }
+
     /// <summary>
     /// Calculates the direction at the end of this movement.
     /// </summary>
@@ -203,41 +227,9 @@ public static class BoardExtensions
 
         // You can always turn around / continue in the same direction
         if (currentDir == nextDir || currentDir.IsOpposite(nextDir)) { return nextDir; }
-        // Calculate the position, if you move straight
-        (double endX, double endY) = board.CalculateMove(currentDir, x, y, distance);
-        bool isCrossingCenter = currentDir switch
-        {
-            Direction.Up => (int)y == (int)Math.Ceiling(endY),
-            Direction.Down => (int)Math.Ceiling(y) == (int)endY,
-            Direction.Right => (int)Math.Ceiling(x) == (int)endX,
-            Direction.Left => (int)x == (int)Math.Ceiling(endX),
-            _ => throw new Exception($"Unknown direction {currentDir}"),
-        };
-
-        // If this move would not cross the center of a tile
-        // it is not possible to turn.
-        if (!isCrossingCenter) { return currentDir; }
-
-        // Check possible 90 degree turns
-        (int row, int col) = (currentDir, nextDir) switch
-        {
-            (Direction.Up, Direction.Left) => ((int)Math.Ceiling(endY), (int)x - 1),
-            (Direction.Up, Direction.Right) => ((int)Math.Ceiling(endY), (int)x + 1),
-            (Direction.Down, Direction.Left) => ((int)endY, (int)x - 1),
-            (Direction.Down, Direction.Right) => ((int)endY, (int)x + 1),
-            (Direction.Right, Direction.Up) => ((int)y - 1, (int)endX),
-            (Direction.Right, Direction.Down) => ((int)y + 1, (int)endX),
-            (Direction.Left, Direction.Up) => ((int)y - 1, (int)Math.Ceiling(endX)),
-            (Direction.Left, Direction.Down) => ((int)y + 1, (int)Math.Ceiling(endX)),
-            _ => throw new Exception($"Unknown 90 degree turn: {currentDir} to {nextDir}"),
-        };
-
-        // If there is a wall or if we are trying to move out of the board, keep going 
-        // in the current direction
-        if (!board.Contains(row, col) || board.IsWall(row, col)) { return currentDir; }
-
-        // Otherwise, change directions
-        return nextDir;
+        Direction[] validTurns = ValidTurns(board, currentDir, x, y, distance);
+        if (validTurns.Contains(nextDir)) { return nextDir; }
+        return currentDir;
     }
 
     /// <summary>

@@ -142,7 +142,7 @@ public class Board_should
     public void not_detect_direction_change_against_wall(
          double x, double y, double distance, Direction currentDir, Direction nextDir)
     {
-        Board board = new Board(
+        Board board = new (
             [
                         // 01234  
                 " │.│",  // 0
@@ -155,6 +155,173 @@ public class Board_should
 
         Direction actual = board.NextDirection(currentDir, nextDir, x, y, distance);
         actual.ShouldBe(currentDir);
+    }
+
+    [Theory]
+    [InlineData(Direction.Right, 1.9, 2.0, 0.5)]
+    [InlineData(Direction.Right, 2.0, 2.0, 0.5)]
+    [InlineData(Direction.Down, 2.0, 2.0, 0.5)]
+    [InlineData(Direction.Down, 2.0, 1.9, 0.5)]
+    public void detect_turns_on_bottom_right_intersection(Direction movingDir, double x, double y, double distance)
+    {
+        Board board = new (
+            [
+              // 0123
+                " |.|", // 0
+                "─+.|", // 1
+                "...|", // 2
+                "---+", // 3
+            ]);
+
+        Direction[] actual = board.ValidTurns(movingDir, x, y, distance);
+        Direction[] expectedTurns = [Direction.Up, Direction.Left];
+        actual.Length.ShouldBe(expectedTurns.Length);
+        actual.ShouldBeSubsetOf(expectedTurns);
+    }
+
+    [Theory]
+    [InlineData(Direction.Left, 1.1, 2.0, 0.5)]
+    [InlineData(Direction.Left, 1.0, 2.0, 0.5)]
+    [InlineData(Direction.Down, 1.0, 2.0, 0.5)]
+    [InlineData(Direction.Down, 1.0, 1.9, 0.5)]
+    public void detect_turns_on_bottom_left_intersection(Direction movingDir, double x, double y, double distance)
+    {
+        Board board = new (
+        [
+          // 0123
+            "|.| ", // 0
+            "|.+-", // 1
+            "|...", // 2
+            "+---", // 3
+        ]);
+
+        Direction[] actual = board.ValidTurns(movingDir, x, y, distance);
+        Direction[] expectedTurns = [Direction.Right, Direction.Up];
+        actual.Length.ShouldBe(expectedTurns.Length);
+        actual.ShouldBeSubsetOf(expectedTurns);  
+    }
+
+    [Theory]
+    [InlineData(Direction.Left, 1.1, 1.0, 0.5)]
+    [InlineData(Direction.Left, 1.0, 1.0, 0.5)]
+    [InlineData(Direction.Up, 1.0, 1.0, 0.5)]
+    [InlineData(Direction.Up, 1.0, 1.1, 0.5)]
+    public void detect_turns_on_top_left_intersection(Direction movingDir, double x, double y, double distance)
+    {
+        Board board = new (
+        [
+          // 0123
+            "+---", // 0
+            "|...", // 1
+            "|.+-", // 2
+            "|.| ", // 3
+        ]);
+
+        Direction[] actual = board.ValidTurns(movingDir, x, y, distance);
+        Direction[] expectedTurns = [Direction.Down, Direction.Right];
+        actual.Length.ShouldBe(expectedTurns.Length);
+        actual.ShouldBeSubsetOf(expectedTurns);  
+    }
+
+
+    [Theory]
+    [InlineData(Direction.Right, 1.9, 1.0, 0.5)]
+    [InlineData(Direction.Right, 2.0, 1.0, 0.5)]
+    [InlineData(Direction.Up, 2.0, 1.0, 0.5)]
+    [InlineData(Direction.Up, 2.0, 1.1, 0.5)]
+    public void detect_turns_on_top_right_intersection(Direction movingDir, double x, double y, double distance)
+    {
+        Board board = new (
+        [
+          // 0123
+            "---+", // 0
+            "...|", // 1
+            "-+.|", // 2
+            " |.|", // 3
+        ]);
+
+        Direction[] actual = board.ValidTurns(movingDir, x, y, distance);
+        Direction[] expectedTurns = [Direction.Down, Direction.Left];
+        actual.Length.ShouldBe(expectedTurns.Length);
+        actual.ShouldBeSubsetOf(expectedTurns);  
+    }
+
+    [Theory]
+    [InlineData(Direction.Right, 2.0, 2.0, 0.5)]
+    public void detect_turns_on_left_tee_intersection(Direction movingDir, double x, double y, double distance)
+    {
+        Board board = new (
+        [
+          // 0123
+            " |.|", // 0
+            "-+.|", // 1
+            "...|", // 2
+            "-+.|", // 3
+            " |.|", // 4
+        ]);
+
+        Direction[] actual = board.ValidTurns(movingDir, x, y, distance);
+        Direction[] expectedTurns = [Direction.Down, Direction.Left, Direction.Up];
+        actual.Length.ShouldBe(expectedTurns.Length);
+        actual.ShouldBeSubsetOf(expectedTurns);  
+    }
+
+    [Theory]
+    [InlineData(Direction.Left, 1.0, 2.0, 0.5)]
+    public void detect_turns_on_right_tee_intersection(Direction movingDir, double x, double y, double distance)
+    {
+        Board board = new (
+        [
+          // 0123
+            "|.| ", // 0
+            "|.+-", // 1
+            "|...", // 2
+            "|.+-", // 3
+            "|.| ", // 4
+        ]);
+
+        Direction[] actual = board.ValidTurns(movingDir, x, y, distance);
+        Direction[] expectedTurns = [Direction.Down, Direction.Right, Direction.Up];
+        actual.Length.ShouldBe(expectedTurns.Length);
+        actual.ShouldBeSubsetOf(expectedTurns);  
+    }
+
+    [Theory]
+    [InlineData(Direction.Up, 2.0, 1.0, 0.5)]
+    public void detect_turns_on_top_tee_intersection(Direction movingDir, double x, double y, double distance)
+    {
+        Board board = new (
+        [
+          // 01234
+            "-----", // 0
+            ".....", // 1
+            "-+.+-", // 2
+            " |.| ", // 3
+        ]);
+
+        Direction[] actual = board.ValidTurns(movingDir, x, y, distance);
+        Direction[] expectedTurns = [Direction.Down, Direction.Right, Direction.Left];
+        actual.Length.ShouldBe(expectedTurns.Length);
+        actual.ShouldBeSubsetOf(expectedTurns);  
+    }
+
+    [Theory]
+    [InlineData(Direction.Down, 2.0, 2.0, 0.5)]
+    public void detect_turns_on_bottom_tee_intersection(Direction movingDir, double x, double y, double distance)
+    {
+        Board board = new (
+        [
+          // 01234
+            " |.| ", // 0
+            "-+.+-", // 1
+            ".....", // 2
+            "-----", // 3
+        ]);
+
+        Direction[] actual = board.ValidTurns(movingDir, x, y, distance);
+        Direction[] expectedTurns = [Direction.Up, Direction.Right, Direction.Left];
+        actual.Length.ShouldBe(expectedTurns.Length);
+        actual.ShouldBeSubsetOf(expectedTurns);  
     }
 
     [Fact]

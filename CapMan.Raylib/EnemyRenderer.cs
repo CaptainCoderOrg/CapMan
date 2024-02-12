@@ -61,7 +61,9 @@ public class EnemyRenderer
             _ => throw new NotImplementedException($"No sprite implemented for state {enemy.State}."),
         };
         sprite.CurrentTime += Raylib.GetFrameTime();
-        (int x, int y) = ((int)(enemy.X * BoardRenderer.CellSize), (int)(enemy.Y * BoardRenderer.CellSize)); 
+        // int x = (int)(capman.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        // int y = (int)(capman.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        (int x, int y) = ((int)(enemy.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2, (int)(enemy.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2); 
         sprite.Draw(boardLeft + x, boardTop + y);
         // if ((lastX, lastY) != (game.Player.X, game.Player.Y))
         // {

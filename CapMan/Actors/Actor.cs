@@ -17,4 +17,10 @@ public abstract class Actor
         Direction.Up => (int)Math.Ceiling(Y),
         _ => (int)Y,
     };
+
+    public virtual void Update(Board board, double deltaTime)
+    {
+       (X, Y, CurrentDirection) = board.CalculateActorMove(deltaTime, this);
+       (X, Y) = board.BoundsCheck(this);
+    }
 }

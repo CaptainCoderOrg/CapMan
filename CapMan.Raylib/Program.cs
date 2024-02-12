@@ -25,6 +25,8 @@ bool DebugText = false;
 bool DrawLines = false;
 bool Paused = false;
 
+Console.WriteLine(Environment.CurrentDirectory);
+
 // Board board = new (Board.StandardBoard);
 EnemyActor blinkus = new() { X = 13, Y = 14 };
 Game game = InitGame();
@@ -105,7 +107,7 @@ void RenderDebugText()
 
 Game InitGame()
 {
-    EnemyActor blinkus = new() { X = 13, Y = 14 };
+    EnemyActor blinkus = new() { X = 6, Y = 14, Speed = 4 };
     Game game = new ([blinkus]);
     game.Player.Y = 23; // * BoardRenderer.CellSize;
     game.Player.X = 14; // * BoardRenderer.CellSize;
