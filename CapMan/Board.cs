@@ -4,7 +4,7 @@ public class Board
 {
     public int Rows { get; private init; }
     public int Columns { get; private init; }
-    private Dictionary<Position, Element> _elements;
+    private readonly Dictionary<Position, Element> _elements;
     public IReadOnlyDictionary<Position, Element> Elements => _elements.AsReadOnly();
 
     public Board(IEnumerable<string> asciiLayout) 

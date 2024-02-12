@@ -29,8 +29,8 @@ public class SpriteSheet
     public void DrawSprite(int row, int col, int x, int y, float rotation, bool flipX)
     {
         float width = flipX ? -SpriteWidth : SpriteWidth;
-        Rectangle crop = new Rectangle(col * SpriteWidth, row * SpriteHeight, width, SpriteHeight);
-        Rectangle dest = new Rectangle(x, y, SpriteWidth, SpriteHeight);
+        Rectangle crop = new (col * SpriteWidth, row * SpriteHeight, width, SpriteHeight);
+        Rectangle dest = new (x, y, SpriteWidth, SpriteHeight);
         System.Numerics.Vector2 center = new (SpriteWidth/2, SpriteHeight/2);
         Raylib.DrawTexturePro(_spriteSheet, crop, dest, center, rotation, Color.White);
     }
