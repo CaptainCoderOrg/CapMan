@@ -20,7 +20,7 @@ public class BoardRenderer
         if (s_textures == null)
         {
             s_textures = new();
-            foreach (Element element in Enum.GetValues(typeof(Element)))
+            foreach (Element element in  Enum.GetValues<Element>().Where(el => el is not Element.Corner))
             {
                 Image image = Raylib.LoadImage(AssetPath(element));
                 Texture2D texture = Raylib.LoadTextureFromImage(image);
@@ -33,7 +33,6 @@ public class BoardRenderer
 
     private static string AssetPath(Element element)
     {
-        
         return Path.Combine("assets", "sprites", element switch
         {
             Element.Horizontal  => "horizontal.png",
@@ -44,8 +43,7 @@ public class BoardRenderer
             Element.BottomRight => "bottom-right.png",
             Element.Dot         => "dot.png",
             Element.PowerPill   => "powerpill.png",
-            Element.Corner      => "",
-            _ => throw new ArgumentException($"Invalid board element: {element}"),
+            _ => throw new ArgumentException($"No sprite found for board element: {element}"),
         });
     }
 }
