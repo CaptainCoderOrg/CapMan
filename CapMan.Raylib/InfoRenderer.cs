@@ -3,7 +3,7 @@ using Raylib_cs;
 public class InfoRenderer
 {
     private readonly int padding = 5;
-    private static Font pixelplay = Raylib.LoadFont("fonts/pixelplay.png");
+    private static Font pixelplay = Raylib.LoadFont("assets/fonts/pixelplay.png");
     public static Font PixelPlay => pixelplay;
 
     public static int BlockedHeight => pixelplay.BaseSize * 2;
