@@ -158,7 +158,7 @@ public static class BoardExtensions
 
         Position nextTile = position.NextTile(current).ToPosition();
 
-        return queuedDirection switch
+        return nextDirection switch
         {
             Direction.Left => nextTile with { X = nextTile.X - RemainingXMovement() },
             Direction.Right => nextTile with { X = nextTile.X + RemainingXMovement() },

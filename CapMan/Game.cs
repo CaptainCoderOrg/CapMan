@@ -14,11 +14,11 @@ public class Game
 
     public void Update(double delta)
     {
-        Player.Update(Board, delta);
+        Player.Update(this, delta);
         CheckEatDots();
         foreach (EnemyActor enemy in Enemies)
         {
-            enemy.Update(Board, delta);
+            enemy.Update(this, delta);
         }
     }
 
