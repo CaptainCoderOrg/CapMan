@@ -3,6 +3,7 @@ using Raylib_cs;
 
 public class GameRenderer
 {
+    public const int FontSize = 20;
     public bool ShowBoundingBoxes { get; set; } = false;
     private readonly BoardRenderer _boardRenderer = new();
     private readonly CapManRenderer _capManRenderer = new();
@@ -16,6 +17,24 @@ public class GameRenderer
             _blinkusRenderer.Render(enemy, left, top);
         }
         RenderBoundingBoxes(game, left, top);
+
+        if (game.State == GameState.Respawning)
+        {
+            CenterTextOnBoard($"Respawning in: {game.RespawnCountDown:0.0}");
+        }
+        if (game.State == GameState.GameOver)
+        {
+            CenterTextOnBoard("Game Over");
+        }
+
+        void CenterTextOnBoard(string text)
+        {
+            double centerX = game.Board.Width * BoardRenderer.CellSize * 0.5;
+            double centerY = game.Board.Height * BoardRenderer.CellSize * 0.5;
+            int x = (int)(centerX - Raylib.MeasureText(text, 20) * 0.5);
+            int y = (int)(centerY - FontSize * 0.5);
+            Raylib.DrawText(text, left + x, top + y, FontSize, Color.Yellow);
+        }
     }
 
     private void RenderBoundingBoxes(Game game, int left, int top)
