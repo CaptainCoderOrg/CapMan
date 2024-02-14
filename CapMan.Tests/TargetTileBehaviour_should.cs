@@ -18,6 +18,7 @@ public class TargetTileBehaviour_should
     )]
     [InlineData(Direction.Left, Direction.Left,
     """
+    --------
     |T.....|
     |.╭──╮.|
     |.│╭─╯.|
@@ -25,6 +26,7 @@ public class TargetTileBehaviour_should
     |.││...|
     |.╰╯...|
     |...S..|
+    --------
     """
     )]
     [InlineData(Direction.Up, Direction.Left,

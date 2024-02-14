@@ -14,10 +14,7 @@ public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
 
     public static Direction DirectionWithShortestPath(Board board, Tile start, Direction current, Tile targetTile)
     {
-        Direction[] options = [.. Enum.GetValues<Direction>()
-                                    .Where(d => !current.IsOpposite(d) &&
-                                                !board.IsWall(start.Step(d)) &&
-                                                board.Contains(start.Step(d))) ];
+        Direction[] options = [.. Neighbors(start, current)];
         if (options.Length == 0) { return current; }
         if (options.Length == 1) { return options[0]; }
         FavoredMove favoredMove = (start.Step(options[0]), targetTile.ManhattanDistance(start.Step(options[0])), options[0]);
@@ -37,20 +34,25 @@ public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
                 favoredMove = (tile, distance, startDir);
             }
 
-            foreach (Direction stepDir in Enum.GetValues<Direction>())
+            foreach (Direction stepDir in Neighbors(tile, lastDir))
             {
                 // Can't turn around
-                if (stepDir.IsOpposite(lastDir)) { continue; }
                 Tile neighbor = board.WrapTile(tile.Step(stepDir));
-                if (board.IsWall(neighbor)) { continue; }
-                if (!board.Contains(neighbor)) { continue; }
                 if (visited.Contains((neighbor, stepDir))) { continue; }
                 visited.Add((neighbor, stepDir));
                 toVisit.Enqueue((neighbor, stepDir, startDir));
             }
         }
-        // If no valid path, select a direction at random
-        Console.WriteLine("No path found.");
+
+        // If no valid path, select the closest position to our target that we
+        // can reach
         return favoredMove.Direction;
+
+        IEnumerable<Direction> Neighbors(Tile tile, Direction lastDir) =>
+            Enum.GetValues<Direction>()
+            // Cannot turn around
+            .NotWhere(d => d.IsOpposite(lastDir))
+            // Cannot move into walls
+            .NotWhere(d => board.IsWall(board.WrapTile(tile.Step(d))));
     }
 }
