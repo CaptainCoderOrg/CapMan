@@ -229,4 +229,9 @@ public static class BoardExtensions
             _ => position
         };
     }
+
+    public static Tile WrapTile(this Board board, Tile position)
+    {
+        return position with { X = (position.X + board.Width) % board.Width, Y = (position.Y + board.Height) % board.Height };
+    }
 }

@@ -12,7 +12,6 @@ public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
 
     public static Direction DirectionWithShortestPath(Board board, Tile start, Direction current, Tile targetTile)
     {
-
         Direction[] options = [.. Enum.GetValues<Direction>().Where(d => !current.IsOpposite(d)).Where(d => !board.IsWall(start.Step(d)) && board.Contains(start.Step(d)))];
         if (options.Length == 0) { return current; }
         if (options.Length == 1) { return options[0]; }
