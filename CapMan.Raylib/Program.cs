@@ -108,7 +108,7 @@ Game InitGame()
     EnemyActor blinkus = new(new Position(1, 2), 4, Direction.Down);
     blinkus.Behaviour = new TargetPlayerTile();
     EnemyActor blinkus2 = new(new Position(26, 1), 4, Direction.Left);
-    blinkus2.Behaviour = new TargetTileBehaviour(new Tile(26, 1));
+    blinkus2.Behaviour = new ClydeTargeting();
     EnemyActor blinkus3 = new(new Position(1, 29), 4, Direction.Right);
     blinkus3.Behaviour = new TargetAheadOfPlayer(4);
     EnemyActor blinkus4 = new(new Position(26, 29), 4, Direction.Left);
