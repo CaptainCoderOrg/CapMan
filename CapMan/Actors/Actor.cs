@@ -8,9 +8,9 @@ public abstract class Actor(Position position, double speed, Direction direction
     public Direction NextDirection { get; set; } = direction;
     public Tile Tile => Position.CurrentTile(CurrentDirection);
 
-    public virtual void Update(Board board, double deltaTime)
+    public virtual void Update(Game game, double deltaTime)
     {
-        (Position, CurrentDirection) = board.CalculateActorMove(deltaTime, this);
-        Position = board.WrapPosition(this);
+        (Position, CurrentDirection) = game.Board.CalculateActorMove(deltaTime, this);
+        Position = game.Board.WrapPosition(this);
     }
 }

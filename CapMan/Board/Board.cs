@@ -158,7 +158,7 @@ public static class BoardExtensions
 
         Position nextTile = position.NextTile(current).ToPosition();
 
-        return queuedDirection switch
+        return nextDirection switch
         {
             Direction.Left => nextTile with { X = nextTile.X - RemainingXMovement() },
             Direction.Right => nextTile with { X = nextTile.X + RemainingXMovement() },
@@ -172,10 +172,10 @@ public static class BoardExtensions
         double RemainingYMovement() => distance - Math.Abs(position.X - nextTile.X);
     }
 
-    public static Direction[] ValidTurns(this Board board, double deltaTime, Actor actor) =>
-        ValidTurns(board, actor.CurrentDirection, actor.Position, actor.Speed * deltaTime);
+    public static Direction[] ValidNextDirection(this Board board, double deltaTime, Actor actor) =>
+        ValidNextDirection(board, actor.CurrentDirection, actor.Position, actor.Speed * deltaTime);
 
-    public static Direction[] ValidTurns(this Board board, Direction currentDir, Position position, double distance)
+    public static Direction[] ValidNextDirection(this Board board, Direction currentDir, Position position, double distance)
     {
         Position end = board.NextPosition(currentDir, position, distance);
         bool isCrossing = currentDir switch
@@ -186,11 +186,11 @@ public static class BoardExtensions
             Direction.Left => (int)position.X == (int)Math.Ceiling(end.X),
             _ => throw new Exception($"Unknown direction {currentDir}"),
         };
-        // If we are not crossing an intersection, we can only turn around
-        if (!isCrossing) { return [currentDir.Opposite()]; }
-        return [.. currentDir.Turns().Where(IsValidTurn)];
+        // If we are not crossing an intersection, we can only turn around or continue
+        if (!isCrossing) { return [currentDir, currentDir.Opposite()]; }
+        return [.. Enum.GetValues<Direction>().Where(IsValidDirection)];
 
-        bool IsValidTurn(Direction dir)
+        bool IsValidDirection(Direction dir)
         {
             var step = end.CurrentTile(currentDir).Step(dir);
             return board.Contains(step) && !board.IsWall(step);
@@ -204,7 +204,7 @@ public static class BoardExtensions
     {
         // You can always turn around / continue in the same direction
         if (currentDir == nextDir || currentDir.IsOpposite(nextDir)) { return nextDir; }
-        Direction[] validTurns = ValidTurns(board, currentDir, position, distance);
+        Direction[] validTurns = ValidNextDirection(board, currentDir, position, distance);
         if (validTurns.Contains(nextDir)) { return nextDir; }
         return currentDir;
     }
@@ -212,20 +212,30 @@ public static class BoardExtensions
     /// <summary>
     /// Given an actor, returns their position on this board applying a wrap if necessary.
     /// </summary>
-    public static Position WrapPosition(this Board board, Actor actor)
+    public static Position WrapPosition(this Board board, Actor actor) => WrapPosition(board, actor.Position);
+    public static Position WrapPosition(this Board board, Position position)
     {
-        return actor.Position switch
+        return position switch
         {
             // Wrap on Left
-            var (x, _) when x < -WrapDistance => actor.Position with { X = x + board.Width + 2 * WrapDistance },
+            var (x, _) when x < -WrapDistance => position with { X = x + board.Width + 2 * WrapDistance },
             // Wrap on Right
-            var (x, _) when x > (board.Width + WrapDistance) => actor.Position with { X = x - (board.Width + 2 * WrapDistance) },
+            var (x, _) when x > (board.Width + WrapDistance) => position with { X = x - (board.Width + 2 * WrapDistance) },
             // Wrap on Top
-            var (_, y) when y < -WrapDistance => actor.Position with { Y = y + board.Height + 2 * WrapDistance },
+            var (_, y) when y < -WrapDistance => position with { Y = y + board.Height + 2 * WrapDistance },
             // Wrap on Bottom
-            var (_, y) when y > (board.Height + WrapDistance) => actor.Position with { Y = y - (board.Height + 2 * WrapDistance) },
+            var (_, y) when y > (board.Height + WrapDistance) => position with { Y = y - (board.Height + 2 * WrapDistance) },
             // No wrap
-            _ => actor.Position
+            _ => position
+        };
+    }
+
+    public static Tile WrapTile(this Board board, Tile position)
+    {
+        return position with
+        {
+            X = ((position.X % board.Width) + board.Width) % board.Width,
+            Y = ((position.Y % board.Height) + board.Height) % board.Height
         };
     }
 }
