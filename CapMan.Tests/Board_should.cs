@@ -173,7 +173,7 @@ public class Board_should
                 "---+", // 3
             ]);
 
-        Direction[] actual = board.ValidTurns(movingDir, new(x, y), distance);
+        Direction[] actual = board.ValidNextDirection(movingDir, new(x, y), distance);
         Direction[] expectedTurns = [Direction.Up, Direction.Left];
         actual.Length.ShouldBe(expectedTurns.Length);
         actual.ShouldBeSubsetOf(expectedTurns);
@@ -195,7 +195,7 @@ public class Board_should
             "+---", // 3
         ]);
 
-        Direction[] actual = board.ValidTurns(movingDir, new(x, y), distance);
+        Direction[] actual = board.ValidNextDirection(movingDir, new(x, y), distance);
         Direction[] expectedTurns = [Direction.Right, Direction.Up];
         actual.Length.ShouldBe(expectedTurns.Length);
         actual.ShouldBeSubsetOf(expectedTurns);
@@ -217,7 +217,7 @@ public class Board_should
             "|.| ", // 3
         ]);
 
-        Direction[] actual = board.ValidTurns(movingDir, new(x, y), distance);
+        Direction[] actual = board.ValidNextDirection(movingDir, new(x, y), distance);
         Direction[] expectedTurns = [Direction.Down, Direction.Right];
         actual.Length.ShouldBe(expectedTurns.Length);
         actual.ShouldBeSubsetOf(expectedTurns);
@@ -240,7 +240,7 @@ public class Board_should
             " |.|", // 3
         ]);
 
-        Direction[] actual = board.ValidTurns(movingDir, new(x, y), distance);
+        Direction[] actual = board.ValidNextDirection(movingDir, new(x, y), distance);
         Direction[] expectedTurns = [Direction.Down, Direction.Left];
         actual.Length.ShouldBe(expectedTurns.Length);
         actual.ShouldBeSubsetOf(expectedTurns);
@@ -260,7 +260,7 @@ public class Board_should
             " |.|", // 4
         ]);
 
-        Direction[] actual = board.ValidTurns(movingDir, new(x, y), distance);
+        Direction[] actual = board.ValidNextDirection(movingDir, new(x, y), distance);
         Direction[] expectedTurns = [Direction.Down, Direction.Left, Direction.Up];
         actual.Length.ShouldBe(expectedTurns.Length);
         actual.ShouldBeSubsetOf(expectedTurns);
@@ -280,7 +280,7 @@ public class Board_should
             "|.| ", // 4
         ]);
 
-        Direction[] actual = board.ValidTurns(movingDir, new(x, y), distance);
+        Direction[] actual = board.ValidNextDirection(movingDir, new(x, y), distance);
         Direction[] expectedTurns = [Direction.Down, Direction.Right, Direction.Up];
         actual.Length.ShouldBe(expectedTurns.Length);
         actual.ShouldBeSubsetOf(expectedTurns);
@@ -299,7 +299,7 @@ public class Board_should
             " |.| ", // 3
         ]);
 
-        Direction[] actual = board.ValidTurns(movingDir, new(x, y), distance);
+        Direction[] actual = board.ValidNextDirection(movingDir, new(x, y), distance);
         Direction[] expectedTurns = [Direction.Down, Direction.Right, Direction.Left];
         actual.Length.ShouldBe(expectedTurns.Length);
         actual.ShouldBeSubsetOf(expectedTurns);
@@ -318,7 +318,7 @@ public class Board_should
             "-----", // 3
         ]);
 
-        Direction[] actual = board.ValidTurns(movingDir, new(x, y), distance);
+        Direction[] actual = board.ValidNextDirection(movingDir, new(x, y), distance);
         Direction[] expectedTurns = [Direction.Up, Direction.Right, Direction.Left];
         actual.Length.ShouldBe(expectedTurns.Length);
         actual.ShouldBeSubsetOf(expectedTurns);

@@ -6,18 +6,15 @@ public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
     public Direction GetNextDirection(Game game, double deltaTime, Actor actor)
     {
         var (board, direction) = (game.Board, actor.CurrentDirection);
-        IEnumerable<Direction> options = board.ValidTurns(deltaTime, actor).Where(d => !d.IsOpposite(direction));
-        // if (!board.IsWall(actor.Position.)) { options.Append(direction); }
-
-        // Console.WriteLine($"@{actor.Tile}: {options.Length}");
-        return DirectionWithShortestPath(game.Board, actor.Tile, [.. options], Target);
+        return DirectionWithShortestPath(board, actor.Position.NextTile(direction), direction, Target);
 
     }
 
-    public static Direction DirectionWithShortestPath(Board board, Tile start, Direction[] options, Tile targetTile)
+    public static Direction DirectionWithShortestPath(Board board, Tile start, Direction current, Tile targetTile)
     {
+
+        Direction[] options = [.. Enum.GetValues<Direction>().Where(d => !current.IsOpposite(d)).Where(d => !board.IsWall(start.Step(d)))];
         if (options.Length == 1) { return options[0]; }
-        Console.WriteLine($"Searching: {string.Join(", ", options)}");
         HashSet<(Tile, Direction)> visited = new([.. options.Select(d => (start.Step(d), d))]);
         Queue<(Tile, Direction, Direction)> toVisit = new(options.Select(d => (start.Step(d), d, d)));
         while (toVisit.TryDequeue(out var result))
@@ -25,7 +22,6 @@ public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
             (Tile tile, Direction lastDir, Direction startDir) = result;
             if (tile == targetTile)
             {
-                Console.WriteLine($"Chose: {startDir}");
                 return startDir;
             }
 
@@ -34,6 +30,7 @@ public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
                 // Can't turn around
                 if (stepDir.IsOpposite(lastDir)) { continue; }
                 Tile neighbor = tile.Step(stepDir);
+                if (board.IsWall(neighbor)) { continue; }
                 if (visited.Contains((neighbor, stepDir))) { continue; }
                 visited.Add((neighbor, stepDir));
                 toVisit.Enqueue((neighbor, stepDir, startDir));
