@@ -51,4 +51,7 @@ public class CapManRenderer
         int y = (int)(capman.Position.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
         Sprite.Draw(left + x, top + y);
     }
+
+    public void RenderBoundingBox(Actor actor, int left, int top) =>
+        actor.BoundingBox().ToBoard().Translate(left, top).Render(Color.Green);
 }

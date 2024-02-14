@@ -4,6 +4,7 @@ using Raylib_cs;
 
 public class EnemyRenderer(AnimatedSprite searchingSprite, AnimatedSprite chasingSprite, AnimatedSprite fleeingSprite)
 {
+    public Color BoxColor { get; set; } = Color.Orange;
     public AnimatedSprite FleeingSprite { get; } = fleeingSprite;
     public AnimatedSprite SearchingSprite { get; } = searchingSprite;
     public AnimatedSprite ChasingSprite { get; } = chasingSprite;
@@ -29,4 +30,7 @@ public class EnemyRenderer(AnimatedSprite searchingSprite, AnimatedSprite chasin
         int y = (int)(enemy.Position.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
         sprite.Draw(boardLeft + x, boardTop + y);
     }
+
+    public void RenderBoundingBox(Actor actor, int left, int top) =>
+        actor.BoundingBox().ToBoard().Translate(left, top).Render(BoxColor);
 }

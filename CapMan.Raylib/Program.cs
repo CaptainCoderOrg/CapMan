@@ -157,4 +157,8 @@ void HandleInput()
     {
         game = InitGame();
     }
+    if (Raylib.IsKeyPressed(KeyboardKey.B))
+    {
+        gameRenderer.ShowBoundingBoxes = !gameRenderer.ShowBoundingBoxes;
+    }
 }
