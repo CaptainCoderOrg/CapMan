@@ -324,6 +324,31 @@ public class Board_should
         actual.ShouldBeSubsetOf(expectedTurns);
     }
 
+    [Theory]
+    [InlineData(1, 1, 1, 1)]
+    [InlineData(0, 1, 0, 1)]
+    [InlineData(-1, 1, 3, 1)]
+    [InlineData(1, -1, 1, 3)]
+    [InlineData(4, 1, 0, 1)]
+    [InlineData(1, 4, 1, 0)]
+    [InlineData(-5, 1, 3, 1)]
+    [InlineData(1, -5, 1, 3)]
+    public void wrap_tiles(int x, int y, int wrapX, int wrapY)
+    {
+        Board board = new(
+        """
+        ....
+        ....
+        ....
+        ....
+        """
+        );
+        Tile tile = new(x, y);
+        Tile actual = board.WrapTile(tile);
+        Tile expectedTile = new(wrapX, wrapY);
+        actual.ShouldBe(expectedTile);
+    }
+
     [Fact]
     public void build_using_either_basic_ascii_or_line_drawing_characters()
     {

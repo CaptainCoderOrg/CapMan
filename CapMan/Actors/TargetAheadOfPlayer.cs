@@ -6,13 +6,7 @@ public class TargetAheadOfPlayer(int steps) : IEnemyBehaviour
     public Direction GetNextDirection(Game game, double deltaTime, Actor actor)
     {
         var (board, direction, player) = (game.Board, actor.CurrentDirection, game.Player);
-
-        Tile target = player.Tile;
-        for (int step = 0; step < Steps; step++)
-        {
-            target = board.WrapTile(target.Step(player.CurrentDirection));
-        }
-
+        Tile target = board.WrapTile(player.Tile.Step(player.CurrentDirection));
         return TargetTileBehaviour.DirectionWithShortestPath(board, actor.Position.NextTile(direction), direction, target);
     }
 }
