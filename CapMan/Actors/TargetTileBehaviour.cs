@@ -1,5 +1,7 @@
 ﻿namespace CapMan;
 
+using FavoredMove = (Tile Tile, int Distance, Direction Direction);
+
 public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
 {
     public Tile Target { get; } = target;
@@ -12,9 +14,13 @@ public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
 
     public static Direction DirectionWithShortestPath(Board board, Tile start, Direction current, Tile targetTile)
     {
-        Direction[] options = [.. Enum.GetValues<Direction>().Where(d => !current.IsOpposite(d)).Where(d => !board.IsWall(start.Step(d)) && board.Contains(start.Step(d)))];
+        Direction[] options = [.. Enum.GetValues<Direction>()
+                                    .Where(d => !current.IsOpposite(d) &&
+                                                !board.IsWall(start.Step(d)) &&
+                                                board.Contains(start.Step(d))) ];
         if (options.Length == 0) { return current; }
         if (options.Length == 1) { return options[0]; }
+        FavoredMove favoredMove = (start.Step(options[0]), targetTile.ManhattanDistance(start.Step(options[0])), options[0]);
         HashSet<(Tile, Direction)> visited = new([.. options.Select(d => (start.Step(d), d))]);
         Queue<(Tile, Direction, Direction)> toVisit = new(options.Select(d => (start.Step(d), d, d)));
         while (toVisit.TryDequeue(out var result))
@@ -25,11 +31,17 @@ public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
                 return startDir;
             }
 
+            int distance = targetTile.ManhattanDistance(tile);
+            if (distance < favoredMove.Distance)
+            {
+                favoredMove = (tile, distance, startDir);
+            }
+
             foreach (Direction stepDir in Enum.GetValues<Direction>())
             {
                 // Can't turn around
                 if (stepDir.IsOpposite(lastDir)) { continue; }
-                Tile neighbor = tile.Step(stepDir);
+                Tile neighbor = board.WrapTile(tile.Step(stepDir));
                 if (board.IsWall(neighbor)) { continue; }
                 if (!board.Contains(neighbor)) { continue; }
                 if (visited.Contains((neighbor, stepDir))) { continue; }
@@ -39,7 +51,6 @@ public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
         }
         // If no valid path, select a direction at random
         Console.WriteLine("No path found.");
-        // TODO: Select nearest location?
-        return options[Random.Shared.Next(options.Length)];
+        return favoredMove.Direction;
     }
 }

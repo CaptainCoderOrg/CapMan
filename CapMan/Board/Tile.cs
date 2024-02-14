@@ -12,4 +12,6 @@ public record struct Tile(int X, int Y)
     };
 
     public Position ToPosition() => new (X, Y);
+
+    public int ManhattanDistance(Tile other) => Math.Abs(X - other.X) + Math.Abs(Y - other.Y);
 }

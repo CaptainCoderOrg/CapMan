@@ -27,13 +27,39 @@ public class TargetTileBehaviour_should
     |...S..|
     """
     )]
+    [InlineData(Direction.Up, Direction.Left,
+    """
+    |......|
+    |.╭──╮.|
+    |.│╭─╯.|
+    .S││..T.
+    |.││...|
+    |.╰╯...|
+    |......|
+    """
+    )]
+    [InlineData(Direction.Up, Direction.Right,
+    """
+    |......|
+    |.----.|
+    |.|..|.|
+    |.|.T|.|
+    |.|--|.|
+    |S.....|
+    |.----.|
+    |......|
+    """
+    )]
     public void select_best_direction(Direction facing, Direction expected, string boardData)
     {
         Board board = new(boardData.Replace('S', '.').Replace('T', '.'));
         Tile start = boardData.FindTile('S');
         Tile target = boardData.FindTile('T');
-        Direction actual = TargetTileBehaviour.DirectionWithShortestPath(board, start, facing, target);
-        actual.ShouldBe(expected);
+        for (int count = 0; count < 10; count++)
+        {
+            Direction actual = TargetTileBehaviour.DirectionWithShortestPath(board, start, facing, target);
+            actual.ShouldBe(expected);
+        }
     }
 
 }
