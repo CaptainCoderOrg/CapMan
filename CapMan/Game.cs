@@ -22,13 +22,14 @@ public class Game
         {
             GameState.Playing => Play,
             GameState.Respawning => Respawning,
-            GameState.Paused => (_) => { }
-            ,
-            GameState.GameOver => (_) => { }
-            ,
+            GameState.Paused => DoNothing,
+            GameState.GameOver => DoNothing,
+            _ => throw new Exception($"Encountered unknown GameState: {State}")
         };
         action.Invoke(delta);
     }
+
+    private void DoNothing(double _) { }
 
     private void Respawning(double delta)
     {

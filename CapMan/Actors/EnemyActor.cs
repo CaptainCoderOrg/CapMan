@@ -4,6 +4,7 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
 {
     public EnemyState State { get; set; } = EnemyState.Searching;
     public IEnemyBehaviour Behaviour { get; set; } = new TargetTileBehaviour(new Tile(1, 1));
+    public Tile? LastTarget { get; set; }
     public override void Update(Game game, double deltaTime)
     {
         NextDirection = Behaviour.GetNextDirection(game, deltaTime, this);

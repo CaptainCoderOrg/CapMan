@@ -33,4 +33,7 @@ public class EnemyRenderer(AnimatedSprite searchingSprite, AnimatedSprite chasin
 
     public void RenderBoundingBox(Actor actor, int left, int top) =>
         actor.BoundingBox().ToBoard().Translate(left, top).Render(BoxColor);
+
+    public void RenderTargetTile(EnemyActor enemy, int left, int top) =>
+        enemy.LastTarget?.BoundingBox().ToBoard().Translate(left, top).Render(BoxColor);
 }

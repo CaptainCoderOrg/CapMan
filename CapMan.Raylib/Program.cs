@@ -106,14 +106,13 @@ void RenderDebugText()
 Game InitGame()
 {
     EnemyActor blinkus = new(new Position(1, 2), 4, Direction.Down);
-    blinkus.Behaviour = new TargetTileBehaviour(new Tile(1, 1));
-    // Game game = new([blinkus]);
+    blinkus.Behaviour = new TargetPlayerTile();
     EnemyActor blinkus2 = new(new Position(26, 1), 4, Direction.Left);
     blinkus2.Behaviour = new TargetTileBehaviour(new Tile(26, 1));
     EnemyActor blinkus3 = new(new Position(1, 29), 4, Direction.Right);
     blinkus3.Behaviour = new TargetAheadOfPlayer(4);
     EnemyActor blinkus4 = new(new Position(26, 29), 4, Direction.Left);
-    blinkus4.Behaviour = new TargetPlayerTile();
+    blinkus4.Behaviour = new WhimsicalTargeting(blinkus);
     Game game = new([blinkus, blinkus2, blinkus3, blinkus4]);
     game.Player.Position = new(14, 23);
     return game;
@@ -160,5 +159,9 @@ void HandleInput()
     if (Raylib.IsKeyPressed(KeyboardKey.B))
     {
         gameRenderer.ShowBoundingBoxes = !gameRenderer.ShowBoundingBoxes;
+    }
+    if (Raylib.IsKeyPressed(KeyboardKey.T))
+    {
+        gameRenderer.ShowTargetTiles = !gameRenderer.ShowTargetTiles;
     }
 }

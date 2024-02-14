@@ -5,10 +5,11 @@ using FavoredMove = (Tile Tile, int Distance, Direction Direction);
 public class TargetTileBehaviour(Tile target) : IEnemyBehaviour
 {
     public Tile Target { get; } = target;
-    public Direction GetNextDirection(Game game, double deltaTime, Actor actor)
+    public Direction GetNextDirection(Game game, double deltaTime, EnemyActor enemy)
     {
-        var (board, direction) = (game.Board, actor.CurrentDirection);
-        return DirectionWithShortestPath(board, actor.Position.NextTile(direction), direction, Target);
+        var (board, direction) = (game.Board, enemy.CurrentDirection);
+        enemy.LastTarget = Target;
+        return DirectionWithShortestPath(board, enemy.Position.NextTile(direction), direction, Target);
 
     }
 

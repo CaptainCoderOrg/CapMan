@@ -2,9 +2,10 @@
 
 public class TargetPlayerTile : IEnemyBehaviour
 {
-    public Direction GetNextDirection(Game game, double deltaTime, Actor actor)
+    public Direction GetNextDirection(Game game, double deltaTime, EnemyActor enemy)
     {
-        var (board, direction, target) = (game.Board, actor.CurrentDirection, game.Player.Tile);
-        return TargetTileBehaviour.DirectionWithShortestPath(board, actor.Position.NextTile(direction), direction, target);
+        var (board, direction, target) = (game.Board, enemy.CurrentDirection, game.Player.Tile);
+        enemy.LastTarget = target;
+        return TargetTileBehaviour.DirectionWithShortestPath(board, enemy.Position.NextTile(direction), direction, target);
     }
 }
