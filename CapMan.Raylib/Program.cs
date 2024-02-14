@@ -105,7 +105,8 @@ void RenderDebugText()
 
 Game InitGame()
 {
-    EnemyActor blinkus = new(new Position(1, 1), 4, Direction.Right);
+    EnemyActor blinkus = new(new Position(1, 2), 4, Direction.Down);
+    // Game game = new([blinkus]);
     EnemyActor blinkus2 = new(new Position(26, 1), 4, Direction.Left);
     EnemyActor blinkus3 = new(new Position(1, 29), 4, Direction.Right);
     EnemyActor blinkus4 = new(new Position(26, 29), 4, Direction.Left);

@@ -3,10 +3,10 @@ namespace CapMan;
 public class EnemyActor(Position position, double speed, Direction direction) : Actor(position, speed, direction)
 {
     public EnemyState State { get; set; } = EnemyState.Searching;
-    public IEnemyBehaviour Behaviour { get; private set; } = new RandomBehaviour();
-    public override void Update(Game game, double delta)
+    public IEnemyBehaviour Behaviour { get; private set; } = new TargetTileBehaviour(new Tile(1, 1));
+    public override void Update(Game game, double deltaTime)
     {
-        NextDirection = Behaviour.GetNextDirection(game, this, delta);
-        base.Update(game, delta);
+        NextDirection = Behaviour.GetNextDirection(game, deltaTime, this);
+        base.Update(game, deltaTime);
     }
 }
