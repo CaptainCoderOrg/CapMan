@@ -23,3 +23,4 @@ When the Player is moving, if the distance moved is > 1, it is possible to move
 through walls. A potential solution is to do a full ray cast for the whole
 distance rather than assuming the distance < 1.
 
+* AI Path finding doesn't use wrap around edges for shortest path.

@@ -212,20 +212,21 @@ public static class BoardExtensions
     /// <summary>
     /// Given an actor, returns their position on this board applying a wrap if necessary.
     /// </summary>
-    public static Position WrapPosition(this Board board, Actor actor)
+    public static Position WrapPosition(this Board board, Actor actor) => WrapPosition(board, actor.Position);
+    public static Position WrapPosition(this Board board, Position position)
     {
-        return actor.Position switch
+        return position switch
         {
             // Wrap on Left
-            var (x, _) when x < -WrapDistance => actor.Position with { X = x + board.Width + 2 * WrapDistance },
+            var (x, _) when x < -WrapDistance => position with { X = x + board.Width + 2 * WrapDistance },
             // Wrap on Right
-            var (x, _) when x > (board.Width + WrapDistance) => actor.Position with { X = x - (board.Width + 2 * WrapDistance) },
+            var (x, _) when x > (board.Width + WrapDistance) => position with { X = x - (board.Width + 2 * WrapDistance) },
             // Wrap on Top
-            var (_, y) when y < -WrapDistance => actor.Position with { Y = y + board.Height + 2 * WrapDistance },
+            var (_, y) when y < -WrapDistance => position with { Y = y + board.Height + 2 * WrapDistance },
             // Wrap on Bottom
-            var (_, y) when y > (board.Height + WrapDistance) => actor.Position with { Y = y - (board.Height + 2 * WrapDistance) },
+            var (_, y) when y > (board.Height + WrapDistance) => position with { Y = y - (board.Height + 2 * WrapDistance) },
             // No wrap
-            _ => actor.Position
+            _ => position
         };
     }
 }
