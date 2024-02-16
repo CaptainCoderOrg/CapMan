@@ -33,13 +33,18 @@ public class Board_should
     [Theory]
     //                             start     d    end
     [InlineData(Direction.Right, 2.5, 1.0, 1.0, 3.0, 1.0)]
-    [InlineData(Direction.Left, 1.5, 1.0, 1.0, 1.0, 1.0)]
-    [InlineData(Direction.Up, 1.0, 1.5, 1.0, 1.0, 1.0)]
-    [InlineData(Direction.Down, 1.0, 2.5, 1.0, 1.0, 3.0)]
+    [InlineData(Direction.Left,  1.5, 1.0, 1.0, 1.0, 1.0)]
+    [InlineData(Direction.Up,    1.0, 1.5, 1.0, 1.0, 1.0)]
+    [InlineData(Direction.Down,  1.0, 2.5, 1.0, 1.0, 3.0)]
     [InlineData(Direction.Right, 2.9, 1.0, 0.2, 3.0, 1.0)]
-    [InlineData(Direction.Left, 1.1, 1.0, 0.2, 1.0, 1.0)]
-    [InlineData(Direction.Up, 1.0, 1.1, 0.2, 1.0, 1.0)]
-    [InlineData(Direction.Down, 1.0, 2.9, 0.2, 1.0, 3.0)]
+    [InlineData(Direction.Left,  1.1, 1.0, 0.2, 1.0, 1.0)]
+    [InlineData(Direction.Up,    1.0, 1.1, 0.2, 1.0, 1.0)]
+    [InlineData(Direction.Down,  1.0, 2.9, 0.2, 1.0, 3.0)]
+    // Move a longer distance with a wall in the way
+    [InlineData(Direction.Right, 2.0, 2.0, 5.0, 3.0, 2.0)]
+    [InlineData(Direction.Left,  2.4, 2.4, 5.0, 1.0, 2.0)]
+    [InlineData(Direction.Up,    2.6, 2.6, 5.0, 2.0, 1.0)]
+    [InlineData(Direction.Down,  2.0, 2.0, 5.0, 2.0, 3.0)]
     public void does_not_allow_move_when_space_is_wall(Direction direction, double startX, double startY, double distance, double endX, double endY)
     {
 

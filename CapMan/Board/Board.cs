@@ -124,7 +124,7 @@ public static class BoardExtensions
             Tile startTile = position.CurrentTile(moving);
             int deltaX = int.Sign(step.X - startTile.X);
             int deltaY = int.Sign(step.Y - startTile.Y);
-            int noOfSteps = int.Max(int.Abs(startTile.X - step.X), int.Abs(startTile.Y - step.Y)) + 1;
+            int noOfSteps = int.Max(int.Abs(startTile.X - step.X), int.Abs(startTile.Y - step.Y));
 
             Tile prevTile = startTile;
             for (int i = 1; i <= noOfSteps; i++)
