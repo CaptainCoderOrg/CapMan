@@ -119,6 +119,26 @@ public static class BoardExtensions
         Position next = position.Move(moving, distance);
         Tile step = next.NextTile(moving);
 
+        if (distance > 1)
+        {
+            Tile startTile = position.CurrentTile(moving);
+            int deltaX = int.Sign(step.X - startTile.X);
+            int deltaY = int.Sign(step.Y - startTile.Y);
+            int noOfSteps = int.Max(int.Abs(startTile.X - step.X), int.Abs(startTile.Y - step.Y)) + 1;
+
+            Tile prevTile = startTile;
+            for (int i = 1; i <= noOfSteps; i++)
+            {
+                Tile tile = startTile with { X = startTile.X + (i * deltaX), Y = startTile.Y + (i * deltaY) };
+                if (board.IsWall(tile))
+                {
+                    step = tile;
+                    next = prevTile.ToPosition();
+                    break;
+                }
+            }
+        }
+
         // If there is no wall, return move
         if (!board.IsWall(step)) { return next; }
 
