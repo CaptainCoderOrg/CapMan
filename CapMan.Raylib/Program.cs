@@ -18,6 +18,7 @@
 *   Copyright (c) 2013-2016 Ramon Santamaria (@raysan5)
 *
 ********************************************************************************************/
+Raylib.InitWindow(800, 600, "CapMan | Main Window");
 
 // Initialization
 //--------------------------------------------------------------------------------------
@@ -33,15 +34,17 @@ InfoRenderer infoRenderer = new();
 BoardRenderer boardRenderer = new();
 
 int boardWidth = game.Board.Columns * BoardRenderer.CellSize;
-int boardHeight = game.Board.Rows * BoardRenderer.CellSize;
+int boardHeight = game.Board.Rows * BoardRenderer.CellSize + InfoRenderer.BlockedHeight;
 Console.WriteLine($"{boardWidth}x{boardHeight}");
-int screenWidth = (int)(boardWidth * 1.5);
-int screenHeight = (int)(boardHeight * 1.5) + InfoRenderer.BlockedHeight;
+double screenScale = 1;
+int screenWidth = (int)(boardWidth * screenScale);
+int screenHeight = (int)(boardHeight * screenScale);
 
-Raylib.InitWindow(screenWidth, screenHeight, "CapMan | Main Window");
+
 Raylib.SetWindowState(ConfigFlags.ResizableWindow);
 Raylib.SetWindowMonitor(1);
 Raylib.SetWindowSize(screenWidth, screenHeight);
+
 Raylib.SetTargetFPS(60);
 
 CapManRenderer capManRenderer = new();
