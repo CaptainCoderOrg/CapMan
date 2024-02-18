@@ -106,13 +106,13 @@ void RenderDebugText()
 
 Game InitGame()
 {
-    EnemyActor blinkus1 = new(new Position(1, 2), 4, Direction.Down);
+    EnemyActor blinkus1 = new(new Position(14, 11), 4, Direction.Down);
     blinkus1.Behaviour = new TargetPlayerTile();
-    EnemyActor blinkus2 = new(new Position(26, 1), 4, Direction.Left);
+    EnemyActor blinkus2 = new(new Position(11, 14), 4, Direction.Left);
     blinkus2.Behaviour = new ClydeTargeting();
-    EnemyActor blinkus3 = new(new Position(1, 29), 4, Direction.Right);
+    EnemyActor blinkus3 = new(new Position(12, 14), 4, Direction.Right);
     blinkus3.Behaviour = new TargetAheadOfPlayer(4);
-    EnemyActor blinkus4 = new(new Position(26, 29), 4, Direction.Left);
+    EnemyActor blinkus4 = new(new Position(13, 14), 4, Direction.Left);
     blinkus4.Behaviour = new WhimsicalTargeting(blinkus1);
     Game game = new([blinkus1, blinkus2, blinkus3, blinkus4]);
     game.Player.Position = new(14, 23);
