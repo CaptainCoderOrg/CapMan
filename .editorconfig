@@ -76,6 +76,8 @@ dotnet_remove_unnecessary_suppression_exclusions = none
 
 #### C# Coding Conventions ####
 [*.cs]
+# new preferences
+csharp_style_implicit_object_creation_when_type_is_apparent = true:warning
 
 # var preferences
 csharp_style_var_elsewhere = false:silent

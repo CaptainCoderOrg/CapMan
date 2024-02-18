@@ -2,48 +2,83 @@ namespace CapMan;
 
 public class Game
 {
-    public Actor Player { get; } = new Actor();
+    public GameState State { get; set; } = GameState.Playing;
+    public double RespawnTime { get; } = 2.0;
+    public double RespawnCountDown { get; private set; } = 0;
+    public int Lives { get; set; } = 3;
+    public PlayerActor Player { get; private set; } = new();
+    public EnemyActor[] Enemies { get; init; }
     public Board Board { get; } = new Board(Board.StandardBoard);
     public int Score { get; private set; }
 
+    public Game(IEnumerable<EnemyActor> enemies)
+    {
+        Enemies = [.. enemies];
+    }
+
     public void Update(double delta)
     {
-        UpdateCapMan(delta);
+        Action<double> action = State switch
+        {
+            GameState.Playing => Play,
+            GameState.Respawning => Respawning,
+            GameState.Paused => DoNothing,
+            GameState.GameOver => DoNothing,
+            _ => throw new Exception($"Encountered unknown GameState: {State}")
+        };
+        action.Invoke(delta);
+    }
+
+    private void DoNothing(double _) { }
+
+    private void Respawning(double delta)
+    {
+        RespawnCountDown -= delta;
+        if (RespawnCountDown <= 0)
+        {
+            Player = new();
+            //TODO: Reset enemies
+            State = GameState.Playing;
+        }
+    }
+
+    private void Play(double delta)
+    {
+        Player.Update(this, delta);
         CheckEatDots();
+        foreach (EnemyActor enemy in Enemies)
+        {
+            enemy.Update(this, delta);
+            if (enemy.BoundingBox().IntersectsWith(Player.BoundingBox()))
+            {
+                PlayerKilled();
+            }
+        }
+    }
+
+    public void PlayerKilled()
+    {
+        RespawnCountDown = RespawnTime;
+        Lives--;
+        State = GameState.Respawning;
+        if (Lives <= 0)
+        {
+            State = GameState.GameOver;
+        }
     }
 
     private void CheckEatDots()
     {
-        if (Board.IsDot(Player.Row, Player.Column))
+        if (Board.IsDot(Player.Tile))
         {
-            Board.RemoveElement(Player.Row, Player.Column);
+            Board.RemoveElement(Player.Tile);
             Score += 10;
         }
 
-        if (Board.IsPowerPill(Player.Row, Player.Column))
+        if (Board.IsPowerPill(Player.Tile))
         {
-            Board.RemoveElement(Player.Row, Player.Column);
+            Board.RemoveElement(Player.Tile);
             Score += 50;
-        }
-    }
-
-    private void UpdateCapMan(double deltaTime)
-    {
-        (Player.X, Player.Y, Player.CurrentDirection) = Board.CalculateActorMove(deltaTime, Player);
-        BoundsCheck(Player);
-    }
-
-    public void BoundsCheck(Actor actor)
-    {
-        double transitionDistance = 1;
-        double width = Board.Columns;
-        if (actor.X < -transitionDistance)
-        {
-            actor.X += width + 2 * transitionDistance;
-        }
-        else if (actor.X > width + transitionDistance)
-        {
-            actor.X -= width + 2 * transitionDistance;
         }
     }
 }

@@ -1,9 +1,10 @@
 namespace CapMan.Raylib;
-
 using Raylib_cs;
 
 public class CapManRenderer
 {
+    private double lastX;
+    private double lastY;
     private static SpriteSheet? _spriteSheet;
     public static SpriteSheet s_SpriteSheet
     {
@@ -11,7 +12,7 @@ public class CapManRenderer
         {
             if (_spriteSheet == null)
             {
-                _spriteSheet = SpriteSheet.Load("assets/sprites/capman.png", 1, 3);
+                _spriteSheet = SpriteSheet.Get("assets/sprites/capman.png", 1, 3);
             }
             return _spriteSheet;
         }
@@ -30,32 +31,27 @@ public class CapManRenderer
         }
     }
 
-    private double lastX;
-    private double lastY;
-
-    public void Render(Game game, int top, int left)
+    public void Render(PlayerActor capman, int left, int top)
     {
-        if ((lastX, lastY) != (game.Player.X, game.Player.Y))
+        if ((lastX, lastY) != (capman.Position.X, capman.Position.Y))
         {
             Sprite.CurrentTime += Raylib.GetFrameTime();
-            (lastX, lastY) = (game.Player.X, game.Player.Y);
+            (lastX, lastY) = (capman.Position.X, capman.Position.Y);
         }
-        Sprite.Rotation = game.Player.CurrentDirection switch
+        Sprite.Rotation = capman.CurrentDirection switch
         {
             Direction.Left => 0,
             Direction.Up => 90,
             Direction.Right => 0,
             Direction.Down => 270,
-            _ => throw new Exception($"Unexpected direction {game.Player.CurrentDirection}"),
+            _ => throw new Exception($"Unexpected direction {capman.CurrentDirection}"),
         };
-        Sprite.FlipX = game.Player.CurrentDirection == Direction.Right ? true : false;
-        int x = (int)(game.Player.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-        int y = (int)(game.Player.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-        x += left;
-        y += top;
-        Sprite.Draw(x, y);
+        Sprite.FlipX = capman.CurrentDirection == Direction.Right ? true : false;
+        int x = (int)(capman.Position.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        int y = (int)(capman.Position.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
+        Sprite.Draw(left + x, top + y);
     }
 
-
-
+    public void RenderBoundingBox(Actor actor, int left, int top) =>
+        actor.BoundingBox().ToBoard().Translate(left, top).Render(Color.Green);
 }

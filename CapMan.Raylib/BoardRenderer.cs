@@ -7,11 +7,11 @@ public class BoardRenderer
     private static Dictionary<Element, Texture2D>? s_textures;
     public static IReadOnlyDictionary<Element, Texture2D> Textures => LoadTextures().AsReadOnly();
 
-    public void Render(Board board, int top, int left)
+    public void Render(Board board, int left, int top)
     {
-        foreach ((Position pos, Element el) in board.Elements)
+        foreach ((Tile pos, Element el) in board.Elements)
         {
-            Raylib.DrawTexture(Textures[el], left + pos.Col*CellSize, top + pos.Row*CellSize, Color.White);
+            Raylib.DrawTexture(Textures[el], left + pos.X * CellSize, top + pos.Y * CellSize, Color.White);
         }
     }
 
@@ -20,7 +20,7 @@ public class BoardRenderer
         if (s_textures == null)
         {
             s_textures = new();
-            foreach (Element element in Enum.GetValues(typeof(Element)))
+            foreach (Element element in Enum.GetValues<Element>().Where(el => el is not Element.Corner))
             {
                 Image image = Raylib.LoadImage(AssetPath(element));
                 Texture2D texture = Raylib.LoadTextureFromImage(image);
@@ -28,24 +28,22 @@ public class BoardRenderer
                 Raylib.UnloadImage(image);
             }
         }
-        return s_textures;        
+        return s_textures;
     }
 
     private static string AssetPath(Element element)
     {
-        
         return Path.Combine("assets", "sprites", element switch
         {
-            Element.Horizontal  => "horizontal.png",
-            Element.Vertical    => "vertical.png",
-            Element.TopLeft     => "top-left.png",
-            Element.TopRight    => "top-right.png",
-            Element.BottomLeft  => "bottom-left.png",
+            Element.Horizontal => "horizontal.png",
+            Element.Vertical => "vertical.png",
+            Element.TopLeft => "top-left.png",
+            Element.TopRight => "top-right.png",
+            Element.BottomLeft => "bottom-left.png",
             Element.BottomRight => "bottom-right.png",
-            Element.Dot         => "dot.png",
-            Element.PowerPill   => "powerpill.png",
-            Element.Corner      => "",
-            _ => throw new ArgumentException($"Invalid board element: {element}"),
+            Element.Dot => "dot.png",
+            Element.PowerPill => "powerpill.png",
+            _ => throw new ArgumentException($"No sprite found for board element: {element}"),
         });
     }
 }

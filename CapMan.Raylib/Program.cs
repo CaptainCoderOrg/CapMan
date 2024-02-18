@@ -26,20 +26,16 @@ bool DebugText = false;
 bool DrawLines = false;
 bool Paused = false;
 
-// Board board = new (Board.StandardBoard);
-Game game = new Game();
-game.Player.Y = 23; // * BoardRenderer.CellSize;
-game.Player.X = 14; // * BoardRenderer.CellSize;
-InfoRenderer infoRenderer = new();
-BoardRenderer boardRenderer = new();
+Console.WriteLine(Environment.CurrentDirectory);
 
-int boardWidth = game.Board.Columns * BoardRenderer.CellSize;
-int boardHeight = game.Board.Rows * BoardRenderer.CellSize + InfoRenderer.BlockedHeight;
-Console.WriteLine($"{boardWidth}x{boardHeight}");
+Game game = InitGame();
+InfoRenderer infoRenderer = new();
+game.Player.Position = new(14, 23);
+int boardWidth = game.Board.Width * BoardRenderer.CellSize;
+int boardHeight = game.Board.Height * BoardRenderer.CellSize + InfoRenderer.BlockedHeight;
 double screenScale = 1;
 int screenWidth = (int)(boardWidth * screenScale);
 int screenHeight = (int)(boardHeight * screenScale);
-
 
 Raylib.SetWindowState(ConfigFlags.ResizableWindow);
 Raylib.SetWindowMonitor(1);
@@ -47,10 +43,9 @@ Raylib.SetWindowSize(screenWidth, screenHeight);
 
 Raylib.SetTargetFPS(60);
 
-CapManRenderer capManRenderer = new();
-
+GameRenderer gameRenderer = new();
 RenderTexture2D boardTexture = Raylib.LoadRenderTexture(boardWidth, boardHeight);
-Rectangle screenRect = new Rectangle(0, 0, boardWidth, -boardHeight);
+Rectangle screenRect = new(0, 0, boardWidth, -boardHeight);
 
 System.Numerics.Vector2 centerScreen = new(0, 0);
 // Main game loop
@@ -64,11 +59,12 @@ while (!Raylib.WindowShouldClose())
     Raylib.BeginTextureMode(boardTexture);
     Raylib.ClearBackground(Color.Black);
     infoRenderer.Render(game, 0, 0);
-    RenderGameArea(InfoRenderer.BlockedHeight, 0);
+    gameRenderer.Render(game, 0, InfoRenderer.BlockedHeight);
+    DrawGrid(0, InfoRenderer.BlockedHeight);
     Raylib.EndTextureMode();
 
     Raylib.BeginDrawing();
-    Rectangle scaledResolution = new Rectangle(0, 0, Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+    Rectangle scaledResolution = new(0, 0, Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
     Raylib.DrawTexturePro(boardTexture.Texture, screenRect, scaledResolution, centerScreen, 0, Color.White);
     RenderDebugText();
     Raylib.EndDrawing();
@@ -76,26 +72,19 @@ while (!Raylib.WindowShouldClose())
 
 Raylib.CloseWindow();
 
-void RenderGameArea(int top, int left)
-{
-    boardRenderer.Render(game.Board, top, left);
-    capManRenderer.Render(game, top, left);
-    DrawGrid(top, left);
-}
-
-void DrawGrid(int top, int left)
+void DrawGrid(int left, int top)
 {
     if (DrawLines)
     {
-        int width = game.Board.Columns * BoardRenderer.CellSize;
-        int height = game.Board.Rows * BoardRenderer.CellSize;
-        for (int row = 0; row < game.Board.Rows; row++)
+        int width = game.Board.Width * BoardRenderer.CellSize;
+        int height = game.Board.Height * BoardRenderer.CellSize;
+        for (int y = 0; y < game.Board.Height; y++)
         {
-            Raylib.DrawLine(top, left + (row * BoardRenderer.CellSize) , width, row * BoardRenderer.CellSize, Color.DarkGreen);
+            Raylib.DrawLine(left, top + y * BoardRenderer.CellSize, width, y * BoardRenderer.CellSize, Color.DarkGreen);
         }
-        for (int col = 0; col < game.Board.Columns; col++)
+        for (int x = 0; x < game.Board.Width; x++)
         {
-            Raylib.DrawLine(top + (col * BoardRenderer.CellSize), left, col * BoardRenderer.CellSize, height, Color.DarkGreen);
+            Raylib.DrawLine(left + x * BoardRenderer.CellSize, 0, top + x * BoardRenderer.CellSize, height, Color.DarkGreen);
         }
     }
 }
@@ -109,17 +98,25 @@ void RenderDebugText()
     }
     if (DebugText)
     {
-        Raylib.DrawText($"X: {game.Player.X:0.0}, Y: {game.Player.Y:0.0}", 0, 0, 24, Color.White);
-        Raylib.DrawText($"Col: {game.Player.Column}, Row: {game.Player.Row}", 0, 24, 24, Color.White);
+        Raylib.DrawText($"X: {game.Player.Position.X:0.0}, Y: {game.Player.Position.Y:0.0}", 0, 0, 24, Color.White);
+        Raylib.DrawText($"BX: {game.Player.Tile.X}, BY: {game.Player.Tile.Y}", 0, 24, 24, Color.White);
         Raylib.DrawText($"Current: {game.Player.CurrentDirection}, Next: {game.Player.NextDirection}", 0, 48, 24, Color.White);
     }
 }
 
-void Reset()
+Game InitGame()
 {
-    game = new Game();
-    game.Player.Y = 23; // * BoardRenderer.CellSize;
-    game.Player.X = 14; // * BoardRenderer.CellSize;
+    EnemyActor blinkus1 = new(new Position(1, 2), 4, Direction.Down);
+    blinkus1.Behaviour = new TargetPlayerTile();
+    EnemyActor blinkus2 = new(new Position(26, 1), 4, Direction.Left);
+    blinkus2.Behaviour = new ClydeTargeting();
+    EnemyActor blinkus3 = new(new Position(1, 29), 4, Direction.Right);
+    blinkus3.Behaviour = new TargetAheadOfPlayer(4);
+    EnemyActor blinkus4 = new(new Position(26, 29), 4, Direction.Left);
+    blinkus4.Behaviour = new WhimsicalTargeting(blinkus1);
+    Game game = new([blinkus1, blinkus2, blinkus3, blinkus4]);
+    game.Player.Position = new(14, 23);
+    return game;
 }
 
 void HandleInput()
@@ -158,6 +155,14 @@ void HandleInput()
     }
     if (Raylib.IsKeyDown(KeyboardKey.R))
     {
-        Reset();
+        game = InitGame();
+    }
+    if (Raylib.IsKeyPressed(KeyboardKey.B))
+    {
+        gameRenderer.ShowBoundingBoxes = !gameRenderer.ShowBoundingBoxes;
+    }
+    if (Raylib.IsKeyPressed(KeyboardKey.T))
+    {
+        gameRenderer.ShowTargetTiles = !gameRenderer.ShowTargetTiles;
     }
 }
