@@ -106,15 +106,27 @@ void RenderDebugText()
 
 Game InitGame()
 {
-    EnemyActor blinkus1 = new(new Position(14, 11), 4, Direction.Down);
-    blinkus1.Behaviour = new TargetPlayerTile();
-    EnemyActor blinkus2 = new(new Position(11, 14), 4, Direction.Left);
-    blinkus2.Behaviour = new ClydeTargeting();
-    EnemyActor blinkus3 = new(new Position(12, 14), 4, Direction.Right);
-    blinkus3.Behaviour = new TargetAheadOfPlayer(4);
-    EnemyActor blinkus4 = new(new Position(13, 14), 4, Direction.Left);
-    blinkus4.Behaviour = new WhimsicalTargeting(blinkus1);
-    Game game = new([blinkus1, blinkus2, blinkus3, blinkus4]);
+    List<EnemyActor> enemies = new();
+    EnemyActor targetsPlayer = new(new Position(14, 11), 4, Direction.Down);
+    targetsPlayer.Behaviour = new TargetPlayerTile();
+    enemies.Add(targetsPlayer);
+
+    EnemyActor clydeEnemy = new(new Position(11, 14), 4, Direction.Left);
+    clydeEnemy.Behaviour = new ClydeTargeting();
+    clydeEnemy.Behaviour = new PatrolBehaviour(new Tile(11, 13), new Tile(11, 15));
+    enemies.Add(clydeEnemy);
+
+    EnemyActor targetAhead = new(new Position(13, 15), 4, Direction.Right);
+    targetAhead.Behaviour = new TargetAheadOfPlayer(4);
+    targetAhead.Behaviour = new PatrolBehaviour(new Tile(13, 15), new Tile(13, 13));
+    enemies.Add(targetAhead);
+
+    EnemyActor whimsicalEnemy = new(new Position(16, 14), 4, Direction.Left);
+    whimsicalEnemy.Behaviour = new WhimsicalTargeting(targetsPlayer);
+    whimsicalEnemy.Behaviour = new PatrolBehaviour(new Tile(16, 13), new Tile(16, 15));
+    enemies.Add(whimsicalEnemy);
+
+    Game game = new(enemies);
     game.Player.Position = new(14, 23);
     return game;
 }
