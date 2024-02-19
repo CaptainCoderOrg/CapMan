@@ -43,6 +43,7 @@ public class BoardRenderer
             Element.BottomRight => "bottom-right.png",
             Element.Dot => "dot.png",
             Element.PowerPill => "powerpill.png",
+            Element.Door => "door.png",
             _ => throw new ArgumentException($"No sprite found for board element: {element}"),
         });
     }
