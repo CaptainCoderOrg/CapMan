@@ -31,6 +31,9 @@
     <Content Include="..\assets\sprites\capman.png" Link="assets\sprites\capman.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\assets\sprites\door.png" Link="assets\sprites\door.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\assets\sprites\dot.png" Link="assets\sprites\dot.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

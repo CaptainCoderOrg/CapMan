@@ -9,7 +9,7 @@
 public class WhimsicalTargeting(Actor observer) : IEnemyBehaviour
 {
     public Actor Observer { get; } = observer;
-    public Direction GetNextDirection(Game game, double deltaTime, EnemyActor enemy)
+    public Direction GetNextDirection(IGame game, double deltaTime, EnemyActor enemy)
     {
         var (board, direction, player) = (game.Board, enemy.CurrentDirection, game.Player);
         var (x, y) = board.WrapTile(player.Tile.Step(player.CurrentDirection, 2));

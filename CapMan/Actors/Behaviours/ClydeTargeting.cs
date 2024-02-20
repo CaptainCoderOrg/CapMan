@@ -9,7 +9,7 @@ public class ClydeTargeting : IEnemyBehaviour
 {
     public const int TargetPlayerDistance = 8;
     private readonly TargetPlayerTile _targetPlayerTile = new();
-    public Direction GetNextDirection(Game game, double deltaTime, EnemyActor enemy)
+    public Direction GetNextDirection(IGame game, double deltaTime, EnemyActor enemy)
     {
         var (board, direction, player) = (game.Board, enemy.CurrentDirection, game.Player);
         if (player.Tile.ManhattanDistance(enemy.Tile) > TargetPlayerDistance)

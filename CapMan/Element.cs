@@ -11,6 +11,7 @@ public enum Element : ushort
     TopRight    = '╮',
     BottomLeft  = '╰',
     BottomRight = '╯',
+    Door        = '=',
 }
 
 public static class ElementExtensions
@@ -26,7 +27,7 @@ public static class ElementExtensions
         };
     }
 
-    public static bool IsWall(this Element element) => element is Element.Vertical or Element.Horizontal or Element.TopLeft or Element.TopRight or Element.BottomLeft or Element.BottomRight or Element.Corner;
+    public static bool IsWall(this Element element) => element is Element.Vertical or Element.Horizontal or Element.TopLeft or Element.TopRight or Element.BottomLeft or Element.BottomRight or Element.Corner or Element.Door;
     public static bool IsDot(this Element element) => element is Element.Dot;
     public static bool IsPowerPill(this Element element) => element is Element.PowerPill;
 }

@@ -1,9 +1,10 @@
 namespace CapMan;
 
-public class Game
+public class Game : IGame
 {
     public GameState State { get; set; } = GameState.Playing;
     public double RespawnTime { get; } = 2.0;
+    public double PlayTime { get; private set; } = 0.0;
     public double RespawnCountDown { get; private set; } = 0;
     public int Lives { get; set; } = 3;
     public PlayerActor Player { get; private set; } = new();
@@ -27,6 +28,7 @@ public class Game
             _ => throw new Exception($"Encountered unknown GameState: {State}")
         };
         action.Invoke(delta);
+        PlayTime += delta;
     }
 
     private void DoNothing(double _) { }
@@ -39,6 +41,7 @@ public class Game
             Player = new();
             //TODO: Reset enemies
             State = GameState.Playing;
+            PlayTime = 0;
         }
     }
 

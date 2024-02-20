@@ -9,6 +9,13 @@ public class Board
     private readonly Dictionary<Tile, Element> _elements;
     public IReadOnlyDictionary<Tile, Element> Elements => _elements.AsReadOnly();
 
+    public Board(int width, int height, IEnumerable<KeyValuePair<Tile, Element>> elements)
+    {
+        Width = width;
+        Height = height;
+        _elements = elements.ToDictionary();
+    }
+
     public Board(IEnumerable<string> asciiLayout)
     {
         string[] data = [.. asciiLayout];
@@ -88,7 +95,7 @@ public class Board
         ╰────╮.│╰──╮ ││ ╭──╯│.╭────╯
              │.│╭──╯ ╰╯ ╰──╮│.│     
              │.││          ││.│     
-             │.││ ╭──────╮ ││.│     
+             │.││ ╭──==──╮ ││.│     
         ─────╯.╰╯ │      │ ╰╯.╰─────
               .   │      │   .      
         ─────╮.╭╮ │      │ ╭╮.╭─────
@@ -258,4 +265,6 @@ public static class BoardExtensions
             Y = ((position.Y % board.Height) + board.Height) % board.Height
         };
     }
+
+    public static Board WithoutDoors(this Board board) => new Board(board.Width, board.Height, board.Elements.Where((kvp, v) => kvp.Value is not Element.Door));
 }
