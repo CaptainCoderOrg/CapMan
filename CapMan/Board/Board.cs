@@ -126,6 +126,10 @@ public static class BoardExtensions
         Position next = position.Move(moving, distance);
         Tile step = next.NextTile(moving);
 
+        // In regular game play, this should never execute as the deltaTime
+        // during game play should always be at most (1/30) of a second. This
+        // code was made redundant by fixing this issue:
+        // https://github.com/CaptainCoderOrg/CapMan/issues/9
         if (distance > 1)
         {
             Tile startTile = position.CurrentTile(moving);
