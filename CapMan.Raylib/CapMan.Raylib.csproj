@@ -58,73 +58,7 @@
     <Content Include="..\assets\sprites\walls.png" Link="assets\sprites\walls.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\assets\fonts\alagard.png" Link="assets\fonts\alagard.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\alpha_beta.png" Link="assets\fonts\alpha_beta.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\anonymous_pro_bold.ttf" Link="assets\fonts\anonymous_pro_bold.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\custom_alagard.png" Link="assets\fonts\custom_alagard.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\custom_jupiter_crash.png" Link="assets\fonts\custom_jupiter_crash.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\custom_mecha.png" Link="assets\fonts\custom_mecha.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\dejavu.fnt" Link="assets\fonts\dejavu.fnt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\dejavu.png" Link="assets\fonts\dejavu.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\DotGothic16-Regular.ttf" Link="assets\fonts\DotGothic16-Regular.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\DotGothic16-Regular_OFL.txt" Link="assets\fonts\DotGothic16-Regular_OFL.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\jupiter_crash.png" Link="assets\fonts\jupiter_crash.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\KAISG.ttf" Link="assets\fonts\KAISG.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\mecha.png" Link="assets\fonts\mecha.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\noto_cjk.fnt" Link="assets\fonts\noto_cjk.fnt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\noto_cjk.png" Link="assets\fonts\noto_cjk.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\pixantiqua.fnt" Link="assets\fonts\pixantiqua.fnt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\pixantiqua.png" Link="assets\fonts\pixantiqua.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\pixantiqua.ttf" Link="assets\fonts\pixantiqua.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\assets\fonts\pixelplay.png" Link="assets\fonts\pixelplay.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\romulus.png" Link="assets\fonts\romulus.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\setback.png" Link="assets\fonts\setback.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\symbola.fnt" Link="assets\fonts\symbola.fnt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\symbola.png" Link="assets\fonts\symbola.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
