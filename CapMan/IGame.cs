@@ -10,5 +10,9 @@ public interface IGame
     public EnemyActor[] Enemies { get; }
     public Board Board { get; }
     public int Score { get; }
-    public void Update(double delta);
+
+    /// <summary>
+    /// Progress the game forward the specified amount of time in seconds.
+    /// </summary>
+    public void Update(double deltaTime);
 }

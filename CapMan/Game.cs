@@ -5,6 +5,8 @@ public class Game : IGame
     public GameState State { get; set; } = GameState.Playing;
     public double RespawnTime { get; } = 2.0;
     public double PlayTime { get; private set; } = 0.0;
+    // Run at least 30 frames per second
+    public double MaxDeltaTime { get; } = 1.0 / 30.0;
     public double RespawnCountDown { get; private set; } = 0;
     public int Lives { get; set; } = 3;
     public PlayerActor Player { get; private set; } = new();
@@ -17,7 +19,17 @@ public class Game : IGame
         Enemies = [.. enemies];
     }
 
-    public void Update(double delta)
+    public void Update(double deltaTime)
+    {
+        while (deltaTime > 0)
+        {
+            double simulateTime = Math.Min(deltaTime, MaxDeltaTime);
+            _Update(simulateTime);
+            deltaTime -= simulateTime;
+        }
+    }
+
+    private void _Update(double deltaTime)
     {
         Action<double> action = State switch
         {
@@ -27,8 +39,8 @@ public class Game : IGame
             GameState.GameOver => DoNothing,
             _ => throw new Exception($"Encountered unknown GameState: {State}")
         };
-        action.Invoke(delta);
-        PlayTime += delta;
+        action.Invoke(deltaTime);
+        PlayTime += deltaTime;
     }
 
     private void DoNothing(double _) { }
