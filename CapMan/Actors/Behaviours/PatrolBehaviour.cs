@@ -6,7 +6,7 @@ public class PatrolBehaviour(Tile first, Tile second) : IEnemyBehaviour
     public Tile Second { get; } = second;
     private Tile _current = first;
     private Tile _other = second;
-    public Direction GetNextDirection(Game game, double deltaTime, EnemyActor enemy)
+    public Direction GetNextDirection(IGame game, double deltaTime, EnemyActor enemy)
     {
         if (enemy.Tile == _current)
         {

@@ -2,5 +2,5 @@
 
 public interface IEnemyBehaviour
 {
-    public Direction GetNextDirection(Game game, double deltaTime, EnemyActor actor);
+    public Direction GetNextDirection(IGame game, double deltaTime, EnemyActor actor);
 }

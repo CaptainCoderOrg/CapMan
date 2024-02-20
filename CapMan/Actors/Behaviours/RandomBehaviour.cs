@@ -2,7 +2,7 @@
 
 public class RandomBehaviour : IEnemyBehaviour
 {
-    public Direction GetNextDirection(Game game, double delta, EnemyActor actor)
+    public Direction GetNextDirection(IGame game, double delta, EnemyActor actor)
     {
         var (board, direction) = (game.Board, actor.CurrentDirection);
         Direction[] turns = [.. board.ValidNextDirection(delta, actor).Where(d => d != direction.Opposite())];

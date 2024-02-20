@@ -112,19 +112,27 @@ Game InitGame()
     enemies.Add(targetsPlayer);
 
     EnemyActor clydeEnemy = new(new Position(11, 14), 4, Direction.Left);
-    clydeEnemy.Behaviour = new ClydeTargeting();
-    clydeEnemy.Behaviour = new PatrolBehaviour(new Tile(11, 13), new Tile(11, 15));
+    IEnemyBehaviour clyde = 
+    new WhileTrueBehaviour(
+        new PatrolBehaviour(new Tile(11, 13), new Tile(11, 15)),
+        (game) => game.PlayTime < 7,
+        new WhileTrueBehaviour(
+            new ActionThen(() => clydeEnemy.IgnoreDoors = true, new TargetTileBehaviour(new Tile(13, 11))),
+            (_) => clydeEnemy.Tile != new Tile(13, 11),
+            new ActionThen(() => clydeEnemy.IgnoreDoors = false, new ClydeTargeting()))
+    );
+    clydeEnemy.Behaviour = clyde;
     enemies.Add(clydeEnemy);
 
-    EnemyActor targetAhead = new(new Position(13, 15), 4, Direction.Right);
-    targetAhead.Behaviour = new TargetAheadOfPlayer(4);
-    targetAhead.Behaviour = new PatrolBehaviour(new Tile(13, 15), new Tile(13, 13));
-    enemies.Add(targetAhead);
+    // EnemyActor targetAhead = new(new Position(13, 15), 4, Direction.Right);
+    // targetAhead.Behaviour = new TargetAheadOfPlayer(4);
+    // targetAhead.Behaviour = new PatrolBehaviour(new Tile(13, 15), new Tile(13, 13));
+    // enemies.Add(targetAhead);
 
-    EnemyActor whimsicalEnemy = new(new Position(16, 14), 4, Direction.Left);
-    whimsicalEnemy.Behaviour = new WhimsicalTargeting(targetsPlayer);
-    whimsicalEnemy.Behaviour = new PatrolBehaviour(new Tile(16, 13), new Tile(16, 15));
-    enemies.Add(whimsicalEnemy);
+    // EnemyActor whimsicalEnemy = new(new Position(16, 14), 4, Direction.Left);
+    // whimsicalEnemy.Behaviour = new WhimsicalTargeting(targetsPlayer);
+    // whimsicalEnemy.Behaviour = new PatrolBehaviour(new Tile(16, 13), new Tile(16, 15));
+    // enemies.Add(whimsicalEnemy);
 
     Game game = new(enemies);
     game.Player.Position = new(14, 23);

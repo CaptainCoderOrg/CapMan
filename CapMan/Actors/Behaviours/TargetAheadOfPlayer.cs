@@ -3,7 +3,7 @@
 public class TargetAheadOfPlayer(int steps) : IEnemyBehaviour
 {
     public int Steps { get; } = steps;
-    public Direction GetNextDirection(Game game, double deltaTime, EnemyActor enemy)
+    public Direction GetNextDirection(IGame game, double deltaTime, EnemyActor enemy)
     {
         var (board, direction, player) = (game.Board, enemy.CurrentDirection, game.Player);
         Tile target = board.WrapTile(player.Tile.Step(player.CurrentDirection, Steps));

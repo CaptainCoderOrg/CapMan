@@ -2,7 +2,7 @@
 
 public class TargetPlayerTile : IEnemyBehaviour
 {
-    public Direction GetNextDirection(Game game, double deltaTime, EnemyActor enemy)
+    public Direction GetNextDirection(IGame game, double deltaTime, EnemyActor enemy)
     {
         var (board, direction, target) = (game.Board, enemy.CurrentDirection, game.Player.Tile);
         enemy.LastTarget = target;
