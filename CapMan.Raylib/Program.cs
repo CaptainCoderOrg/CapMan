@@ -18,7 +18,9 @@
 *   Copyright (c) 2013-2016 Ramon Santamaria (@raysan5)
 *
 ********************************************************************************************/
-Raylib.InitWindow(800, 600, "CapMan | Main Window");
+using System.Numerics;
+
+Raylib.InitWindow(0, 0, "CapMan | Main Window");
 
 // Initialization
 //--------------------------------------------------------------------------------------
@@ -33,24 +35,24 @@ InfoRenderer infoRenderer = new();
 game.Player.Position = new(14, 23);
 int boardWidth = game.Board.Width * BoardRenderer.CellSize;
 int boardHeight = game.Board.Height * BoardRenderer.CellSize + InfoRenderer.BlockedHeight;
-double screenScale = 1;
-int screenWidth = (int)(boardWidth * screenScale);
-int screenHeight = (int)(boardHeight * screenScale);
 
-Raylib.SetWindowState(ConfigFlags.ResizableWindow);
-Raylib.SetWindowMonitor(1);
-Raylib.SetWindowSize(screenWidth, screenHeight);
-
+InitWindow(1); // Monitor 1 is Captain Coder's Streaming Monitor (hack)
 Raylib.SetTargetFPS(60);
 
 GameRenderer gameRenderer = new();
 RenderTexture2D boardTexture = Raylib.LoadRenderTexture(boardWidth, boardHeight);
 Rectangle screenRect = new(0, 0, boardWidth, -boardHeight);
+Rectangle scaleRect = GetScaledResolution();
 
-System.Numerics.Vector2 centerScreen = new(0, 0);
+Vector2 centerScreen = new(0, 0);
 // Main game loop
 while (!Raylib.WindowShouldClose())
 {
+    if (Raylib.IsWindowResized())
+    {
+        scaleRect = GetScaledResolution();
+        centerScreen = GetBoardCenterOffset();
+    }
     HandleInput();
     if (!Paused)
     {
@@ -64,13 +66,73 @@ while (!Raylib.WindowShouldClose())
     Raylib.EndTextureMode();
 
     Raylib.BeginDrawing();
-    Rectangle scaledResolution = new(0, 0, Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
-    Raylib.DrawTexturePro(boardTexture.Texture, screenRect, scaledResolution, centerScreen, 0, Color.White);
+    Raylib.DrawTexturePro(boardTexture.Texture, screenRect, scaleRect, centerScreen, 0, Color.White);
     RenderDebugText();
     Raylib.EndDrawing();
 }
 
 Raylib.CloseWindow();
+
+/// <summary>
+/// Initializes the game window on to the specified monitor and centers
+/// it on the screen
+/// </summary>
+void InitWindow(int monitor)
+{
+    double initialScale = 1;
+    int screenWidth = (int)(boardWidth * initialScale);
+    int screenHeight = (int)(boardHeight * initialScale);
+
+    Raylib.SetWindowState(ConfigFlags.ResizableWindow);
+    Raylib.SetWindowSize(screenWidth, screenHeight);
+    Raylib.SetWindowMinSize(boardWidth, boardHeight);
+
+    (int mWidth, int mHeight) = (Raylib.GetMonitorWidth(monitor), Raylib.GetMonitorHeight(monitor));
+    (int wWidth, int wHeight) = (Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+
+    Raylib.SetWindowPosition((mWidth - wWidth) / 2, (mHeight - wHeight) / 2);
+    Raylib.SetWindowMonitor(monitor);
+}
+
+/// <summary>
+/// Calculates the offset to position the board in the center of the game
+/// window.
+/// </summary>
+Vector2 GetBoardCenterOffset()
+{
+    (double screenWidth, double screenHeight) = (Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+    float x = (float)(scaleRect.Width - screenWidth) * 0.5f;
+    float y = (float)(scaleRect.Height - screenHeight) * 0.5f;
+    return new Vector2(x, y);
+}
+
+/// <summary>
+/// Calculates the scaled resolution of the board based on the size of the game
+/// window.
+/// </summary>
+Rectangle GetScaledResolution()
+{
+    (double screenWidth, double screenHeight) = (Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+    double ratio = (double)boardWidth / boardHeight;
+    double width = screenHeight * ratio;
+    double height = screenWidth / ratio;
+
+    double widthDiff = screenWidth - width;
+    double heightDiff = screenHeight - height;
+
+    if (widthDiff < heightDiff)
+    {
+        width = screenWidth;
+    }
+    else
+    {
+        height = screenHeight;
+    }
+
+    Rectangle scaledResolution = new(0, 0, (int)width, (int)height);
+
+    return scaledResolution;
+}
 
 void DrawGrid(int left, int top)
 {
@@ -112,15 +174,15 @@ Game InitGame()
     enemies.Add(targetsPlayer);
 
     EnemyActor clydeEnemy = new(new Position(11, 14), 4, Direction.Left);
-    IEnemyBehaviour clyde = 
+    IEnemyBehaviour clyde =
 
-    // PatrolBehaviour(new Tile(11, 13), new Tile(11, 15))
-    //    .While(game => game.PlayTime < 7)
-    //    .Then(() => clydeEnemy.IgnoreDoors = true)
-    //    .Then(new TargetTileBehaviour(new Tile(13, 11)))
-    //    .While((_) => clydeEnemy.Tile != new Tile(13, 11))
-    //    .Then(() => clydeEnemy.IgnoreDoors = false)
-    //    .Then(new ClydeTargeting())
+        // PatrolBehaviour(new Tile(11, 13), new Tile(11, 15))
+        //    .While(game => game.PlayTime < 7)
+        //    .Then(() => clydeEnemy.IgnoreDoors = true)
+        //    .Then(new TargetTileBehaviour(new Tile(13, 11)))
+        //    .While((_) => clydeEnemy.Tile != new Tile(13, 11))
+        //    .Then(() => clydeEnemy.IgnoreDoors = false)
+        //    .Then(new ClydeTargeting())
 
         new WhileTrueBehaviour(
             new PatrolBehaviour(new Tile(11, 13), new Tile(11, 15)),
@@ -134,7 +196,7 @@ Game InitGame()
     enemies.Add(clydeEnemy);
 
     EnemyActor targetAhead = new(new Position(13, 15), 4, Direction.Right);
-    targetAhead.Behaviour = 
+    targetAhead.Behaviour =
         new WhileTrueBehaviour(
             new PatrolBehaviour(new Tile(13, 15), new Tile(13, 13)),
             (game) => game.PlayTime < 14,
