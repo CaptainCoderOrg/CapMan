@@ -2,6 +2,7 @@ namespace CapMan;
 
 public class EnemyActor(Position position, double speed, Direction direction) : Actor(position, speed, direction)
 {
+    public Position StartPosition { get; } = position;
     public EnemyState State { get; set; } = EnemyState.Searching;
     public IEnemyBehaviour Behaviour { get; set; } = new TargetTileBehaviour(new Tile(1, 1));
     public Tile? LastTarget { get; set; }
@@ -14,6 +15,11 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
         }
         NextDirection = Behaviour.GetNextDirection(game, deltaTime, this);
         base.Update(game, deltaTime);
+    }
+
+    public void Reset()
+    {
+        Position = StartPosition;
     }
 
     private class DelegateBoardGame(IGame baseGame, Board board) : IGame

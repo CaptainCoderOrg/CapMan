@@ -11,25 +11,20 @@ public class Game : IGame
     public int Lives { get; set; } = 3;
     public PlayerActor Player { get; private set; } = new();
     public EnemyActor[] Enemies { get; private set; }
-    private EnemyActor[] _initialEnemies;
     public Board Board { get; } = new Board(Board.StandardBoard);
     public int Score { get; private set; }
 
     public Game(IEnumerable<EnemyActor> enemies)
     {
-        _initialEnemies = [.. enemies];
-        Enemies = InitializeEnemies();
-        // Enemies = [.. enemies];
+        Enemies = [.. enemies];
     }
 
-    private EnemyActor[] InitializeEnemies() => [.. _initialEnemies.Select(CloneEnemy)];
-
-    private EnemyActor CloneEnemy(EnemyActor enemy)
+    private void ResetEnemies()
     {
-        return new EnemyActor(enemy.Position, enemy.Speed, enemy.CurrentDirection)
+        foreach (EnemyActor enemy in Enemies)
         {
-            Behaviour = enemy.Behaviour,
-        };
+            enemy.Reset();
+        }
     }
 
     public void Update(double deltaTime)
@@ -64,7 +59,7 @@ public class Game : IGame
         if (RespawnCountDown <= 0)
         {
             Player = new();
-            Enemies = InitializeEnemies();
+            ResetEnemies();
             //TODO: Reset enemies
             State = GameState.Playing;
             PlayTime = 0;
