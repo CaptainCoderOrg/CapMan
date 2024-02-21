@@ -66,6 +66,7 @@ while (!Raylib.WindowShouldClose())
     Raylib.EndTextureMode();
 
     Raylib.BeginDrawing();
+    Raylib.ClearBackground(Color.Black);
     Raylib.DrawTexturePro(boardTexture.Texture, screenRect, scaleRect, centerScreen, 0, Color.White);
     RenderDebugText();
     Raylib.EndDrawing();
