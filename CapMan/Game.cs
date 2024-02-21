@@ -10,13 +10,21 @@ public class Game : IGame
     public double RespawnCountDown { get; private set; } = 0;
     public int Lives { get; set; } = 3;
     public PlayerActor Player { get; private set; } = new();
-    public EnemyActor[] Enemies { get; init; }
+    public EnemyActor[] Enemies { get; private set; }
     public Board Board { get; } = new Board(Board.StandardBoard);
     public int Score { get; private set; }
 
     public Game(IEnumerable<EnemyActor> enemies)
     {
         Enemies = [.. enemies];
+    }
+
+    private void ResetEnemies()
+    {
+        foreach (EnemyActor enemy in Enemies)
+        {
+            enemy.Reset();
+        }
     }
 
     public void Update(double deltaTime)
@@ -51,6 +59,7 @@ public class Game : IGame
         if (RespawnCountDown <= 0)
         {
             Player = new();
+            ResetEnemies();
             //TODO: Reset enemies
             State = GameState.Playing;
             PlayTime = 0;

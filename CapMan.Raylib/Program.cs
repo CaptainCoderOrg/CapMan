@@ -170,53 +170,28 @@ void RenderDebugText()
 Game InitGame()
 {
     List<EnemyActor> enemies = new();
-    EnemyActor targetsPlayer = new(new Position(14, 11), 4, Direction.Down);
-    targetsPlayer.Behaviour = new TargetPlayerTile();
+    EnemyActor targetsPlayer = new(new Position(14, 11), 4, Direction.Down)
+    {
+        Behaviour = new TargetPlayerTile(),
+    };
     enemies.Add(targetsPlayer);
 
-    EnemyActor clydeEnemy = new(new Position(11, 14), 4, Direction.Left);
-    IEnemyBehaviour clyde =
-
-        // PatrolBehaviour(new Tile(11, 13), new Tile(11, 15))
-        //    .While(game => game.PlayTime < 7)
-        //    .Then(() => clydeEnemy.IgnoreDoors = true)
-        //    .Then(new TargetTileBehaviour(new Tile(13, 11)))
-        //    .While((_) => clydeEnemy.Tile != new Tile(13, 11))
-        //    .Then(() => clydeEnemy.IgnoreDoors = false)
-        //    .Then(new ClydeTargeting())
-
-        new WhileTrueBehaviour(
-            new PatrolBehaviour(new Tile(11, 13), new Tile(11, 15)),
-            (game) => game.PlayTime < 7,
-            new WhileTrueBehaviour(
-                new ActionThen(() => clydeEnemy.IgnoreDoors = true, new TargetTileBehaviour(new Tile(13, 11))),
-                (_) => clydeEnemy.Tile != new Tile(13, 11),
-                new ActionThen(() => clydeEnemy.IgnoreDoors = false, new ClydeTargeting()))
-        );
-    clydeEnemy.Behaviour = clyde;
+    EnemyActor clydeEnemy = new(new Position(11, 14), 4, Direction.Left)
+    {
+      Behaviour = new ClydeAIBehaviour(),  
+    };
     enemies.Add(clydeEnemy);
 
-    EnemyActor targetAhead = new(new Position(13, 15), 4, Direction.Right);
-    targetAhead.Behaviour =
-        new WhileTrueBehaviour(
-            new PatrolBehaviour(new Tile(13, 15), new Tile(13, 13)),
-            (game) => game.PlayTime < 14,
-            new WhileTrueBehaviour(
-                new ActionThen(() => targetAhead.IgnoreDoors = true, new TargetTileBehaviour(new Tile(13, 11))),
-                (_) => targetAhead.Tile != new Tile(13, 11),
-                new ActionThen(() => targetAhead.IgnoreDoors = false, new TargetAheadOfPlayer(4)))
-        );
+    EnemyActor targetAhead = new(new Position(13, 15), 4, Direction.Right)
+    {
+        Behaviour = new BobAIBehaviour(),
+    };
     enemies.Add(targetAhead);
 
-    EnemyActor whimsicalEnemy = new(new Position(16, 14), 4, Direction.Left);
-    whimsicalEnemy.Behaviour = new WhileTrueBehaviour(
-            new PatrolBehaviour(new Tile(16, 15), new Tile(16, 13)),
-            (game) => game.PlayTime < 21,
-            new WhileTrueBehaviour(
-                new ActionThen(() => whimsicalEnemy.IgnoreDoors = true, new TargetTileBehaviour(new Tile(13, 11))),
-                (_) => whimsicalEnemy.Tile != new Tile(13, 11),
-                new ActionThen(() => whimsicalEnemy.IgnoreDoors = false, new WhimsicalTargeting(targetsPlayer)))
-        );
+    EnemyActor whimsicalEnemy = new(new Position(16, 14), 4, Direction.Left)
+    {
+        Behaviour = new WhimsicalAIBehaviour(targetsPlayer),
+    };
     enemies.Add(whimsicalEnemy);
 
     Game game = new(enemies);
