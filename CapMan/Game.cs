@@ -32,12 +32,12 @@ public class Game : IGame
         while (deltaTime > 0)
         {
             double simulateTime = Math.Min(deltaTime, MaxDeltaTime);
-            _Update(simulateTime);
+            Update_(simulateTime);
             deltaTime -= simulateTime;
         }
     }
 
-    private void _Update(double deltaTime)
+    private void Update_(double deltaTime)
     {
         Action<double> action = State switch
         {
