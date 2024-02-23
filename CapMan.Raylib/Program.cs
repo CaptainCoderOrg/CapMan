@@ -28,11 +28,6 @@ bool debugText = false;
 bool drawLines = false;
 bool paused = false;
 
-/// <summary>
-/// Maximum Game Speed configurable by debug keybinds
-/// </summary>
-const int DebugMaxGameSpeed = 25;
-
 Console.WriteLine(Environment.CurrentDirectory);
 
 Game game = InitGame();
@@ -224,7 +219,7 @@ void HandleInput()
     }
     if (Raylib.IsKeyPressed(KeyboardKey.Zero))
     {
-        game.Player.Speed = Math.Min(++game.Player.Speed, DebugMaxGameSpeed);
+        game.Player.Speed = Math.Min(++game.Player.Speed, GameConstants.DebugMaxGameSpeed);
     }
     if (Raylib.IsKeyPressed(KeyboardKey.Nine))
     {
