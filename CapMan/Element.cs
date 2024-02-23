@@ -2,16 +2,16 @@ namespace CapMan;
 
 public enum Element : ushort
 {
-    Dot         = '.',
-    PowerPill   = 'O',
-    Vertical    = '│',
-    Horizontal  = '─',
-    Corner      = '+',
-    TopLeft     = '╭',
-    TopRight    = '╮',
-    BottomLeft  = '╰',
+    Dot = '.',
+    PowerPill = 'O',
+    Vertical = '│',
+    Horizontal = '─',
+    Corner = '+',
+    TopLeft = '╭',
+    TopRight = '╮',
+    BottomLeft = '╰',
     BottomRight = '╯',
-    Door        = '=',
+    Door = '=',
 }
 
 public static class ElementExtensions
@@ -23,7 +23,7 @@ public static class ElementExtensions
             _ when (Element)ch is Element el && Enum.IsDefined(el) => el,
             '|' => Element.Vertical,
             '-' => Element.Horizontal,
-            _   => throw new ArgumentException($"Invalid Element '{ch}'"),
+            _ => throw new ArgumentException($"Invalid Element '{ch}'"),
         };
     }
 

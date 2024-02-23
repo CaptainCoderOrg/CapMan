@@ -3,59 +3,62 @@
 public static class BlinkusSprites
 {
     private static string AssetPath(string filename) => Path.Combine("assets", "sprites", filename);
-    private static SpriteSheet s_sheet => SpriteSheet.Get(AssetPath("blinkus.png"), 2, 5);
-    private static AnimatedSprite? _blinkusSearching;
+    private static SpriteSheet Sheet => SpriteSheet.Get(AssetPath("blinkus.png"), 2, 5);
+    private static AnimatedSprite? s_blinkusSearching;
 
     public static AnimatedSprite Searching
     {
         get
         {
-            if (_blinkusSearching is null)
+            if (s_blinkusSearching is null)
             {
-                _blinkusSearching = new AnimatedSprite(
-                    s_sheet,
+                #pragma warning disable format 
+                // Disabled for readability of animation
+                s_blinkusSearching = new AnimatedSprite(
+                    Sheet,
                     [(0, 0), (0, 0),
                      (0, 1), (0, 2), (0, 3),
                      (0, 4), (0, 4),
                      (0, 3), (0, 2), (0, 1)]
                 )
                 { FramesPerSecond = 1f };
+                #pragma warning restore format
             }
-            return _blinkusSearching;
+            return s_blinkusSearching;
         }
     }
 
-    private static AnimatedSprite? _blinkusChasing;
+    private static AnimatedSprite? s_blinkusChasing;
     public static AnimatedSprite Chasing
     {
         get
         {
-            if (_blinkusChasing is null)
+            if (s_blinkusChasing is null)
             {
-                _blinkusChasing = new AnimatedSprite(
-                    s_sheet,
+                s_blinkusChasing = new AnimatedSprite(
+                    Sheet,
                     [(1, 0), (1, 1), (1, 2)]
                 )
                 { FramesPerSecond = 10f };
             }
-            return _blinkusChasing;
+            return s_blinkusChasing;
         }
     }
 
-    private static AnimatedSprite? _blinkusFleeing;
+    private static AnimatedSprite? s_blinkusFleeing;
     public static AnimatedSprite Fleeing
     {
         get
         {
-            if (_blinkusFleeing is null)
+            if (s_blinkusFleeing is null)
             {
-                _blinkusFleeing = new AnimatedSprite(
-                    s_sheet,
+                s_blinkusFleeing = new AnimatedSprite(
+                    Sheet,
                     [(1, 0)]
                 )
                 { FramesPerSecond = 10f };
             }
-            return _blinkusFleeing;
+            return s_blinkusFleeing;
         }
     }
 

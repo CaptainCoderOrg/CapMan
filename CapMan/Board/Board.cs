@@ -1,5 +1,3 @@
-using System.Drawing;
-
 namespace CapMan;
 
 public class Board
@@ -270,5 +268,5 @@ public static class BoardExtensions
         };
     }
 
-    public static Board WithoutDoors(this Board board) => new (board.Width, board.Height, board.Elements.Where((kvp, v) => kvp.Value is not Element.Door));
+    public static Board WithoutDoors(this Board board) => new(board.Width, board.Height, board.Elements.Where((kvp, v) => kvp.Value is not Element.Door));
 }
