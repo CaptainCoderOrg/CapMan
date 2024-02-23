@@ -24,9 +24,9 @@ Raylib.InitWindow(0, 0, "CapMan | Main Window");
 
 // Initialization
 //--------------------------------------------------------------------------------------
-bool DebugText = false;
-bool DrawLines = false;
-bool Paused = false;
+bool debugText = false;
+bool drawLines = false;
+bool paused = false;
 
 Console.WriteLine(Environment.CurrentDirectory);
 
@@ -54,7 +54,7 @@ while (!Raylib.WindowShouldClose())
         centerScreen = GetBoardCenterOffset();
     }
     HandleInput();
-    if (!Paused)
+    if (!paused)
     {
         game.Update(Raylib.GetFrameTime());
     }
@@ -137,7 +137,7 @@ Rectangle GetScaledResolution()
 
 void DrawGrid(int left, int top)
 {
-    if (DrawLines)
+    if (drawLines)
     {
         int width = game.Board.Width * BoardRenderer.CellSize;
         int height = game.Board.Height * BoardRenderer.CellSize;
@@ -157,9 +157,9 @@ void RenderDebugText()
 {
     if (Raylib.IsKeyPressed(KeyboardKey.I))
     {
-        DebugText = !DebugText;
+        debugText = !debugText;
     }
-    if (DebugText)
+    if (debugText)
     {
         Raylib.DrawText($"X: {game.Player.Position.X:0.0}, Y: {game.Player.Position.Y:0.0}", 0, 0, 24, Color.White);
         Raylib.DrawText($"BX: {game.Player.Tile.X}, BY: {game.Player.Tile.Y}", 0, 24, 24, Color.White);
@@ -178,7 +178,7 @@ Game InitGame()
 
     EnemyActor clydeEnemy = new(new Position(11, 14), 4, Direction.Left)
     {
-      Behaviour = new ClydeAIBehaviour(),  
+        Behaviour = new ClydeAIBehaviour(),
     };
     enemies.Add(clydeEnemy);
 
@@ -227,11 +227,11 @@ void HandleInput()
     }
     if (Raylib.IsKeyPressed(KeyboardKey.G))
     {
-        DrawLines = !DrawLines;
+        drawLines = !drawLines;
     }
     if (Raylib.IsKeyPressed(KeyboardKey.Space))
     {
-        Paused = !Paused;
+        paused = !paused;
     }
     if (Raylib.IsKeyDown(KeyboardKey.R))
     {

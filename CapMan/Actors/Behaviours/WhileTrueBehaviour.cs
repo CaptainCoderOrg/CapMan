@@ -8,9 +8,9 @@ public class WhileTrueBehaviour(IEnemyBehaviour whileTrue, Predicate<IGame> pred
 
     public Direction GetNextDirection(IGame game, double deltaTime, EnemyActor actor)
     {
-        if (Predicate.Invoke(game)) 
-        { 
-            return WhileTrue.GetNextDirection(game, deltaTime, actor); 
+        if (Predicate.Invoke(game))
+        {
+            return WhileTrue.GetNextDirection(game, deltaTime, actor);
         }
         actor.Behaviour = OnComplete;
         return OnComplete.GetNextDirection(game, deltaTime, actor);
