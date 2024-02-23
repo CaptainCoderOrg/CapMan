@@ -219,11 +219,11 @@ void HandleInput()
     }
     if (Raylib.IsKeyPressed(KeyboardKey.Zero))
     {
-        game.Player.Speed++;
+        game.Player.Speed = Math.Min(++game.Player.Speed, GameConstants.DebugMaxGameSpeed);
     }
     if (Raylib.IsKeyPressed(KeyboardKey.Nine))
     {
-        game.Player.Speed--;
+        game.Player.Speed = Math.Max(--game.Player.Speed, 0);
     }
     if (Raylib.IsKeyPressed(KeyboardKey.G))
     {
