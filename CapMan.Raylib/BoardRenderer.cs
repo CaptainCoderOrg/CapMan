@@ -9,7 +9,7 @@ public class BoardRenderer
 
     public void Render(Board board, int left, int top)
     {
-        foreach ((Tile pos, Element el) in board.Elements)
+        foreach ((Tile pos, Element el) in board.Elements.Where(kvp => kvp.Value.IsRenderable()))
         {
             Raylib.DrawTexture(Textures[el], left + pos.X * CellSize, top + pos.Y * CellSize, Color.White);
         }
@@ -20,7 +20,7 @@ public class BoardRenderer
         if (s_textures == null)
         {
             s_textures = new();
-            foreach (Element element in Enum.GetValues<Element>().Where(el => el is not Element.Corner))
+            foreach (Element element in Enum.GetValues<Element>().Where(el => el.IsRenderable()))
             {
                 Image image = Raylib.LoadImage(AssetPath(element));
                 Texture2D texture = Raylib.LoadTextureFromImage(image);

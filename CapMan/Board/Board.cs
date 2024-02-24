@@ -78,6 +78,7 @@ public class Board
     public bool IsDot(Tile position) => TryGetElement(position, out Element element) && element.IsDot();
     public bool IsPowerPill(Tile position) => TryGetElement(position, out Element element) && element.IsPowerPill();
     public bool IsWall(Tile position) => TryGetElement(position, out Element element) && element.IsWall();
+    public bool IsSlowTile(Tile position) => TryGetElement(position, out Element element) && element.IsSlowTile();
     public bool Contains(Tile position) => position.Y >= 0 && position.Y < Height && position.X >= 0 && position.X < Width;
 
     public static readonly string StandardBoard = """
@@ -95,7 +96,7 @@ public class Board
              │.││          ││.│     
              │.││ ╭──==──╮ ││.│     
         ─────╯.╰╯ │      │ ╰╯.╰─────
-              .   │      │   .      
+        ::::: .   │      │   . :::::
         ─────╮.╭╮ │      │ ╭╮.╭─────
              │.││ ╰──────╯ ││.│     
              │.││          ││.│     
