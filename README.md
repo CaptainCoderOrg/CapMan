@@ -9,6 +9,8 @@ Bowler's Hat (Odd Job) is a weapon you can use to kill Enemies
 Hat Overflow: All enemies blow up
 Dunce Cap: Power Down
 
+Zak McKraken Alien hat
+
 
 What should Dots / Power Pills be?
 What should Enemies be?
