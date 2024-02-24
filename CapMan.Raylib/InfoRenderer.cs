@@ -1,25 +1,29 @@
 namespace CapMan.Raylib;
+
+using System.Numerics;
+
 using Raylib_cs;
 public class InfoRenderer
 {
-    private static readonly int Padding = 5;
-    private static Font s_pixelplay = Raylib.LoadFont("assets/fonts/pixelplay.png");
-    public static Font PixelPlay => s_pixelplay;
-
-    public static int BlockedHeight => (s_pixelplay.BaseSize + Padding) * 2;
+    public const int Padding = 5;
+    public const float Spacing = 1;
+    private static Font? s_pixelplay;
+    public static Font PixelPlay => s_pixelplay ??= Raylib.LoadFont(Path.Combine("assets", "fonts", "pixelplay.png"));
+    public static int BlockedHeight => (PixelPlay.BaseSize + Padding) * 2;
 
     public void Render(Game game, int top, int left)
     {
         int center = game.Board.Width * BoardRenderer.CellSize / 2;
-        int size = s_pixelplay.BaseSize;
 
-        string message = "HIGH SCORE";
+        const string message = "HIGH SCORE";
+        Vector2 hsSize = Raylib.MeasureTextEx(PixelPlay, message, PixelPlay.BaseSize, Spacing);
+        Vector2 hsPos = new(left + center - hsSize.X / 2, top + Padding);
+
         string score = $"{game.Score}";
+        Vector2 scoreSize = Raylib.MeasureTextEx(PixelPlay, score, PixelPlay.BaseSize, Spacing);
+        Vector2 scorePos = new(left + center - scoreSize.X / 2, top + Padding + hsSize.Y + Padding);
 
-        int messageOffset = Raylib.MeasureText(message, size) / 2;
-        int scoreOffset = Raylib.MeasureText(score, size) / 2;
-
-        Raylib.DrawText(message, left + center - messageOffset, top + Padding, size, Color.White);
-        Raylib.DrawText(score, left + center - scoreOffset, top + size + Padding, size, Color.White);
+        Raylib.DrawTextEx(PixelPlay, message, hsPos, PixelPlay.BaseSize, Spacing, Color.White);
+        Raylib.DrawTextEx(PixelPlay, score, scorePos, PixelPlay.BaseSize, Spacing, Color.White);
     }
 }
