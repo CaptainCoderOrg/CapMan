@@ -26,14 +26,14 @@ public class GameRenderer
 
     private void RenderText(Game game, int left, int top)
     {
-        if (game.State == GameState.Respawning)
+        Action action = game.State switch
         {
-            CenterTextOnBoard($"Respawning in: {game.RespawnCountDown:0.0}");
-        }
-        if (game.State == GameState.GameOver)
-        {
-            CenterTextOnBoard("Game Over");
-        }
+            GameState.Respawning => () => CenterTextOnBoard($"Respawning in: {game.RespawnCountDown:0.0}"),
+            GameState.GameOver => () => CenterTextOnBoard("Game Over"),
+            GameState.LevelComplete => () => CenterTextOnBoard($"Next Level in {game.StartNextLevelCountDown:0.0}"),
+            _ => () => { }
+        };
+        action.Invoke();
 
         void CenterTextOnBoard(string text)
         {

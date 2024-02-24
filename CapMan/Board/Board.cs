@@ -267,6 +267,8 @@ public static class BoardExtensions
             Y = ((position.Y % board.Height) + board.Height) % board.Height
         };
     }
-
     public static Board WithoutDoors(this Board board) => new(board.Width, board.Height, board.Elements.Where((kvp, v) => kvp.Value is not Element.Door));
+
+    public static Board Copy(this Board board) => new(board.Width, board.Height, board.Elements);
+    public static int CountDots(this Board board) => board.Elements.Count(kvp => kvp.Value.IsDot() || kvp.Value.IsPowerPill());
 }

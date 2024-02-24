@@ -6,4 +6,5 @@ public enum GameState
     Playing,
     Respawning,
     GameOver,
+    LevelComplete,
 }
