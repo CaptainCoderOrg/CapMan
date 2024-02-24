@@ -194,7 +194,7 @@ Game InitGame()
     };
     enemies.Add(whimsicalEnemy);
 
-    Game game = new(enemies);
+    Game game = new(enemies, new Board(Board.StandardBoard));
     game.Player.Position = new(14, 23);
     return game;
 }
