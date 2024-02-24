@@ -143,11 +143,11 @@ void DrawGrid(int left, int top)
         int height = game.Board.Height * BoardRenderer.CellSize;
         for (int y = 0; y < game.Board.Height; y++)
         {
-            Raylib.DrawLine(left, top + y * BoardRenderer.CellSize, width, y * BoardRenderer.CellSize, Color.DarkGreen);
+            Raylib.DrawLine(left, top + y * BoardRenderer.CellSize, width, top + y * BoardRenderer.CellSize, Color.DarkGreen);
         }
         for (int x = 0; x < game.Board.Width; x++)
         {
-            Raylib.DrawLine(left + x * BoardRenderer.CellSize, 0, top + x * BoardRenderer.CellSize, height, Color.DarkGreen);
+            Raylib.DrawLine(left + x * BoardRenderer.CellSize, top, left + x * BoardRenderer.CellSize, top + height, Color.DarkGreen);
         }
     }
 }
