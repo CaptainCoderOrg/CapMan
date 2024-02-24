@@ -21,6 +21,7 @@
 using System.Numerics;
 
 Raylib.InitWindow(0, 0, "CapMan | Main Window");
+Raylib.InitAudioDevice();
 
 // Initialization
 //--------------------------------------------------------------------------------------
@@ -196,6 +197,7 @@ Game InitGame()
 
     Game game = new(enemies, new Board(Board.StandardBoard));
     game.Player.Position = new(14, 23);
+    GameSFXController.Shared.Game = game;
     return game;
 }
 
