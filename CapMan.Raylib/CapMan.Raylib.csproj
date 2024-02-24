@@ -16,49 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\assets\sprites\blinkus.png" Link="assets\sprites\blinkus.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\bottom-left.png" Link="assets\sprites\bottom-left.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\bottom-right.png" Link="assets\sprites\bottom-right.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\capman.gif" Link="assets\sprites\capman.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\capman.png" Link="assets\sprites\capman.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\door.png" Link="assets\sprites\door.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\dot.png" Link="assets\sprites\dot.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\horizontal.png" Link="assets\sprites\horizontal.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\powerpill.png" Link="assets\sprites\powerpill.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\top-left.png" Link="assets\sprites\top-left.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\top-right.png" Link="assets\sprites\top-right.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\vertical.png" Link="assets\sprites\vertical.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\wall.png" Link="assets\sprites\wall.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\sprites\walls.png" Link="assets\sprites\walls.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\assets\fonts\pixelplay.png" Link="assets\fonts\pixelplay.png">
+    <Content Include="..\assets\**\*" LinkBase="assets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
