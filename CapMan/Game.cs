@@ -18,6 +18,7 @@ public class Game(IEnumerable<EnemyActor> enemies, Board board) : IGame
     public int Score { get; private set; }
     public int Level { get; private set; } = 1;
     public int DotsRemaining => Board.CountDots();
+    public event Action<GameEvent>? OnEvent;
 
     private void ResetEnemies()
     {
@@ -86,6 +87,7 @@ public class Game(IEnumerable<EnemyActor> enemies, Board board) : IGame
         Player.Update(this, delta);
         if (CheckEatDots())
         {
+            OnEvent?.Invoke(GameEvent.DotEaten);
             CheckLevelComplete();
         }
         foreach (EnemyActor enemy in Enemies)
