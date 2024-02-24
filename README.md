@@ -13,6 +13,8 @@ Dunce Cap: Power Down
 What should Dots / Power Pills be?
 What should Enemies be?
 
+Iconic hats: https://screenrant.com/most-iconic-movie-hats/
+
 # We "Fixed" Cap Man to flip rather than rotate
 
 We voted on it! https://clips.twitch.tv/InexpensiveFitPrariedogShazBotstix-f3rtsBDRI1KQ0UOX

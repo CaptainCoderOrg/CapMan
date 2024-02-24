@@ -3,18 +3,30 @@ namespace CapMan;
 public class EnemyActor(Position position, double speed, Direction direction) : Actor(position, speed, direction)
 {
     public Position StartPosition { get; } = position;
+    public double BaseSpeed { get; set; } = speed;
     public EnemyState State { get; set; } = EnemyState.Searching;
     public IEnemyBehaviour Behaviour { get; set; } = new TargetTileBehaviour(new Tile(1, 1));
     public Tile? LastTarget { get; set; }
     public bool IgnoreDoors { get; set; } = false;
     public override void Update(IGame game, double deltaTime)
     {
+        SetSpeed(game);
         if (IgnoreDoors)
         {
             game = new DelegateBoardGame(game, game.Board.WithoutDoors());
         }
         NextDirection = Behaviour.GetNextDirection(game, deltaTime, this);
+
         base.Update(game, deltaTime);
+    }
+
+    private void SetSpeed(IGame game)
+    {
+        this.Speed = BaseSpeed;
+        if (game.Board.IsSlowTile(this.Tile))
+        {
+            this.Speed *= 0.75;
+        }
     }
 
     public void Reset()
