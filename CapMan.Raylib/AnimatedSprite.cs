@@ -15,10 +15,10 @@ public class AnimatedSprite
         _frames = [.. frames];
     }
 
-    public void Draw(int x, int y)
+    public void Draw(int x, int y, Color tint)
     {
         int currentFrame = ((int)(CurrentTime * FramesPerSecond)) % _frames.Length;
         (int row, int column) = _frames[currentFrame];
-        _sheet.DrawSprite(row, column, x, y, Rotation, FlipX);
+        _sheet.DrawSprite(row, column, x, y, Rotation, FlipX, tint);
     }
 }

@@ -34,7 +34,11 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
     private void SetSpeed(IGame game)
     {
         this.Speed = BaseSpeed;
-        if (game.Board.IsSlowTile(this.Tile))
+        if (!IsAlive)
+        {
+            this.Speed *= 2;
+        }
+        else if (game.Board.IsSlowTile(this.Tile))
         {
             this.Speed *= 0.75;
         }
@@ -43,6 +47,7 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
     public void Reset()
     {
         Position = StartPosition;
+        IsAlive = true;
     }
 
     private class DelegateBoardGame(IGame baseGame, Board board) : IGame

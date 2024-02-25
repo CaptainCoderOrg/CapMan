@@ -81,6 +81,7 @@ public class Game(IEnumerable<EnemyActor> enemies, Board board) : IGame
             Board = _originalBoard.Copy();
             PlayTime = 0;
             State = GameState.Playing;
+            _projectiles.Clear();
         }
     }
 
@@ -101,6 +102,7 @@ public class Game(IEnumerable<EnemyActor> enemies, Board board) : IGame
         foreach (EnemyActor enemy in Enemies)
         {
             enemy.Update(this, delta);
+            if (!enemy.IsAlive) { continue; }
             if (enemy.BoundingBox().IntersectsWith(Player.BoundingBox()))
             {
                 PlayerKilled();

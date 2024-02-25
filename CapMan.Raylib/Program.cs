@@ -174,7 +174,7 @@ Game InitGame()
     List<EnemyActor> enemies = new();
     EnemyActor targetsPlayer = new(new Position(14, 11), 4, Direction.Down)
     {
-        Behaviour = new TargetPlayerTile(),
+        Behaviour = new KevinAIBehaviour()
     };
     enemies.Add(targetsPlayer);
 
