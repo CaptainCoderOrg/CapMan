@@ -1,6 +1,6 @@
 namespace CapMan;
 
-public class Game(IEnumerable<EnemyActor> enemies, Board board) : IGame
+public class Game(IEnumerable<Actor> actors, Board board) : IGame
 {
     public GameState State { get; set; } = GameState.Playing;
     public double RespawnTime { get; } = 2.0;
@@ -11,8 +11,8 @@ public class Game(IEnumerable<EnemyActor> enemies, Board board) : IGame
     public double RespawnCountDown { get; private set; } = 0;
     public double StartNextLevelCountDown { get; private set; } = 0;
     public int Lives { get; set; } = 3;
-    public PlayerActor Player { get; private set; } = new();
-    public EnemyActor[] Enemies { get; private set; } = [.. enemies];
+    public PlayerActor Player { get; private set; } = actors.OfType<PlayerActor>().SingleOrDefault() ?? new();
+    public EnemyActor[] Enemies { get; private set; } = [.. actors.OfType<EnemyActor>()];
     public Board Board { get; private set; } = board.Copy();
     private readonly Board _originalBoard = board.Copy();
     public int Score { get; private set; }
