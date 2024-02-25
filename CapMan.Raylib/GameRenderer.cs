@@ -9,12 +9,17 @@ public class GameRenderer
 
     private readonly BoardRenderer _boardRenderer = new();
     private readonly CapManRenderer _capManRenderer = new();
+    private readonly BowlerHatRenderer _bowlerHatRenderer = new();
     private readonly EnemyRenderer _blinkusRenderer = new(BlinkusSprites.Searching, BlinkusSprites.Chasing, BlinkusSprites.Fleeing);
 
     public void Render(Game game, int left, int top)
     {
         _boardRenderer.Render(game.Board, left, top);
         _capManRenderer.Render(game.Player, left, top);
+        foreach (Projectile projectile in game.Projectiles)
+        {
+            _bowlerHatRenderer.Render(projectile, left, top);
+        }
         foreach (EnemyActor enemy in game.Enemies)
         {
             _blinkusRenderer.Render(enemy, left, top);

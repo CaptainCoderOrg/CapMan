@@ -165,6 +165,7 @@ void RenderDebugText()
         Raylib.DrawText($"X: {game.Player.Position.X:0.0}, Y: {game.Player.Position.Y:0.0}", 0, 0, 24, Color.White);
         Raylib.DrawText($"BX: {game.Player.Tile.X}, BY: {game.Player.Tile.Y}", 0, 24, 24, Color.White);
         Raylib.DrawText($"Current: {game.Player.CurrentDirection}, Next: {game.Player.NextDirection}", 0, 48, 24, Color.White);
+        Raylib.DrawText($"HasProjectile: {game.Player.HasProjectile}", 0, 72, 24, Color.White);
     }
 }
 
@@ -203,6 +204,15 @@ Game InitGame()
 
 void HandleInput()
 {
+    if (Raylib.IsKeyPressed(KeyboardKey.Space))
+    {
+        if (game.Player.HasProjectile)
+        {
+            Projectile created = game.Player.CreateProjectile(game.Player);
+            game.Player.CreateProjectile = null;
+            game.AddProjectile(created);
+        }
+    }
     if (Raylib.IsKeyDown(KeyboardKey.W) || Raylib.IsKeyDown(KeyboardKey.Up))
     {
         game.Player.NextDirection = Direction.Up;
@@ -231,7 +241,7 @@ void HandleInput()
     {
         drawLines = !drawLines;
     }
-    if (Raylib.IsKeyPressed(KeyboardKey.Space))
+    if (Raylib.IsKeyPressed(KeyboardKey.P))
     {
         paused = !paused;
     }
