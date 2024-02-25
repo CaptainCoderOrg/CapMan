@@ -1,3 +1,4 @@
+
 namespace CapMan;
 
 public class EnemyActor(Position position, double speed, Direction direction) : Actor(position, speed, direction)
@@ -8,8 +9,13 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
     public IEnemyBehaviour Behaviour { get; set; } = new TargetTileBehaviour(new Tile(1, 1));
     public Tile? LastTarget { get; set; }
     public bool IgnoreDoors { get; set; } = false;
+    public bool IsAlive { get; set; } = true;
     public override void Update(IGame game, double deltaTime)
     {
+        if (CollidingWithProjectile(game))
+        {
+            IsAlive = false;
+        }
         SetSpeed(game);
         if (IgnoreDoors)
         {
@@ -19,6 +25,11 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
 
         base.Update(game, deltaTime);
     }
+
+    private bool CollidingWithProjectile(IGame game) =>
+        game.Projectiles
+            .Select(p => p.BoundingBox())
+            .Any(p => p.IntersectsWith(this.BoundingBox()));
 
     private void SetSpeed(IGame game)
     {
@@ -47,6 +58,7 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
         public EnemyActor[] Enemies => DelegateGame.Enemies;
         public int Score => DelegateGame.Score;
         public double PlayTime => DelegateGame.PlayTime;
+        public IReadOnlyList<Projectile> Projectiles => DelegateGame.Projectiles;
         public void Update(double delta) => DelegateGame.Update(delta);
     }
 }
