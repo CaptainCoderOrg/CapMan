@@ -19,6 +19,8 @@ public class Game(IEnumerable<EnemyActor> enemies, Board board) : IGame
     public int Level { get; private set; } = 1;
     public int DotsRemaining => Board.CountDots();
     public event Action<GameEvent>? OnEvent;
+    private readonly List<Projectile> _projectiles = new();
+    public IReadOnlyList<Projectile> Projectiles => _projectiles.AsReadOnly();
 
     private void ResetEnemies()
     {
@@ -90,6 +92,12 @@ public class Game(IEnumerable<EnemyActor> enemies, Board board) : IGame
             OnEvent?.Invoke(GameEvent.DotEaten);
             CheckLevelComplete();
         }
+
+        foreach (Projectile projectile in _projectiles)
+        {
+            projectile.Update(this, delta);
+        }
+
         foreach (EnemyActor enemy in Enemies)
         {
             enemy.Update(this, delta);
@@ -133,9 +141,12 @@ public class Game(IEnumerable<EnemyActor> enemies, Board board) : IGame
         {
             Board.RemoveElement(Player.Tile);
             Score += 50;
+            Player.CreateProjectile = PlayerProjectileExtensions.BowlerHatProjectile;
             return true;
         }
 
         return false;
     }
+
+    public void AddProjectile(Projectile toAdd) => _projectiles.Add(toAdd);
 }
