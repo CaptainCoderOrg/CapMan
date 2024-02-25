@@ -11,7 +11,7 @@ public static class GameParser
         foreach (string line in lines.TakeWhile(IsNotABlankLine))
         {
             string[] tokens = line.Split(',', StringSplitOptions.TrimEntries);
-            if (tokens is [string name, string startX, string startY, string speed, string direction, string behaviour])
+            if (tokens is [string name, string startX, string startY, string speed, string direction, string behaviour, .. string[] behaviourParams])
             {
                 Position startPosition = new(double.Parse(startX), double.Parse(startY));
                 double startSpeed = double.Parse(speed);
@@ -28,19 +28,25 @@ public static class GameParser
                 }
                 else
                 {
-                    string targetName = "";
-                    if (behaviour.Contains('('))
-                    {
-                        string[] behaviourTokens = behaviour.Split(new char[] { '(', ')' }, StringSplitOptions.TrimEntries);
-                        behaviour = behaviourTokens[0];
-                        targetName = behaviourTokens[1];
-                    }
                     IEnemyBehaviour enemyBehaviour = behaviour.ToLowerInvariant() switch
                     {
-                        "bob" => new BobAIBehaviour(),
-                        "clyde" => new ClydeAIBehaviour(),
                         "targetplayertile" => new TargetPlayerTile(),
-                        "whimsical" => new WhimsicalAIBehaviour((EnemyActor)actors[targetName]),
+                        "bob" => new BobAIBehaviour(
+                            new Tile(int.Parse(behaviourParams[0]), int.Parse(behaviourParams[1])),
+                            new Tile(int.Parse(behaviourParams[2]), int.Parse(behaviourParams[3])),
+                            new Tile(int.Parse(behaviourParams[4]), int.Parse(behaviourParams[5]))
+                            ),
+                        "clyde" => new ClydeAIBehaviour(
+                            new Tile(int.Parse(behaviourParams[0]), int.Parse(behaviourParams[1])),
+                            new Tile(int.Parse(behaviourParams[2]), int.Parse(behaviourParams[3])),
+                            new Tile(int.Parse(behaviourParams[4]), int.Parse(behaviourParams[5]))
+                            ),
+                        "whimsical" => new WhimsicalAIBehaviour(
+                            new Tile(int.Parse(behaviourParams[0]), int.Parse(behaviourParams[1])),
+                            new Tile(int.Parse(behaviourParams[2]), int.Parse(behaviourParams[3])),
+                            new Tile(int.Parse(behaviourParams[4]), int.Parse(behaviourParams[5])),
+                            (EnemyActor)actors[behaviourParams[6]]
+                            ),
                         _ => throw new NotImplementedException(),
                     };
                     actor = new EnemyActor(startPosition, startSpeed, startDirection) { Behaviour = enemyBehaviour };

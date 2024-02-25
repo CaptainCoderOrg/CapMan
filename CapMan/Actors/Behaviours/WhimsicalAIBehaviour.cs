@@ -1,9 +1,9 @@
 namespace CapMan;
 
-public class WhimsicalAIBehaviour(EnemyActor target) : IEnemyBehaviour
+public class WhimsicalAIBehaviour(Tile patrol1, Tile patrol2, Tile houseExit, EnemyActor target) : IEnemyBehaviour
 {
-    private readonly IEnemyBehaviour _patrolBehaviour = new PatrolBehaviour(new Tile(16, 15), new Tile(16, 13));
-    private readonly IEnemyBehaviour _leaveHouseBehaviour = new TargetTileBehaviour(new Tile(13, 11));
+    private readonly IEnemyBehaviour _patrolBehaviour = new PatrolBehaviour(patrol1, patrol2);
+    private readonly IEnemyBehaviour _leaveHouseBehaviour = new TargetTileBehaviour(houseExit);
     private readonly IEnemyBehaviour _afterExit = new WhimsicalTargeting(target);
     private bool _hasExited = false;
     public Direction GetNextDirection(IGame game, double deltaTime, EnemyActor enemy)

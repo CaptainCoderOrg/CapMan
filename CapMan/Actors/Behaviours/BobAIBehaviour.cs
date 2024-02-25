@@ -1,9 +1,9 @@
 namespace CapMan;
 
-public class BobAIBehaviour : IEnemyBehaviour
+public class BobAIBehaviour(Tile patrol1, Tile patrol2, Tile houseExit) : IEnemyBehaviour
 {
-    private readonly IEnemyBehaviour _patrolBehaviour = new PatrolBehaviour(new Tile(13, 15), new Tile(13, 13));
-    private readonly IEnemyBehaviour _leaveHouseBehaviour = new TargetTileBehaviour(new Tile(13, 11));
+    private readonly IEnemyBehaviour _patrolBehaviour = new PatrolBehaviour(patrol1, patrol2);
+    private readonly IEnemyBehaviour _leaveHouseBehaviour = new TargetTileBehaviour(houseExit);
     private readonly IEnemyBehaviour _afterExit = new TargetAheadOfPlayer(4);
     private bool _hasExited = false;
     public Direction GetNextDirection(IGame game, double deltaTime, EnemyActor enemy)
