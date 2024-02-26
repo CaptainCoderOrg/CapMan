@@ -24,8 +24,9 @@ public class Enemy_should_
         );
         
         EnemyActor enemy = new(new Position(3, 1), 1, Direction.Right);
+        PlayerActor player = new(new Position(0, 0), 0, Direction.Left);
         
-        Game game = new([enemy], board);
+        Game game = new([enemy, player], board);
         Projectile projectile = new(new Position(4, 1), 1, Direction.Left);
         game.AddProjectile(projectile);
 

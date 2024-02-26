@@ -1,6 +1,6 @@
 namespace CapMan;
 
-public class PlayerActor() : Actor(new Position(14, 23), 8, Direction.Left)
+public class PlayerActor(Position startPosition, double speed, Direction direction) : Actor(startPosition, speed, direction)
 {
     public bool HasProjectile => CreateProjectile is not null;
     public Func<PlayerActor, Projectile>? CreateProjectile { get; set; }

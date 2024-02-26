@@ -2,6 +2,12 @@ namespace CapMan;
 public interface IGame
 {
     public GameState State { get; set; }
+    /// <summary>
+    /// The amount of time the player remains powered up after collecting a
+    /// Power Up.
+    /// </summary>
+    public double PoweredUpTime { get; }
+    public bool IsPoweredUp { get; }
     public double PlayTime { get; }
     public double RespawnTime { get; }
     public double RespawnCountDown { get; }

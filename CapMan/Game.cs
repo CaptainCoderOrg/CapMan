@@ -11,7 +11,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
     public double RespawnCountDown { get; private set; } = 0;
     public double StartNextLevelCountDown { get; private set; } = 0;
     public int Lives { get; set; } = 3;
-    public PlayerActor Player { get; private set; } = actors.OfType<PlayerActor>().SingleOrDefault() ?? new();
+    public PlayerActor Player { get; private set; } = actors.OfType<PlayerActor>().Single();
     public EnemyActor[] Enemies { get; private set; } = [.. actors.OfType<EnemyActor>()];
     public Board Board { get; private set; } = board.Copy();
     private readonly Board _originalBoard = board.Copy();
@@ -21,6 +21,9 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
     public event Action<GameEvent>? OnEvent;
     private readonly List<Projectile> _projectiles = new();
     public IReadOnlyList<Projectile> Projectiles => _projectiles.AsReadOnly();
+    public double PoweredUpTime { get; set; } = 10;
+    private double _poweredUpTimeRemaining = 0;
+    public bool IsPoweredUp => _poweredUpTimeRemaining > 0;
 
     public Game(string gameInput) : this(gameInput.ReplaceLineEndings().Split(Environment.NewLine)) { }
     public Game(IEnumerable<string> gameInput) : this(ParseActors(gameInput), new Board(gameInput.SkipWhile(IsNotABlankLine).Skip(1))) { }
@@ -42,12 +45,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
                 Actor actor;
                 if (name.Equals("CapMan", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    actor = new PlayerActor()
-                    {
-                        Position = startPosition,
-                        Speed = startSpeed,
-                        CurrentDirection = startDirection,
-                    };
+                    actor = new PlayerActor(startPosition, startSpeed, startDirection);
                 }
                 else
                 {
@@ -124,7 +122,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
         RespawnCountDown -= delta;
         if (RespawnCountDown <= 0)
         {
-            Player = new();
+            Player = new(Player.StartPosition, Player.Speed, Player.StartDirection);
             ResetEnemies();
             //TODO: Reset enemies
             State = GameState.Playing;
@@ -138,7 +136,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
         if (StartNextLevelCountDown <= 0)
         {
             Level++;
-            Player = new();
+            Player = new(Player.StartPosition, Player.Speed, Player.StartDirection);
             ResetEnemies();
             Board = _originalBoard.Copy();
             PlayTime = 0;
@@ -169,6 +167,12 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
             {
                 PlayerKilled();
             }
+        }
+        _poweredUpTimeRemaining -= delta;
+        if (_poweredUpTimeRemaining < 0) 
+        { 
+            _projectiles.Clear();
+            Player.CreateProjectile = null;
         }
     }
 
@@ -206,6 +210,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
             Board.RemoveElement(Player.Tile);
             Score += 50;
             Player.CreateProjectile = PlayerProjectileExtensions.BowlerHatProjectile;
+            _poweredUpTimeRemaining = PoweredUpTime;
             return true;
         }
 

@@ -3,7 +3,6 @@ namespace CapMan;
 
 public class EnemyActor(Position position, double speed, Direction direction) : Actor(position, speed, direction)
 {
-    public Position StartPosition { get; } = position;
     public double BaseSpeed { get; set; } = speed;
     public EnemyState State { get; set; } = EnemyState.Searching;
     public IEnemyBehaviour Behaviour { get; set; } = new TargetTileBehaviour(new Tile(1, 1));
@@ -64,6 +63,8 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
         public int Score => DelegateGame.Score;
         public double PlayTime => DelegateGame.PlayTime;
         public IReadOnlyList<Projectile> Projectiles => DelegateGame.Projectiles;
+        public double PoweredUpTime => DelegateGame.PoweredUpTime;
+        public bool IsPoweredUp => DelegateGame.IsPoweredUp;
         public void Update(double delta) => DelegateGame.Update(delta);
     }
 }
