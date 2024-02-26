@@ -1,9 +1,9 @@
 namespace CapMan;
 
-public class ClydeAIBehaviour : IEnemyBehaviour
+public class ClydeAIBehaviour(Tile patrol1, Tile patrol2, Tile houseExit) : IEnemyBehaviour
 {
-    private readonly IEnemyBehaviour _patrolBehaviour = new PatrolBehaviour(new Tile(11, 13), new Tile(11, 15));
-    private readonly IEnemyBehaviour _leaveHouseBehaviour = new TargetTileBehaviour(new Tile(13, 11));
+    private readonly IEnemyBehaviour _patrolBehaviour = new PatrolBehaviour(patrol1, patrol2);
+    private readonly IEnemyBehaviour _leaveHouseBehaviour = new TargetTileBehaviour(houseExit);
     private readonly IEnemyBehaviour _afterExit = new ClydeTargeting();
     private bool _hasExited = false;
     public Direction GetNextDirection(IGame game, double deltaTime, EnemyActor enemy)
