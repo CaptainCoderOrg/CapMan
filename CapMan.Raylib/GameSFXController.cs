@@ -1,13 +1,13 @@
 namespace CapMan.Raylib;
-
 using Raylib_cs;
 
 public class GameSFXController
 {
     public static GameSFXController Shared { get; } = new();
-    private static Sound? s_dotSound;
-    public static Sound DotSound = s_dotSound ??= Raylib.LoadSound(Path.Combine("assets", "sfx", "dot.wav"));
+    private static Sound[]? s_dotSound;
+    public static Sound[] DotSound = s_dotSound ??= [Raylib.LoadSound(Path.Combine("assets", "sfx", "dot0.wav")), Raylib.LoadSound(Path.Combine("assets", "sfx", "dot1.wav"))];
     private Game? _currentGame;
+    private int _dots = 1;
     public Game Game
     {
         get => _currentGame ?? throw new InvalidOperationException("Cannot access Game prior to setting it.");
@@ -21,9 +21,10 @@ public class GameSFXController
 
     private void HandleEvent(GameEvent evt)
     {
-        if (evt is GameEvent.DotEaten && !Raylib.IsSoundPlaying(DotSound))
+        if (evt is GameEvent.DotEaten)
         {
-            Raylib.PlaySound(DotSound);
+            _dots = (_dots + 1) % 2;
+            Raylib.PlaySound(DotSound[_dots]);
         }
     }
 
