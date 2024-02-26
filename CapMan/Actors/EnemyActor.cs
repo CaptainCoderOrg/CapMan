@@ -27,6 +27,7 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
 
     private bool CollidingWithProjectile(IGame game) =>
         game.Projectiles
+            .Where(p => p.IsLethal)
             .Select(p => p.BoundingBox())
             .Any(p => p.IntersectsWith(this.BoundingBox()));
 
@@ -62,7 +63,7 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
         public EnemyActor[] Enemies => DelegateGame.Enemies;
         public int Score => DelegateGame.Score;
         public double PlayTime => DelegateGame.PlayTime;
-        public IReadOnlyList<Projectile> Projectiles => DelegateGame.Projectiles;
+        public IReadOnlyList<IProjectile> Projectiles => DelegateGame.Projectiles;
         public double PoweredUpTime => DelegateGame.PoweredUpTime;
         public bool IsPoweredUp => DelegateGame.IsPoweredUp;
         public void Update(double delta) => DelegateGame.Update(delta);

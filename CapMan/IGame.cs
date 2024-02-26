@@ -16,7 +16,7 @@ public interface IGame
     public EnemyActor[] Enemies { get; }
     public Board Board { get; }
     public int Score { get; }
-    public IReadOnlyList<Projectile> Projectiles { get; }
+    public IReadOnlyList<IProjectile> Projectiles { get; }
 
     /// <summary>
     /// Progress the game forward the specified amount of time in seconds.

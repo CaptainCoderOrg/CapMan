@@ -1,6 +1,6 @@
 namespace CapMan;
 
-public class Projectile(Position position, double speed, Direction direction) : Actor(position, speed, direction)
+public class Projectile(Position position, double speed, Direction direction) : Actor(position, speed, direction), IProjectile
 {
     public bool IsLethal { get; private set; } = true;
 

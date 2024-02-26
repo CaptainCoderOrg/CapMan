@@ -19,8 +19,8 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
     public int Level { get; private set; } = 1;
     public int DotsRemaining => Board.CountDots();
     public event Action<GameEvent>? OnEvent;
-    private readonly List<Projectile> _projectiles = new();
-    public IReadOnlyList<Projectile> Projectiles => _projectiles.AsReadOnly();
+    private readonly List<IProjectile> _projectiles = new();
+    public IReadOnlyList<IProjectile> Projectiles => _projectiles.AsReadOnly();
     public double PoweredUpTime { get; set; } = 10;
     private double _poweredUpTimeRemaining = 0;
     public bool IsPoweredUp => _poweredUpTimeRemaining > 0;
@@ -169,8 +169,8 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
             }
         }
         _poweredUpTimeRemaining -= delta;
-        if (_poweredUpTimeRemaining < 0) 
-        { 
+        if (_poweredUpTimeRemaining < 0)
+        {
             _projectiles.Clear();
             Player.CreateProjectile = null;
         }
@@ -217,5 +217,5 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
         return false;
     }
 
-    public void AddProjectile(Projectile toAdd) => _projectiles.Add(toAdd);
+    public void AddProjectile(IProjectile toAdd) => _projectiles.Add(toAdd);
 }
