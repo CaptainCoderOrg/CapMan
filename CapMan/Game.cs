@@ -53,7 +53,11 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
                 {
                     IEnemyBehaviour enemyBehaviour = behaviour.ToLowerInvariant() switch
                     {
-                        "targetplayertile" => new TargetPlayerTile(),
+                        "kevin" => new KevinAIBehaviour(
+                            new Tile(int.Parse(behaviourParams[0]), int.Parse(behaviourParams[1])),
+                            new Tile(int.Parse(behaviourParams[2]), int.Parse(behaviourParams[3])),
+                            new Tile(int.Parse(behaviourParams[4]), int.Parse(behaviourParams[5]))
+                        ),
                         "bob" => new BobAIBehaviour(
                             new Tile(int.Parse(behaviourParams[0]), int.Parse(behaviourParams[1])),
                             new Tile(int.Parse(behaviourParams[2]), int.Parse(behaviourParams[3])),

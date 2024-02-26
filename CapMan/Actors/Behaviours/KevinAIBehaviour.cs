@@ -1,5 +1,6 @@
 namespace CapMan;
 
-public class KevinAIBehaviour() : TraditionalEnemyAI(new Tile(12, 13), new Tile(12, 15), new Tile(13, 11), new TargetPlayerTile(), 0)
+public class KevinAIBehaviour(Tile patrol1, Tile patrol2, Tile houseExit)
+    : TraditionalEnemyAI(patrol1, patrol2, houseExit, new TargetPlayerTile(), 0)
 {
 }
