@@ -49,7 +49,7 @@ public class CapManRenderer
         Sprite.FlipX = capman.CurrentDirection == Direction.Right ? true : false;
         int x = (int)(capman.Position.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
         int y = (int)(capman.Position.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-        Sprite.Draw(left + x, top + y);
+        Sprite.Draw(left + x, top + y, Color.White);
     }
 
     public void RenderBoundingBox(Actor actor, int left, int top) =>

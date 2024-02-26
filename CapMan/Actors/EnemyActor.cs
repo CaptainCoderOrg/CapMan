@@ -1,15 +1,20 @@
+
 namespace CapMan;
 
 public class EnemyActor(Position position, double speed, Direction direction) : Actor(position, speed, direction)
 {
-    public Position StartPosition { get; } = position;
     public double BaseSpeed { get; set; } = speed;
     public EnemyState State { get; set; } = EnemyState.Searching;
     public IEnemyBehaviour Behaviour { get; set; } = new TargetTileBehaviour(new Tile(1, 1));
     public Tile? LastTarget { get; set; }
     public bool IgnoreDoors { get; set; } = false;
+    public bool IsAlive { get; set; } = true;
     public override void Update(IGame game, double deltaTime)
     {
+        if (CollidingWithProjectile(game))
+        {
+            IsAlive = false;
+        }
         SetSpeed(game);
         if (IgnoreDoors)
         {
@@ -20,10 +25,20 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
         base.Update(game, deltaTime);
     }
 
+    private bool CollidingWithProjectile(IGame game) =>
+        game.Projectiles
+            .Where(p => p.IsLethal)
+            .Select(p => p.BoundingBox())
+            .Any(p => p.IntersectsWith(this.BoundingBox()));
+
     private void SetSpeed(IGame game)
     {
         this.Speed = BaseSpeed;
-        if (game.Board.IsSlowTile(this.Tile))
+        if (!IsAlive)
+        {
+            this.Speed *= 2;
+        }
+        else if (game.Board.IsSlowTile(this.Tile))
         {
             this.Speed *= 0.75;
         }
@@ -32,6 +47,7 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
     public void Reset()
     {
         Position = StartPosition;
+        IsAlive = true;
     }
 
     private class DelegateBoardGame(IGame baseGame, Board board) : IGame
@@ -47,6 +63,9 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
         public EnemyActor[] Enemies => DelegateGame.Enemies;
         public int Score => DelegateGame.Score;
         public double PlayTime => DelegateGame.PlayTime;
+        public IReadOnlyList<IProjectile> Projectiles => DelegateGame.Projectiles;
+        public double PoweredUpTime => DelegateGame.PoweredUpTime;
+        public bool IsPoweredUp => DelegateGame.IsPoweredUp;
         public void Update(double delta) => DelegateGame.Update(delta);
     }
 }

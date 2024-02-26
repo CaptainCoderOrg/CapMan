@@ -11,7 +11,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
     public double RespawnCountDown { get; private set; } = 0;
     public double StartNextLevelCountDown { get; private set; } = 0;
     public int Lives { get; set; } = 3;
-    public PlayerActor Player { get; private set; } = actors.OfType<PlayerActor>().SingleOrDefault() ?? new();
+    public PlayerActor Player { get; private set; } = actors.OfType<PlayerActor>().Single();
     public EnemyActor[] Enemies { get; private set; } = [.. actors.OfType<EnemyActor>()];
     public Board Board { get; private set; } = board.Copy();
     private readonly Board _originalBoard = board.Copy();
@@ -19,6 +19,11 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
     public int Level { get; private set; } = 1;
     public int DotsRemaining => Board.CountDots();
     public event Action<GameEvent>? OnEvent;
+    private readonly List<IProjectile> _projectiles = new();
+    public IReadOnlyList<IProjectile> Projectiles => _projectiles.AsReadOnly();
+    public double PoweredUpTime { get; set; } = 10;
+    public double PoweredUpTimeRemaining { get; set; } = 0;
+    public bool IsPoweredUp => PoweredUpTimeRemaining > 0;
 
     public Game(string gameInput) : this(gameInput.ReplaceLineEndings().Split(Environment.NewLine)) { }
     public Game(IEnumerable<string> gameInput) : this(ParseActors(gameInput), new Board(gameInput.SkipWhile(IsNotABlankLine).Skip(1))) { }
@@ -40,18 +45,17 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
                 Actor actor;
                 if (name.Equals("CapMan", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    actor = new PlayerActor()
-                    {
-                        Position = startPosition,
-                        Speed = startSpeed,
-                        CurrentDirection = startDirection,
-                    };
+                    actor = new PlayerActor(startPosition, startSpeed, startDirection);
                 }
                 else
                 {
                     IEnemyBehaviour enemyBehaviour = behaviour.ToLowerInvariant() switch
                     {
-                        "targetplayertile" => new TargetPlayerTile(),
+                        "kevin" => new KevinAIBehaviour(
+                            new Tile(int.Parse(behaviourParams[0]), int.Parse(behaviourParams[1])),
+                            new Tile(int.Parse(behaviourParams[2]), int.Parse(behaviourParams[3])),
+                            new Tile(int.Parse(behaviourParams[4]), int.Parse(behaviourParams[5]))
+                        ),
                         "bob" => new BobAIBehaviour(
                             new Tile(int.Parse(behaviourParams[0]), int.Parse(behaviourParams[1])),
                             new Tile(int.Parse(behaviourParams[2]), int.Parse(behaviourParams[3])),
@@ -118,7 +122,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
         RespawnCountDown -= delta;
         if (RespawnCountDown <= 0)
         {
-            Player = new();
+            Player = new(Player.StartPosition, Player.Speed, Player.StartDirection);
             ResetEnemies();
             //TODO: Reset enemies
             State = GameState.Playing;
@@ -132,11 +136,12 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
         if (StartNextLevelCountDown <= 0)
         {
             Level++;
-            Player = new();
+            Player = new(Player.StartPosition, Player.Speed, Player.StartDirection);
             ResetEnemies();
             Board = _originalBoard.Copy();
             PlayTime = 0;
             State = GameState.Playing;
+            _projectiles.Clear();
         }
     }
 
@@ -148,13 +153,28 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
             OnEvent?.Invoke(GameEvent.DotEaten);
             CheckLevelComplete();
         }
+
+        _projectiles.RemoveAll(p => p.IsPickedUp);
+
+        foreach (IProjectile projectile in _projectiles)
+        {
+            projectile.Update(this, delta);
+        }
+
         foreach (EnemyActor enemy in Enemies)
         {
             enemy.Update(this, delta);
+            if (!enemy.IsAlive) { continue; }
             if (enemy.BoundingBox().IntersectsWith(Player.BoundingBox()))
             {
                 PlayerKilled();
             }
+        }
+        PoweredUpTimeRemaining = Math.Max(PoweredUpTimeRemaining - delta, 0);
+        if (PoweredUpTimeRemaining <= 0)
+        {
+            _projectiles.Clear();
+            Player.CreateProjectile = null;
         }
     }
 
@@ -172,6 +192,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
         RespawnCountDown = RespawnTime;
         Lives--;
         State = GameState.Respawning;
+        PoweredUpTimeRemaining = 0;
         if (Lives <= 0)
         {
             State = GameState.GameOver;
@@ -191,9 +212,13 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
         {
             Board.RemoveElement(Player.Tile);
             Score += 50;
+            Player.CreateProjectile = PlayerProjectileExtensions.BowlerHatProjectile;
+            PoweredUpTimeRemaining = PoweredUpTime;
             return true;
         }
 
         return false;
     }
+
+    public void AddProjectile(IProjectile toAdd) => _projectiles.Add(toAdd);
 }

@@ -1,6 +1,6 @@
 ﻿/*******************************************************************************************
 *
-*   raylib [core] example - Basic window
+*   raylib [core] example - Basic wind
 *
 *   Welcome to raylib!
 *
@@ -165,6 +165,8 @@ void RenderDebugText()
         Raylib.DrawText($"X: {game.Player.Position.X:0.0}, Y: {game.Player.Position.Y:0.0}", 0, 0, 24, Color.White);
         Raylib.DrawText($"BX: {game.Player.Tile.X}, BY: {game.Player.Tile.Y}", 0, 24, 24, Color.White);
         Raylib.DrawText($"Current: {game.Player.CurrentDirection}, Next: {game.Player.NextDirection}", 0, 48, 24, Color.White);
+        Raylib.DrawText($"HasProjectile: {game.Player.HasProjectile}", 0, 72, 24, Color.White);
+        Raylib.DrawText($"Power Up Time Remaining: {game.PoweredUpTimeRemaining:0.00}", 0, 96, 24, Color.White);
     }
 }
 
@@ -172,10 +174,10 @@ Game InitGame()
 {
     string gameInit = $"""
         CapMan         , (14, 23), 8, Left , manual
-        targetsPlayer  , (14, 11), 4, Down , TargetPlayerTile
+        kevinEnemy     , (14, 11), 4, Down , Kevin    , (12, 13), (12, 15), (13, 11)
         clydeEnemy     , (11, 14), 4, Left , Clyde    , (11, 13), (11, 15), (13, 11)
         targetAhead    , (13, 15), 4, Right, Bob      , (13, 15), (13, 13), (13, 11)
-        whimsicalEnemy , (16, 14), 4, Left , Whimsical, (16, 15), (16, 13), (13, 11), targetsPlayer
+        whimsicalEnemy , (16, 14), 4, Left , Whimsical, (16, 15), (16, 13), (13, 11), kevinEnemy
         
         {Board.StandardBoard}
         """;
@@ -187,6 +189,15 @@ Game InitGame()
 
 void HandleInput()
 {
+    if (Raylib.IsKeyPressed(KeyboardKey.Space))
+    {
+        if (game.Player.CreateProjectile is not null)
+        {
+            Projectile created = game.Player.CreateProjectile(game.Player);
+            game.Player.CreateProjectile = null;
+            game.AddProjectile(created);
+        }
+    }
     if (Raylib.IsKeyDown(KeyboardKey.W) || Raylib.IsKeyDown(KeyboardKey.Up))
     {
         game.Player.NextDirection = Direction.Up;
@@ -215,7 +226,7 @@ void HandleInput()
     {
         drawLines = !drawLines;
     }
-    if (Raylib.IsKeyPressed(KeyboardKey.Space))
+    if (Raylib.IsKeyPressed(KeyboardKey.P))
     {
         paused = !paused;
     }

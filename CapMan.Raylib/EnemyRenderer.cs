@@ -28,7 +28,8 @@ public class EnemyRenderer(AnimatedSprite searchingSprite, AnimatedSprite chasin
 
         int x = (int)(enemy.Position.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
         int y = (int)(enemy.Position.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-        sprite.Draw(boardLeft + x, boardTop + y);
+        Color tint = enemy.IsAlive ? Color.White : Color.DarkGray;
+        sprite.Draw(boardLeft + x, boardTop + y, tint);
     }
 
     public void RenderBoundingBox(Actor actor, int left, int top) =>
