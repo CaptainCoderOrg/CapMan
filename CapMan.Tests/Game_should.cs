@@ -2,7 +2,7 @@
 public class Game_should
 {
     [Fact]
-    public void create_from_layout()
+    public void create_from_string_layout()
     {
         string layout = $"""
             CapMan         , 14, 23, 8, Left , manual
@@ -14,7 +14,7 @@ public class Game_should
             {Board.StandardBoard}
             """;
 
-        Game game = GameParser.Create(layout);
+        Game game = new(layout);
         game.Board.Height.ShouldBe(31);
         game.Board.Width.ShouldBe(28);
 
@@ -32,27 +32,27 @@ public class Game_should
     }
 
     [Fact]
-    public void create_from_small_layout()
+    public void create_from_string_array_layout()
     {
-        string layout = $"""
-            CapMan         , 1, 3, 4, Left , manual
-            targetsPlayer  , 2, 1, 5, Down , TargetPlayerTile
-            clydeEnemy     , 3, 4, 6, Left , Clyde    , (11, 13), (11, 15), (13, 11)
-            targetAhead    , 4, 5, 7, Right, Bob      , (13, 15), (13, 13), (13, 11)
-            whimsicalEnemy , 5, 4, 8, Up   , Whimsical, (16, 15), (16, 13), (13, 11), clydeEnemy
+        string[] layout = [
+            "CapMan         , 1, 3, 4, Left , manual",
+            "targetsPlayer  , 2, 1, 5, Down , TargetPlayerTile",
+            "clydeEnemy     , 3, 4, 6, Left , Clyde    , (11, 13), (11, 15), (13, 11)",
+            "targetAhead    , 4, 5, 7, Right, Bob      , (13, 15), (13, 13), (13, 11)",
+            "whimsicalEnemy , 5, 4, 8, Up   , Whimsical, (16, 15), (16, 13), (13, 11), clydeEnemy",
+            "",
+            "+----------+",
+            "|          |",
+            "|          |",
+            "|          |",
+            "|          |",
+            "|          |",
+            "|          |",
+            "|          |",
+            "+----------+",
+            ];
 
-            +----------+
-            |          |
-            |          |
-            |          |
-            |          |
-            |          |
-            |          |
-            |          |
-            +----------+
-            """;
-
-        Game game = GameParser.Create(layout);
+        Game game = new(layout);
         game.Board.Height.ShouldBe(9);
         game.Board.Width.ShouldBe(12);
 
