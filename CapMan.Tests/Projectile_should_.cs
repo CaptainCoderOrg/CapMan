@@ -44,4 +44,28 @@ public class Projectile_should_
         underTest.Update(game, 3);
         underTest.IsLethal.ShouldBeFalse();
     }
+
+    [Fact]
+    public void curve_around_one_corner()
+    {
+        string[] gameConfig =
+        [
+            "CapMan, (1, 4), 1, Up, manual",
+            "",
+            "+---+",
+            "|...|",
+            "|.+--",
+            "|.|  ",
+            "+-+  ",
+        ];
+        Game game = new(gameConfig);
+        Projectile underTest = new(new Position(1, 1), 8, Direction.Up)
+        {
+            NextDirection = Direction.Right,
+        };
+        underTest.Update(game, 1);
+
+
+        underTest.CurrentDirection.ShouldBe(Direction.Right);
+    }
 }
