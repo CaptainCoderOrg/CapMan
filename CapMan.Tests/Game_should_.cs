@@ -1,5 +1,8 @@
 namespace CapMan.Tests;
 
+using NSubstitute;
+
+
 using Shouldly;
 
 public class Game_should_
@@ -247,5 +250,28 @@ public class Game_should_
         game.Enemies[1].Behaviour.ShouldBeOfType<ClydeAIBehaviour>();
         game.Enemies[2].Behaviour.ShouldBeOfType<BobAIBehaviour>();
         game.Enemies[3].Behaviour.ShouldBeOfType<WhimsicalAIBehaviour>();
+    }
+
+    [Fact]
+    public void should_remove_picked_up_projectiles()
+    {
+        string[] gameConfig = [
+            "CapMan, (1, 1), 1, Right, manual",
+            "",
+            "+-----+",
+            "|.....|",
+            "+-----+",
+        ];
+        Game game = new(gameConfig);
+
+        IProjectile projectile = Substitute.For<IProjectile>();
+        projectile.IsPickedUp.Returns(true);
+        projectile.Position.Returns(new Position(5, 1));
+        game.AddProjectile(projectile);
+        game.Projectiles.Count.ShouldBe(1);
+        game.PoweredUpTimeRemaining = 10;
+
+        game.Update(1);
+        game.Projectiles.ShouldBeEmpty();
     }
 }

@@ -1,6 +1,6 @@
 ﻿/*******************************************************************************************
 *
-*   raylib [core] example - Basic window
+*   raylib [core] example - Basic wind
 *
 *   Welcome to raylib!
 *
@@ -166,6 +166,7 @@ void RenderDebugText()
         Raylib.DrawText($"BX: {game.Player.Tile.X}, BY: {game.Player.Tile.Y}", 0, 24, 24, Color.White);
         Raylib.DrawText($"Current: {game.Player.CurrentDirection}, Next: {game.Player.NextDirection}", 0, 48, 24, Color.White);
         Raylib.DrawText($"HasProjectile: {game.Player.HasProjectile}", 0, 72, 24, Color.White);
+        Raylib.DrawText($"Power Up Time Remaining: {game.PoweredUpTimeRemaining:0.00}", 0, 96, 24, Color.White);
     }
 }
 
@@ -190,7 +191,7 @@ void HandleInput()
 {
     if (Raylib.IsKeyPressed(KeyboardKey.Space))
     {
-        if (game.Player.HasProjectile)
+        if (game.Player.CreateProjectile is not null)
         {
             Projectile created = game.Player.CreateProjectile(game.Player);
             game.Player.CreateProjectile = null;

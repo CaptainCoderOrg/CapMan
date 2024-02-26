@@ -3,6 +3,7 @@ namespace CapMan;
 public class Projectile(Position position, double speed, Direction direction) : Actor(position, speed, direction), IProjectile
 {
     public bool IsLethal { get; private set; } = true;
+    public bool IsPickedUp { get; set; } = false;
 
     public override void Update(IGame game, double deltaTime)
     {

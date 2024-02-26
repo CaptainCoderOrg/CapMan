@@ -22,8 +22,8 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
     private readonly List<IProjectile> _projectiles = new();
     public IReadOnlyList<IProjectile> Projectiles => _projectiles.AsReadOnly();
     public double PoweredUpTime { get; set; } = 10;
-    private double _poweredUpTimeRemaining = 0;
-    public bool IsPoweredUp => _poweredUpTimeRemaining > 0;
+    public double PoweredUpTimeRemaining { get; set; } = 0;
+    public bool IsPoweredUp => PoweredUpTimeRemaining > 0;
 
     public Game(string gameInput) : this(gameInput.ReplaceLineEndings().Split(Environment.NewLine)) { }
     public Game(IEnumerable<string> gameInput) : this(ParseActors(gameInput), new Board(gameInput.SkipWhile(IsNotABlankLine).Skip(1))) { }
@@ -154,7 +154,9 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
             CheckLevelComplete();
         }
 
-        foreach (Projectile projectile in _projectiles)
+        _projectiles.RemoveAll(p => p.IsPickedUp);
+
+        foreach (IProjectile projectile in _projectiles)
         {
             projectile.Update(this, delta);
         }
@@ -168,8 +170,8 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
                 PlayerKilled();
             }
         }
-        _poweredUpTimeRemaining -= delta;
-        if (_poweredUpTimeRemaining < 0)
+        PoweredUpTimeRemaining = Math.Max(PoweredUpTimeRemaining - delta, 0);
+        if (PoweredUpTimeRemaining <= 0)
         {
             _projectiles.Clear();
             Player.CreateProjectile = null;
@@ -190,6 +192,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
         RespawnCountDown = RespawnTime;
         Lives--;
         State = GameState.Respawning;
+        PoweredUpTimeRemaining = 0;
         if (Lives <= 0)
         {
             State = GameState.GameOver;
@@ -210,7 +213,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
             Board.RemoveElement(Player.Tile);
             Score += 50;
             Player.CreateProjectile = PlayerProjectileExtensions.BowlerHatProjectile;
-            _poweredUpTimeRemaining = PoweredUpTime;
+            PoweredUpTimeRemaining = PoweredUpTime;
             return true;
         }
 
