@@ -1,6 +1,6 @@
 namespace CapMan.Tests;
 
-public class ElementTests
+public class Element_should_
 {
     [Theory]
     [InlineData('.', Element.Dot)]
@@ -12,7 +12,7 @@ public class ElementTests
     [InlineData('╮', Element.TopRight)]
     [InlineData('╰', Element.BottomLeft)]
     [InlineData('╯', Element.BottomRight)]
-    public void should_parse_char_to_element(char ch, Element result)
+    public void parse_char_to_element(char ch, Element result)
     {
         ch.ToElement().ShouldBe(result);
     }
@@ -21,7 +21,7 @@ public class ElementTests
     [InlineData(' ')]
     [InlineData('(')]
     [InlineData('J')]
-    public void should_throw_exception_if_invalid_char(char ch)
+    public void throw_exception_if_invalid_char(char ch)
     {
             Assert.Throws<ArgumentException>(() =>
         {

@@ -1,6 +1,6 @@
 namespace CapMan.Tests;
 
-public class Board_should
+public class Board_should_
 {
     [Theory]
     //                           x  y   d  x    y
