@@ -40,3 +40,8 @@ public record struct Position(double X, double Y)
         };
     }
 }
+
+public static class PositionExtensions
+{
+    public static double ManhattanDistance(this Position a, Position b) => Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+}
