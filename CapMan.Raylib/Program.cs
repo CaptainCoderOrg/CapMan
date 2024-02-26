@@ -171,33 +171,17 @@ void RenderDebugText()
 
 Game InitGame()
 {
-    List<EnemyActor> enemies = new();
-    EnemyActor targetsPlayer = new(new Position(14, 11), 4, Direction.Down)
-    {
-        Behaviour = new KevinAIBehaviour()
-    };
-    enemies.Add(targetsPlayer);
+    string gameInit = $"""
+        CapMan         , (14, 23), 8, Left , manual
+        targetsPlayer  , (14, 11), 4, Down , TargetPlayerTile
+        clydeEnemy     , (11, 14), 4, Left , Clyde    , (11, 13), (11, 15), (13, 11)
+        targetAhead    , (13, 15), 4, Right, Bob      , (13, 15), (13, 13), (13, 11)
+        whimsicalEnemy , (16, 14), 4, Left , Whimsical, (16, 15), (16, 13), (13, 11), targetsPlayer
+        
+        {Board.StandardBoard}
+        """;
 
-    EnemyActor clydeEnemy = new(new Position(11, 14), 4, Direction.Left)
-    {
-        Behaviour = new ClydeAIBehaviour(),
-    };
-    enemies.Add(clydeEnemy);
-
-    EnemyActor targetAhead = new(new Position(13, 15), 4, Direction.Right)
-    {
-        Behaviour = new BobAIBehaviour(),
-    };
-    enemies.Add(targetAhead);
-
-    EnemyActor whimsicalEnemy = new(new Position(16, 14), 4, Direction.Left)
-    {
-        Behaviour = new WhimsicalAIBehaviour(targetsPlayer),
-    };
-    enemies.Add(whimsicalEnemy);
-
-    Game game = new(enemies, new Board(Board.StandardBoard));
-    game.Player.Position = new(14, 23);
+    Game game = new(gameInit);
     GameSFXController.Shared.Game = game;
     return game;
 }
