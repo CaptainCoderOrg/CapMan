@@ -37,9 +37,9 @@ public class Game_should
         string layout = $"""
             CapMan         , 1, 3, 4, Left , manual
             targetsPlayer  , 2, 1, 5, Down , TargetPlayerTile
-            clydeEnemy     , 3, 4, 6, Left , Clyde    , 11, 13, 11, 15, 13, 11
-            targetAhead    , 4, 5, 7, Right, Bob      , 13, 15, 13, 13, 13, 11
-            whimsicalEnemy , 5, 4, 8, Up   , Whimsical, 16, 15, 16, 13, 13, 11, clydeEnemy
+            clydeEnemy     , 3, 4, 6, Left , Clyde    , (11, 13), (11, 15), (13, 11)
+            targetAhead    , 4, 5, 7, Right, Bob      , (13, 15), (13, 13), (13, 11)
+            whimsicalEnemy , 5, 4, 8, Up   , Whimsical, (16, 15), (16, 13), (13, 11), clydeEnemy
 
             +----------+
             |          |

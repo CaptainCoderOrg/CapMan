@@ -10,7 +10,7 @@ public static class GameParser
 
         foreach (string line in lines.TakeWhile(IsNotABlankLine))
         {
-            string[] tokens = line.Split(',', StringSplitOptions.TrimEntries);
+            string[] tokens = line.Split(",()".ToCharArray(), StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             if (tokens is [string name, string startX, string startY, string speed, string direction, string behaviour, .. string[] behaviourParams])
             {
                 Position startPosition = new(double.Parse(startX), double.Parse(startY));
