@@ -2,10 +2,8 @@ namespace CapMan;
 
 public class EnemyActor(Position position, double speed, Direction direction) : Actor(position, speed, direction)
 {
-    public double BaseSpeed { get; set; } = speed;
     public EnemyState State { get; set; } = EnemyState.Searching;
     public IEnemyBehaviour Behaviour { get; set; } = new TargetTileBehaviour(new Tile(1, 1));
-    public Func<EnemyActor, IGame, double> SpeedMultiplier { get; init; } = SpeedMultipliers.BasicIncreasingSpeed;
     public Tile? LastTarget { get; set; }
     public bool IgnoreDoors { get; set; } = false;
     private bool _isAlive = true;
@@ -48,7 +46,6 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
         {
             IsAlive = false;
         }
-        SetSpeed(game);
         if (IgnoreDoors)
         {
             game = new DelegateBoardGame(game, game.Board.WithoutDoors());
@@ -63,19 +60,6 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
             .Where(p => p.IsLethal)
             .Select(p => p.BoundingBox())
             .Any(p => p.IntersectsWith(this.BoundingBox()));
-
-    private void SetSpeed(IGame game)
-    {
-        this.Speed = BaseSpeed * SpeedMultiplier(this, game);
-        if (!IsAlive)
-        {
-            this.Speed *= 2;
-        }
-        else if (game.Board.IsSlowTile(this.Tile))
-        {
-            this.Speed *= 0.75;
-        }
-    }
 
     public void Reset()
     {
