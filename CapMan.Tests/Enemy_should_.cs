@@ -166,7 +166,7 @@ public class Enemy_should_
         ];
         Game game = new(gameConfig);
         bool wasCalled = false;
-        Func<EnemyActor, IGame, double> testMultiplier = (_, _) =>
+        Func<Actor, IGame, double> testMultiplier = (_, _) =>
         {
             wasCalled = true;
             return multiplier;
