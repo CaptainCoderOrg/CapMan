@@ -28,7 +28,8 @@ public class EnemyRenderer(AnimatedSprite searchingSprite, AnimatedSprite chasin
 
         int x = (int)(enemy.Position.X * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
         int y = (int)(enemy.Position.Y * BoardRenderer.CellSize) + BoardRenderer.CellSize / 2;
-        Color tint = enemy.IsAlive ? Color.White : Color.DarkGray;
+        Color tint = enemy.IsFleeing ? Color.SkyBlue : Color.White;
+        tint = enemy.IsAlive ? tint : Color.DarkGray;
         sprite.Draw(boardLeft + x, boardTop + y, tint);
     }
 

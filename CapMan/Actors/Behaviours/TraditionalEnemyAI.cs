@@ -27,6 +27,11 @@ public class TraditionalEnemyAI(Tile patrolA, Tile patrolB, Tile exitTile, IEnem
             return _patrolBehaviour.GetNextDirection(game, deltaTime, enemy);
         }
 
+        if (game.IsPoweredUp)
+        {
+            return RandomBehaviour.Shared.GetNextDirection(game, deltaTime, enemy);
+        }
+
         if (_hasExited is false)
         {
             if (enemy.Tile == _leaveHouseBehaviour.Target) { _hasExited = true; }
