@@ -37,7 +37,7 @@ game.Player.Position = new(14, 23);
 int boardWidth = game.Board.Width * BoardRenderer.CellSize;
 int boardHeight = game.Board.Height * BoardRenderer.CellSize + InfoRenderer.BlockedHeight;
 
-InitWindow(1); // Monitor 1 is Captain Coder's Streaming Monitor (hack)
+InitWindow(2); // Monitor 1 is Captain Coder's Streaming Monitor (hack)
 Raylib.SetTargetFPS(60);
 
 GameRenderer gameRenderer = new();

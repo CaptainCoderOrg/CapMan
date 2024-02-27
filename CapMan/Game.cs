@@ -202,6 +202,7 @@ public class Game : IGame
         {
             State = GameState.LevelComplete;
             StartNextLevelCountDown = StartNextLevelTime;
+            Player.Speed += 0.1;
         }
     }
 
