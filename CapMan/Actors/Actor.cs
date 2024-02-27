@@ -16,26 +16,5 @@ public abstract class Actor(Position position, double speed, Direction direction
     {
         (Position, CurrentDirection) = game.Board.CalculateActorMove(deltaTime, this);
         Position = game.Board.WrapPosition(this);
-        SetSpeed(game);
-    }
-
-    private void SetSpeed(IGame game)
-    {
-        this.Speed = BaseSpeed * SpeedMultiplier(this, game);
-        if (this is PlayerActor playerActor)
-        {
-            playerActor.Speed *= 1.5;
-        }
-        if (this is EnemyActor enemyActor)
-        {
-            if (!enemyActor.IsAlive)
-            {
-                enemyActor.Speed *= 2;
-            }
-            else if (game.Board.IsSlowTile(enemyActor.Tile))
-            {
-                enemyActor.Speed *= 0.75;
-            }
-        }
     }
 }

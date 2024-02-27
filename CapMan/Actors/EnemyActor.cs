@@ -42,6 +42,7 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
             CurrentDirection = CurrentDirection.Opposite();
             _switchDirection = false;
         }
+        SetSpeed(game);
         if (CollidingWithProjectile(game))
         {
             IsAlive = false;
@@ -61,6 +62,18 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
             .Select(p => p.BoundingBox())
             .Any(p => p.IntersectsWith(this.BoundingBox()));
 
+    private void SetSpeed(IGame game)
+    {
+        this.Speed = BaseSpeed * SpeedMultiplier(this, game);
+        if (!IsAlive)
+        {
+            this.Speed *= 2;
+        }
+        else if (game.Board.IsSlowTile(this.Tile))
+        {
+            this.Speed *= 0.75;
+        }
+    }
     public void Reset()
     {
         Position = StartPosition;
