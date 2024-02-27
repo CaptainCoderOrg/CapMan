@@ -15,10 +15,10 @@ public class GameScreen : IScreen
     public int Width => CurrentGame.Board.Width * BoardRenderer.CellSize;
     public int Height => CurrentGame.Board.Height * BoardRenderer.CellSize + InfoRenderer.BlockedHeight + InfoRenderer.LivesSpriteHeight;
 
-    private RenderTexture2D _boardTexture; // = Raylib.LoadRenderTexture(Width, Height);
-    private Rectangle _screenRect; // => new(0, 0, Width, -Height);
-    private Rectangle _scaleRect; // => GetScaledResolution();
-    private Vector2 _centerScreen; // = new(0, 0);
+    private RenderTexture2D _boardTexture;
+    private Rectangle _screenRect;
+    private Rectangle _scaleRect;
+    private Vector2 _centerScreen;
 
     public GameScreen()
     {
