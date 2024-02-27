@@ -5,6 +5,7 @@ using System.Numerics;
 using Raylib_cs;
 public class InfoRenderer
 {
+    public static InfoRenderer Shared { get; } = new();
     public const int Padding = 5;
     public const float Spacing = 1;
     private static Font? s_pixelplay;

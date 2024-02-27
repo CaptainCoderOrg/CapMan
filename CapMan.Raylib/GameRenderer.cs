@@ -3,6 +3,7 @@ using Raylib_cs;
 
 public class GameRenderer
 {
+    public static GameRenderer Shared { get; } = new();
     public const int FontSize = 20;
     public bool ShowBoundingBoxes { get; set; } = false;
     public bool ShowTargetTiles { get; set; } = false;
