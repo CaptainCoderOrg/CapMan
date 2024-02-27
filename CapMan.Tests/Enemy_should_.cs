@@ -135,4 +135,15 @@ public class Enemy_should_
 
         underTest.IsFleeing.ShouldBeFalse();
     }
+
+    [Fact]
+    public void notify_observers_upon_death()
+    {
+        bool wasNotified = false;
+        Action onDeath = () => wasNotified = true;
+        EnemyActor underTest = new(new Position(0, 0), 1, Direction.Up);
+        underTest.OnDeath += onDeath;
+        underTest.IsAlive = false;        
+        wasNotified.ShouldBeTrue();
+    }
 }

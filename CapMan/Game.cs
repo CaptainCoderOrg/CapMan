@@ -1,6 +1,6 @@
 namespace CapMan;
 
-public class Game(IEnumerable<Actor> actors, Board board) : IGame
+public class Game : IGame
 {
     public GameState State { get; set; } = GameState.Playing;
     public double RespawnTime { get; } = 2.0;
@@ -11,10 +11,10 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
     public double RespawnCountDown { get; private set; } = 0;
     public double StartNextLevelCountDown { get; private set; } = 0;
     public int Lives { get; set; } = 3;
-    public PlayerActor Player { get; private set; } = actors.OfType<PlayerActor>().Single();
-    public EnemyActor[] Enemies { get; private set; } = [.. actors.OfType<EnemyActor>()];
-    public Board Board { get; private set; } = board.Copy();
-    private readonly Board _originalBoard = board.Copy();
+    public PlayerActor Player { get; private set; }
+    public EnemyActor[] Enemies { get; private set; }
+    public Board Board { get; private set; }
+    private readonly Board _originalBoard;
     public int Score { get; private set; }
     public int Level { get; private set; } = 1;
     public int DotsRemaining => Board.CountDots();
@@ -24,10 +24,21 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
     public double PoweredUpTime { get; set; } = 10;
     public double PoweredUpTimeRemaining { get; set; } = 0;
     public bool IsPoweredUp => PoweredUpTimeRemaining > 0;
+    public int ScoreMultiplier { get; private set; } = 1;
 
     public Game(string gameInput) : this(gameInput.ReplaceLineEndings().Split(Environment.NewLine)) { }
     public Game(IEnumerable<string> gameInput) : this(ParseActors(gameInput), new Board(gameInput.SkipWhile(IsNotABlankLine).Skip(1))) { }
-
+    public Game(IEnumerable<Actor> actors, Board board)
+    {
+        Player = actors.OfType<PlayerActor>().Single();
+        Enemies = [.. actors.OfType<EnemyActor>()];
+        Board = board.Copy();
+        _originalBoard = board.Copy();
+        foreach (EnemyActor actor in Enemies)
+        {
+            actor.OnDeath += HandleEnemyDeath;
+        }
+    }
     private static bool IsNotABlankLine(string s) => !string.IsNullOrWhiteSpace(s);
 
     private static IEnumerable<Actor> ParseActors(IEnumerable<string> gameInput)
@@ -80,6 +91,12 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
             }
         }
         return actors.Values;
+    }
+
+    private void HandleEnemyDeath()
+    {
+        Score += 200 * ScoreMultiplier;
+        ScoreMultiplier <<= 1;
     }
 
     private void ResetEnemies()
@@ -175,6 +192,7 @@ public class Game(IEnumerable<Actor> actors, Board board) : IGame
         {
             _projectiles.Clear();
             Player.CreateProjectile = null;
+            ScoreMultiplier = 1;
         }
     }
 
