@@ -5,6 +5,7 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
     public double BaseSpeed { get; set; } = speed;
     public EnemyState State { get; set; } = EnemyState.Searching;
     public IEnemyBehaviour Behaviour { get; set; } = new TargetTileBehaviour(new Tile(1, 1));
+    public Func<EnemyActor, IGame, double> SpeedMultiplier { get; init; } = SpeedMultipliers.BasicIncreasingSpeed;
     public Tile? LastTarget { get; set; }
     public bool IgnoreDoors { get; set; } = false;
     private bool _isAlive = true;
@@ -65,7 +66,7 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
 
     private void SetSpeed(IGame game)
     {
-        this.Speed = BaseSpeed;
+        this.Speed = BaseSpeed * SpeedMultiplier(this, game);
         if (!IsAlive)
         {
             this.Speed *= 2;
@@ -98,6 +99,7 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
         public IReadOnlyList<IProjectile> Projectiles => DelegateGame.Projectiles;
         public double PoweredUpTime => DelegateGame.PoweredUpTime;
         public bool IsPoweredUp => DelegateGame.IsPoweredUp;
+        public int Level => DelegateGame.Level;
         public void Update(double delta) => DelegateGame.Update(delta);
     }
 }

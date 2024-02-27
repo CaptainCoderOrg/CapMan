@@ -12,6 +12,7 @@ public interface IGame
     public double RespawnTime { get; }
     public double RespawnCountDown { get; }
     public int Lives { get; set; }
+    public int Level { get; }
     public PlayerActor Player { get; }
     public EnemyActor[] Enemies { get; }
     public Board Board { get; }

@@ -174,10 +174,10 @@ Game InitGame()
 {
     string gameInit = $"""
         CapMan         , (14, 23), 8, Left , manual
-        kevinEnemy     , (14, 11), 4, Down , Kevin    , (12, 13), (12, 15), (13, 11)
-        clydeEnemy     , (11, 14), 4, Left , Clyde    , (11, 13), (11, 15), (13, 11)
-        targetAhead    , (13, 15), 4, Right, Bob      , (13, 15), (13, 13), (13, 11)
-        whimsicalEnemy , (16, 14), 4, Left , Whimsical, (16, 15), (16, 13), (13, 11), kevinEnemy
+        kevinEnemy     , (14, 11), 8, Down , Kevin    , (12, 13), (12, 15), (13, 11)
+        clydeEnemy     , (11, 14), 8, Left , Clyde    , (11, 13), (11, 15), (13, 11)
+        targetAhead    , (13, 15), 8, Right, Bob      , (13, 15), (13, 13), (13, 11)
+        whimsicalEnemy , (16, 14), 8, Left , Whimsical, (16, 15), (16, 13), (13, 11), kevinEnemy
         
         {Board.StandardBoard}
         """;
