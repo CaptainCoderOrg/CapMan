@@ -10,8 +10,25 @@ public class InfoRenderer
     private static Font? s_pixelplay;
     public static Font PixelPlay => s_pixelplay ??= Raylib.LoadFont(Path.Combine("assets", "fonts", "pixelplay.png"));
     public static int BlockedHeight => (PixelPlay.BaseSize + Padding) * 2;
+    public static int LivesSpriteHeight => 24;
 
     public void Render(Game game, int top, int left)
+    {
+        RenderScore(game, top, left);
+        RenderRemainingLives(game, top, left);
+    }
+
+    private void RenderRemainingLives(Game game, int top, int left)
+    {
+        top = top + game.Board.Height * BoardRenderer.CellSize + BlockedHeight + Padding;
+        for (int count = 0; count < game.Lives - 1; count++)
+        {
+            left = left + BoardRenderer.CellSize + Padding;
+            CapManRenderer.SpriteSheet.DrawSprite(0, 0, left, top, 0, true, Color.White);
+        }
+    }
+
+    private void RenderScore(Game game, int top, int left)
     {
         int center = game.Board.Width * BoardRenderer.CellSize / 2;
 
