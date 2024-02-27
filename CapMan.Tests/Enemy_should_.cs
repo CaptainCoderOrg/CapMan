@@ -143,7 +143,41 @@ public class Enemy_should_
         Action onDeath = () => wasNotified = true;
         EnemyActor underTest = new(new Position(0, 0), 1, Direction.Up);
         underTest.OnDeath += onDeath;
-        underTest.IsAlive = false;        
+        underTest.IsAlive = false;
         wasNotified.ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData(.75)]
+    [InlineData(.9)]
+    [InlineData(1.7)]
+    public void enemy_speed_should_use_speed_multiplier(double multiplier)
+    {
+        string[] gameConfig = [
+            "CapMan         , (2, 1), 1, Left  , manual",
+            "",
+            "+-----+",
+            "|O....|",
+            "|.+-+.|",
+            "|.| |.|",
+            "|.+-+.|",
+            "|.....|",
+            "+-----+",
+        ];
+        Game game = new(gameConfig);
+        bool wasCalled = false;
+        Func<EnemyActor, IGame, double> testMultiplier = (_, _) =>
+        {
+            wasCalled = true;
+            return multiplier;
+        };
+        EnemyActor underTest = new(new Position(0, 0), 1, Direction.Down)
+        {
+            SpeedMultiplier = testMultiplier,
+        };
+
+        underTest.Update(game, 1);
+        wasCalled.ShouldBeTrue();
+        underTest.Speed.ShouldBe(underTest.BaseSpeed * multiplier, .001);
     }
 }
