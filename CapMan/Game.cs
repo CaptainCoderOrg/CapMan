@@ -139,9 +139,9 @@ public class Game : IGame
         RespawnCountDown -= delta;
         if (RespawnCountDown <= 0)
         {
+            Lives--;
             Player = new(Player.StartPosition, Player.Speed, Player.StartDirection);
             ResetEnemies();
-            //TODO: Reset enemies
             State = GameState.Playing;
             PlayTime = 0;
         }
@@ -214,10 +214,9 @@ public class Game : IGame
     public void PlayerKilled()
     {
         RespawnCountDown = RespawnTime;
-        Lives--;
         State = GameState.Respawning;
         PoweredUpTimeRemaining = 0;
-        if (Lives <= 0)
+        if (Lives <= 1)
         {
             State = GameState.GameOver;
         }
