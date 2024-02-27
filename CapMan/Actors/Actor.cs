@@ -22,6 +22,10 @@ public abstract class Actor(Position position, double speed, Direction direction
     private void SetSpeed(IGame game)
     {
         this.Speed = BaseSpeed * SpeedMultiplier(this, game);
+        if (this is PlayerActor playerActor)
+        {
+            playerActor.Speed *= 1.5;
+        }
         if (this is EnemyActor enemyActor)
         {
             if (!enemyActor.IsAlive)
