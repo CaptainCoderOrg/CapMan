@@ -147,18 +147,24 @@ public class Game : IGame
         }
     }
 
+    public void StartLevel()
+    {
+        Player = new(Player.StartPosition, Player.Speed, Player.StartDirection);
+        ResetEnemies();
+        Board = _originalBoard.Copy();
+        PoweredUpTimeRemaining = 0;
+        PlayTime = 0;
+        State = GameState.Playing;
+        _projectiles.Clear();
+    }
+
     private void StartNextLevel(double deltaTime)
     {
         StartNextLevelCountDown -= deltaTime;
         if (StartNextLevelCountDown <= 0)
         {
             Level++;
-            Player = new(Player.StartPosition, Player.Speed, Player.StartDirection);
-            ResetEnemies();
-            Board = _originalBoard.Copy();
-            PlayTime = 0;
-            State = GameState.Playing;
-            _projectiles.Clear();
+            StartLevel();
         }
     }
 
