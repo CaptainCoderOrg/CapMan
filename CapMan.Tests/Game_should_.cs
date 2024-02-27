@@ -342,4 +342,19 @@ public class Game_should_
         game.Update(1);
         game.ScoreMultiplier.ShouldBe(1);
     }
+
+    [Fact]
+    public void reset_power_up_on_start_level()
+    {
+        // Arrange
+        Game underTest = MockObject.StateUnimportant;
+        underTest.PoweredUpTimeRemaining = 5;
+
+        // Act
+        underTest.StartLevel();
+
+        // Assert
+        underTest.PoweredUpTimeRemaining.ShouldBe(0);
+        underTest.IsPoweredUp.ShouldBeFalse();
+    }
 }
