@@ -1,4 +1,3 @@
-
 namespace CapMan;
 
 public class EnemyActor(Position position, double speed, Direction direction) : Actor(position, speed, direction)
@@ -8,7 +7,20 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
     public IEnemyBehaviour Behaviour { get; set; } = new TargetTileBehaviour(new Tile(1, 1));
     public Tile? LastTarget { get; set; }
     public bool IgnoreDoors { get; set; } = false;
-    public bool IsAlive { get; set; } = true;
+    private bool _isAlive = true;
+    public bool IsAlive
+    {
+        get => _isAlive;
+        set
+        {
+            if (_isAlive == value) { return; }
+            _isAlive = value;
+            if (_isAlive == false)
+            {
+                OnDeath?.Invoke();
+            }
+        }
+    }
     private bool _isFleeing = false;
     public bool IsFleeing
     {
@@ -20,6 +32,8 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
             _isFleeing = value;
         }
     }
+
+    public Action? OnDeath { get; set; }
     private bool _switchDirection = false;
     public override void Update(IGame game, double deltaTime)
     {

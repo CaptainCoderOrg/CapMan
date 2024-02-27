@@ -131,7 +131,7 @@ public class Game_should_
         game.AddProjectile(new Projectile(new Position(1, 1), 8, Direction.Up));
         game.Update(1f);
         game.Player.HasProjectile.ShouldBeTrue();
-        
+
         game.Update(game.PoweredUpTime);
         game.Player.HasProjectile.ShouldBeFalse();
     }
@@ -273,5 +273,73 @@ public class Game_should_
 
         game.Update(1);
         game.Projectiles.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void award_points_when_defeating_enemies()
+    {
+        string layout = $"""
+            CapMan         , (14, 23), 8, Left , manual
+            kevinEnemy     , (14, 11), 4, Down , Kevin    , (12, 13), (12, 15), (13, 11)
+            clydeEnemy     , (11, 14), 4, Left , Clyde    , (11, 13), (11, 15), (13, 11)
+            targetAhead    , (13, 15), 4, Right, Bob      , (13, 15), (13, 13), (13, 11)
+            whimsicalEnemy , (16, 14), 4, Left , Whimsical, (16, 15), (16, 13), (13, 11), kevinEnemy
+            
+            {Board.StandardBoard}
+            """;
+
+        Game game = new(layout);
+        EnemyActor kevinEnemy = game.Enemies.Where(e => e.Tile == new Tile(14, 11)).First();
+        EnemyActor clydeEnemy = game.Enemies.Where(e => e.Tile == new Tile(11, 14)).First();
+        EnemyActor bobEnemy = game.Enemies.Where(e => e.Tile == new Tile(13, 15)).First();
+        EnemyActor whimsicalEnemy = game.Enemies.Where(e => e.Tile == new Tile(16, 14)).First();
+        
+        game.Score.ShouldBe(0);
+        kevinEnemy.IsAlive = false;
+        // + 200 points
+        game.Score.ShouldBe(200);
+        clydeEnemy.IsAlive = false;
+        // + 400 points
+        game.Score.ShouldBe(600);
+        bobEnemy.IsAlive = false;
+        // + 800 points
+        game.Score.ShouldBe(1400);
+        whimsicalEnemy.IsAlive = false;
+        // + 1600 points
+        game.Score.ShouldBe(3000);
+    }
+
+    [Fact]
+    public void reset_point_multiplier_when_powered_down()
+    {
+        string layout = $"""
+            CapMan         , (14, 23), 8, Left , manual
+            kevinEnemy     , (14, 11), 4, Down , Kevin    , (12, 13), (12, 15), (13, 11)
+            clydeEnemy     , (11, 14), 4, Left , Clyde    , (11, 13), (11, 15), (13, 11)
+            targetAhead    , (13, 15), 4, Right, Bob      , (13, 15), (13, 13), (13, 11)
+            whimsicalEnemy , (16, 14), 4, Left , Whimsical, (16, 15), (16, 13), (13, 11), kevinEnemy
+            
+            {Board.StandardBoard}
+            """;
+
+        Game game = new(layout);
+        EnemyActor kevinEnemy = game.Enemies.Where(e => e.Tile == new Tile(14, 11)).First();
+        EnemyActor clydeEnemy = game.Enemies.Where(e => e.Tile == new Tile(11, 14)).First();
+        EnemyActor bobEnemy = game.Enemies.Where(e => e.Tile == new Tile(13, 15)).First();
+        EnemyActor whimsicalEnemy = game.Enemies.Where(e => e.Tile == new Tile(16, 14)).First();
+        
+        kevinEnemy.IsAlive = false;
+        game.ScoreMultiplier.ShouldBe(2);
+        clydeEnemy.IsAlive = false;
+        game.ScoreMultiplier.ShouldBe(4);
+        bobEnemy.IsAlive = false;
+        game.ScoreMultiplier.ShouldBe(8);
+        whimsicalEnemy.IsAlive = false;
+        game.ScoreMultiplier.ShouldBe(16);
+        game.PoweredUpTimeRemaining = 2;
+        game.Update(1);
+        game.ScoreMultiplier.ShouldBe(16);
+        game.Update(1);
+        game.ScoreMultiplier.ShouldBe(1);
     }
 }
