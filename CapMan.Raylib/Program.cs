@@ -1,11 +1,14 @@
-﻿public class Program
-{
+﻿using System.Text.Json;
 
+public class Program
+{
+    public const string ConfigFile = "capman.config";
     public static IScreen Screen { get; set; } = new MenuScreen();
+    public static ScreenConfig Config { get; set; } = InitScreenConfig();
 
     public static void Main()
     {
-        InitWindow(0);
+        InitWindow();
         Raylib.InitAudioDevice();
 
         Raylib.SetTargetFPS(60);
@@ -16,27 +19,62 @@
             Screen.HandleUserInput();
             Screen.Render();
         }
-
+        SaveScreenConfig(new ScreenConfig(Raylib.GetCurrentMonitor()));
         Raylib.CloseWindow();
 
+    }
 
+    private static void SaveScreenConfig(ScreenConfig config)
+    {
+        try
+        {
+            string json = JsonSerializer.Serialize(config);
+            File.WriteAllText(ConfigFile, json);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine($"Failed to save {ConfigFile}. Stack Trace below:");
+            Console.Error.WriteLine(e.StackTrace);
+        }
+    }
+
+    private static ScreenConfig InitScreenConfig()
+    {
+        if (File.Exists(ConfigFile))
+        {
+            try
+            {
+                string json = File.ReadAllText(ConfigFile);
+                return JsonSerializer.Deserialize<ScreenConfig>(json);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine($"Failed to load {ConfigFile}. Stack trace below:");
+                Console.Error.WriteLine(e.StackTrace);
+            }
+        }
+        return GameConstants.Default;
     }
 
     /// <summary>
     /// Initializes the game window on to the specified monitor and centers
     /// it on the screen
     /// </summary>
-    private static void InitWindow(int monitor)
+    private static void InitWindow()
     {
-        Raylib.InitWindow(GameConstants.DefaultScreenWidth, GameConstants.DefaultScreenHeight, "CapMan | Main Window");
+        Raylib.InitWindow(GameConstants.MinScreenWidth, GameConstants.MinScreenHeight, "CapMan | Main Window");
         Raylib.SetWindowState(ConfigFlags.ResizableWindow);
-        Raylib.SetWindowMinSize(GameConstants.DefaultScreenWidth, GameConstants.DefaultScreenHeight);
+        Raylib.SetWindowMinSize(GameConstants.MinScreenWidth, GameConstants.MinScreenHeight);
+        CenterWindow();
+    }
 
-        (int mWidth, int mHeight) = (Raylib.GetMonitorWidth(monitor), Raylib.GetMonitorHeight(monitor));
+    private static void CenterWindow()
+    {
+        (int mWidth, int mHeight) = (Raylib.GetMonitorWidth(Config.Monitor), Raylib.GetMonitorHeight(Config.Monitor));
         (int wWidth, int wHeight) = (Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
 
         Raylib.SetWindowPosition((mWidth - wWidth) / 2, (mHeight - wHeight) / 2);
-        Raylib.SetWindowMonitor(monitor);
+        Raylib.SetWindowMonitor(Config.Monitor);
     }
 
 }
