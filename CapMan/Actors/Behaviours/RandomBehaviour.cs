@@ -2,6 +2,8 @@
 
 public class RandomBehaviour : IEnemyBehaviour
 {
+    public static RandomBehaviour Shared { get; } = new();
+
     public Direction GetNextDirection(IGame game, double delta, EnemyActor actor)
     {
         var (board, direction) = (game.Board, actor.CurrentDirection);

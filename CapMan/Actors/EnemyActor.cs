@@ -9,8 +9,26 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
     public Tile? LastTarget { get; set; }
     public bool IgnoreDoors { get; set; } = false;
     public bool IsAlive { get; set; } = true;
+    private bool _isFleeing = false;
+    public bool IsFleeing
+    {
+        get => _isFleeing;
+        set
+        {
+            if (_isFleeing == value) { return; }
+            _switchDirection = value;
+            _isFleeing = value;
+        }
+    }
+    private bool _switchDirection = false;
     public override void Update(IGame game, double deltaTime)
     {
+        IsFleeing = game.IsPoweredUp;
+        if (_switchDirection)
+        {
+            CurrentDirection = CurrentDirection.Opposite();
+            _switchDirection = false;
+        }
         if (CollidingWithProjectile(game))
         {
             IsAlive = false;
