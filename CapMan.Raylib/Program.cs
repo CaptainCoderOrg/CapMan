@@ -65,10 +65,16 @@ public class Program
     /// </summary>
     private static void InitWindow()
     {
+        Raylib.SetWindowState(ConfigFlags.HiddenWindow);
         Raylib.InitWindow(GameConstants.MinScreenWidth, GameConstants.MinScreenHeight, "CapMan | Main Window");
         Raylib.SetWindowState(ConfigFlags.ResizableWindow);
         Raylib.SetWindowMinSize(GameConstants.MinScreenWidth, GameConstants.MinScreenHeight);
         CenterWindow();
+
+        Raylib.BeginDrawing();
+        Raylib.ClearBackground(Color.Black);
+        Raylib.ClearWindowState(ConfigFlags.HiddenWindow);
+        Raylib.EndDrawing();
     }
 
     private static void CenterWindow()
