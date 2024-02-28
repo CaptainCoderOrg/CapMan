@@ -49,7 +49,7 @@ public class MenuScreen(string title, IEnumerable<MenuEntry> items) : IScreen
         {
             top += ItemFontSize;
             Color color = _selectedIx == ix ? Color.Yellow : Color.White;
-            DrawCenteredText(_items[ix].Text, top, ItemFontSize, color);
+            DrawCenteredText(_items[ix].ToString(), top, ItemFontSize, color);
         }
     }
 

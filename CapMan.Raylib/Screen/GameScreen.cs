@@ -32,6 +32,10 @@ public class GameScreen : IScreen
 
     public void HandleUserInput()
     {
+        if (Raylib.IsKeyPressed(KeyboardKey.Escape))
+        {
+            _paused = !_paused;
+        }
         if (_paused)
         {
             _menuScreen.HandleUserInput();
@@ -74,10 +78,6 @@ public class GameScreen : IScreen
         if (Raylib.IsKeyPressed(KeyboardKey.G))
         {
             _drawLines = !_drawLines;
-        }
-        if (Raylib.IsKeyPressed(KeyboardKey.Escape))
-        {
-            _paused = !_paused;
         }
         if (Raylib.IsKeyDown(KeyboardKey.R))
         {
@@ -218,13 +218,19 @@ public class GameScreen : IScreen
     private MenuScreen GetMenu()
     {
         return new MenuScreen("Paused", [
-            new MenuEntry("Continue", () => _paused = false),
-            new MenuEntry("Restart", () =>
-            {
-                CurrentGame = InitGame();
-                _paused = false;
-            }),
-            new MenuEntry("Quit", () => Program.Screen = TitleScreen.Shared),
+            new StaticEntry("Continue", () => _paused = false),
+            new DynamicEntry(
+                () => $"Sound: {GameSFXController.Shared.Muted.ToOnOffString()}",
+                () => GameSFXController.Shared.Muted = !GameSFXController.Shared.Muted
+            ),
+            new StaticEntry("Restart",
+                () =>
+                {
+                    CurrentGame = InitGame();
+                    _paused = false;
+                }
+            ),
+            new StaticEntry("Quit", () => Program.Screen = TitleScreen.Shared),
         ]);
     }
 }
