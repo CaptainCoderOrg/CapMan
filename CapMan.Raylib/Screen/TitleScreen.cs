@@ -6,8 +6,8 @@ public class TitleScreen : IScreen
 {
     public static TitleScreen Shared { get; } = new();
     private static readonly MenuScreen Menu = new("Cap Man!", [
-        new MenuEntry("Insert Coin", () => Program.Screen = new GameScreen()),
-        new MenuEntry("Exit", Program.Exit),
+        new StaticEntry("Insert Coin", () => Program.Screen = new GameScreen()),
+        new StaticEntry("Exit", Program.Exit),
     ]);
 
     public void Render()

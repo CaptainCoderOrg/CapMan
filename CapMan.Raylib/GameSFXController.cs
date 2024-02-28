@@ -6,6 +6,7 @@ public class GameSFXController
     public static GameSFXController Shared { get; } = new();
     private static Sound[]? s_dotSound;
     public static Sound[] DotSound = s_dotSound ??= [Raylib.LoadSound(Path.Combine("assets", "sfx", "dot0.wav")), Raylib.LoadSound(Path.Combine("assets", "sfx", "dot1.wav"))];
+    public bool Muted { get; set; } = false;
     private Game? _currentGame;
     private int _dots = 1;
     public Game Game
@@ -21,6 +22,7 @@ public class GameSFXController
 
     private void HandleEvent(GameEvent evt)
     {
+        if (Muted) { return; }
         if (evt is GameEvent.DotEaten)
         {
             _dots = (_dots + 1) % 2;
