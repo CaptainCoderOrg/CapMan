@@ -110,6 +110,12 @@ public class GameBuilder
         return this;
     }
 
+    public GameBuilder AddPlayer(Position startPosition, double speed, Direction direction)
+    {
+        _actors.Add("CapMan", new PlayerActor(startPosition, speed, direction));
+        return this;
+    }
+
     public GameBuilder Configure(string gameConfig)
     {
         _gameConfig = gameConfig.ReplaceLineEndings().Split(Environment.NewLine);

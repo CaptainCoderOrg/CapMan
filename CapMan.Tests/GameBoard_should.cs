@@ -81,7 +81,30 @@ public class GameBoard_should_
     }
 
     [Fact]
-    public void add_player()
+    public void add_player_using_parameters()
+    {
+        Board board = new(
+            [
+                "+------+",
+                "|......|",
+                "+------+",
+            ]
+        );
+
+        Game game = new GameBuilder()
+            .AddPlayer(new Position(1, 2), 3, Direction.Left)
+            .AddBoard(board)
+            .Build();
+
+        game.Player.StartPosition.X.ShouldBe(1);
+        game.Player.StartPosition.Y.ShouldBe(2);
+        game.Player.Speed.ShouldBe(3);
+        game.Player.StartDirection.ShouldBe(Direction.Left);
+    }
+
+
+    [Fact]
+    public void add_player_using_playeractor()
     {
         Board board = new(
             [
