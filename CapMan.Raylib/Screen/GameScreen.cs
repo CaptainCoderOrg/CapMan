@@ -14,11 +14,11 @@ public class GameScreen : IScreen
     private bool _debugText = false;
     public int Width => CurrentGame.Board.Width * BoardRenderer.CellSize;
     public int Height => CurrentGame.Board.Height * BoardRenderer.CellSize + InfoRenderer.BlockedHeight + InfoRenderer.LivesSpriteHeight;
-
     private RenderTexture2D _boardTexture;
     private Rectangle _screenRect;
     private Rectangle _scaleRect;
     private Vector2 _centerScreen;
+    private readonly MenuScreen _menuScreen;
 
     public GameScreen()
     {
@@ -26,18 +26,16 @@ public class GameScreen : IScreen
         _boardTexture = Raylib.LoadRenderTexture(Width, Height);
         _screenRect = new(0, 0, Width, -Height);
         _scaleRect = GetScaledResolution();
-        _centerScreen = new(0, 0);
+        _centerScreen = GetBoardCenterOffset();
+        _menuScreen = GetMenu();
     }
 
     public void HandleUserInput()
     {
-        if (_paused && Raylib.IsKeyPressed(KeyboardKey.Q))
+        if (_paused)
         {
-            Program.Screen = new MenuScreen();
-        }
-        if (CurrentGame.State is GameState.GameOver && Raylib.IsKeyPressed(KeyboardKey.Escape))
-        {
-            Program.Screen = new MenuScreen();
+            _menuScreen.HandleUserInput();
+            return;
         }
         if (Raylib.IsKeyPressed(KeyboardKey.Space))
         {
@@ -118,6 +116,12 @@ public class GameScreen : IScreen
         Raylib.ClearBackground(Color.Black);
         Raylib.DrawTexturePro(_boardTexture.Texture, _screenRect, _scaleRect, _centerScreen, 0, Color.White);
         RenderDebugText();
+
+        if (_paused)
+        {
+            _menuScreen.Render();
+        }
+
         Raylib.EndDrawing();
     }
 
@@ -206,8 +210,21 @@ public class GameScreen : IScreen
     private Vector2 GetBoardCenterOffset()
     {
         (double screenWidth, double screenHeight) = (Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
-        float x = (float)(Width - screenWidth) * 0.5f;
-        float y = (float)(Height - screenHeight) * 0.5f;
+        float x = (float)(_scaleRect.Width - screenWidth) * 0.5f;
+        float y = (float)(_scaleRect.Height - screenHeight) * 0.5f;
         return new Vector2(x, y);
+    }
+
+    private MenuScreen GetMenu()
+    {
+        return new MenuScreen("Paused", [
+            new MenuEntry("Continue", () => _paused = false),
+            new MenuEntry("Restart", () =>
+            {
+                CurrentGame = InitGame();
+                _paused = false;
+            }),
+            new MenuEntry("Quit", () => Program.Screen = TitleScreen.Shared),
+        ]);
     }
 }

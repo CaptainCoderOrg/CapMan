@@ -3,7 +3,7 @@
 public class Program
 {
     public const string ConfigFile = "capman.config";
-    public static IScreen Screen { get; set; } = new MenuScreen();
+    public static IScreen Screen { get; set; } = TitleScreen.Shared;
     public static ScreenConfig Config { get; set; } = InitScreenConfig();
     private static bool s_isRunning = true;
 

@@ -2,20 +2,18 @@ namespace CapMan.Raylib;
 
 using Raylib_cs;
 
-public class MenuScreen : IScreen
+public class MenuScreen(string title, IEnumerable<MenuEntry> items) : IScreen
 {
-    public static MenuScreen Shared { get; } = new();
-    private static readonly (string Text, Action Action)[] Menu = [
-        ("Insert Coin", () => Program.Screen = new GameScreen()),
-        ("Exit", Program.Exit),
-    ];
-
+    const int ItemFontSize = 32;
+    const int TitleFontSize = 48;
+    private readonly MenuEntry[] _items = [.. items];
+    private readonly string _title = title;
     private int _selectedIx = 0;
     public void HandleUserInput()
     {
         if (Raylib.IsKeyPressed(KeyboardKey.Enter))
         {
-            Menu[_selectedIx].Action();
+            _items[_selectedIx].OnSelect.Invoke();
         }
 
         if (Raylib.IsKeyPressed(KeyboardKey.Down) || Raylib.IsKeyPressed(KeyboardKey.S))
@@ -33,34 +31,33 @@ public class MenuScreen : IScreen
     {
         _selectedIx = (_selectedIx + amount) switch
         {
-            var ix when ix < 0 => Menu.Length - 1,
-            var ix when ix >= Menu.Length => 0,
+            var ix when ix < 0 => _items.Length - 1,
+            var ix when ix >= _items.Length => 0,
             var ix => ix,
         };
     }
 
     public void Render()
     {
-        Raylib.BeginDrawing();
-        Raylib.ClearBackground(Color.Black);
-        DrawCenteredText("CapMan!", 32, 48, Color.White);
-        const int fontSize = 32;
-        int top = 48 * 2 + fontSize;
+        int menuHeight = TitleFontSize * 2 + ItemFontSize * _items.Length;
+        int center = Raylib.GetScreenHeight() / 2;
+        int top = center - menuHeight / 2;
+        DrawCenteredText(_title, top, TitleFontSize, Color.White);
 
-        for (int ix = 0; ix < Menu.Length; ix++)
+        top += TitleFontSize;
+        for (int ix = 0; ix < _items.Length; ix++)
         {
-            top += fontSize;
+            top += ItemFontSize;
             Color color = _selectedIx == ix ? Color.Yellow : Color.White;
-            DrawCenteredText(Menu[ix].Text, top, fontSize, color);
+            DrawCenteredText(_items[ix].Text, top, ItemFontSize, color);
         }
-
-        Raylib.EndDrawing();
     }
 
     private void DrawCenteredText(string text, int top, int fontSize, Color color)
     {
         int width = Raylib.MeasureText(text, fontSize);
         int center = (Raylib.GetScreenWidth() / 2) - (width / 2);
+        Raylib.DrawText(text, center + 2, top + 2, fontSize, Color.Black);
         Raylib.DrawText(text, center, top, fontSize, color);
     }
 
