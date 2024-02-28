@@ -13,7 +13,7 @@ public class GameScreen : IScreen
     private bool _paused = false;
     private bool _debugText = false;
     public int Width => CurrentGame.Board.Width * BoardRenderer.CellSize;
-    public int Height => CurrentGame.Board.Height * BoardRenderer.CellSize + InfoRenderer.BlockedHeight + InfoRenderer.LivesSpriteHeight;
+    public int Height => CurrentGame.Board.Height * BoardRenderer.CellSize + InfoRenderer.BlockedHeight + InfoRenderer.LivesSpriteSize;
     private RenderTexture2D _boardTexture;
     private Rectangle _screenRect;
     private Rectangle _scaleRect;

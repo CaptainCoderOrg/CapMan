@@ -11,17 +11,31 @@ public class InfoRenderer
     private static Font? s_pixelplay;
     public static Font PixelPlay => s_pixelplay ??= Raylib.LoadFont(Path.Combine("assets", "fonts", "pixelplay.png"));
     public static int BlockedHeight => (PixelPlay.BaseSize + Padding) * 2;
-    public static int LivesSpriteHeight => 24;
+    public static int LivesSpriteSize => 24;
 
     public void Render(Game game, int top, int left)
     {
         RenderScore(game, top, left);
-        RenderRemainingLives(game, top, left);
+        int bottomOfBoard = top + game.Board.Height * BoardRenderer.CellSize + BlockedHeight + Padding;
+        RenderRemainingLives(game, bottomOfBoard, left);
+        RenderPowerUpRemaining(game, bottomOfBoard - Padding * 2, left);
+    }
+
+    private void RenderPowerUpRemaining(Game game, int top, int left)
+    {
+        ProgressBar progressBar = new()
+        {
+            X = left + LivesSpriteSize * 5,
+            Y = top + LivesSpriteSize / 4,
+            Width = (game.Board.Width - 1) * BoardRenderer.CellSize - (24 * 5 + left),
+            Height = LivesSpriteSize / 2,
+            Color = Color.Green,
+        };
+        progressBar.Render(game.PoweredUpTimeRemaining, game.PoweredUpTime);
     }
 
     private void RenderRemainingLives(Game game, int top, int left)
     {
-        top = top + game.Board.Height * BoardRenderer.CellSize + BlockedHeight + Padding;
         for (int count = 0; count < game.Lives - 1; count++)
         {
             left = left + BoardRenderer.CellSize + Padding;
