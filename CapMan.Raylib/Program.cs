@@ -5,6 +5,7 @@ public class Program
     public const string ConfigFile = "capman.config";
     public static IScreen Screen { get; set; } = new MenuScreen();
     public static ScreenConfig Config { get; set; } = InitScreenConfig();
+    private static bool s_isRunning = true;
 
     public static void Main()
     {
@@ -12,9 +13,9 @@ public class Program
         Raylib.InitAudioDevice();
 
         Raylib.SetTargetFPS(60);
-
+        Raylib.SetExitKey(0);
         // Main game loop
-        while (!Raylib.WindowShouldClose())
+        while (!Raylib.WindowShouldClose() && s_isRunning)
         {
             Screen.HandleUserInput();
             Screen.Render();
@@ -23,6 +24,8 @@ public class Program
         Raylib.CloseWindow();
 
     }
+
+    public static void Exit() => s_isRunning = false;
 
     private static void SaveScreenConfig(ScreenConfig config)
     {

@@ -31,6 +31,14 @@ public class GameScreen : IScreen
 
     public void HandleUserInput()
     {
+        if (_paused && Raylib.IsKeyPressed(KeyboardKey.Q))
+        {
+            Program.Screen = new MenuScreen();
+        }
+        if (CurrentGame.State is GameState.GameOver && Raylib.IsKeyPressed(KeyboardKey.Escape))
+        {
+            Program.Screen = new MenuScreen();
+        }
         if (Raylib.IsKeyPressed(KeyboardKey.Space))
         {
             if (CurrentGame.Player.CreateProjectile is not null)
@@ -69,7 +77,7 @@ public class GameScreen : IScreen
         {
             _drawLines = !_drawLines;
         }
-        if (Raylib.IsKeyPressed(KeyboardKey.P))
+        if (Raylib.IsKeyPressed(KeyboardKey.Escape))
         {
             _paused = !_paused;
         }
