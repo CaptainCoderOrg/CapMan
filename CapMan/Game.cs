@@ -139,12 +139,23 @@ public class Game : IGame
         RespawnCountDown -= delta;
         if (RespawnCountDown <= 0)
         {
+            Lives--;
             Player = new(Player.StartPosition, Player.Speed, Player.StartDirection);
             ResetEnemies();
-            //TODO: Reset enemies
             State = GameState.Playing;
             PlayTime = 0;
         }
+    }
+
+    public void StartLevel()
+    {
+        Player = new(Player.StartPosition, Player.Speed, Player.StartDirection);
+        ResetEnemies();
+        Board = _originalBoard.Copy();
+        PoweredUpTimeRemaining = 0;
+        PlayTime = 0;
+        State = GameState.Playing;
+        _projectiles.Clear();
     }
 
     private void StartNextLevel(double deltaTime)
@@ -153,12 +164,7 @@ public class Game : IGame
         if (StartNextLevelCountDown <= 0)
         {
             Level++;
-            Player = new(Player.StartPosition, Player.Speed, Player.StartDirection);
-            ResetEnemies();
-            Board = _originalBoard.Copy();
-            PlayTime = 0;
-            State = GameState.Playing;
-            _projectiles.Clear();
+            StartLevel();
         }
     }
 
@@ -208,10 +214,9 @@ public class Game : IGame
     public void PlayerKilled()
     {
         RespawnCountDown = RespawnTime;
-        Lives--;
         State = GameState.Respawning;
         PoweredUpTimeRemaining = 0;
-        if (Lives <= 0)
+        if (Lives <= 1)
         {
             State = GameState.GameOver;
         }
