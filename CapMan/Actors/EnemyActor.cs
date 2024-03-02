@@ -2,10 +2,8 @@ namespace CapMan;
 
 public class EnemyActor(Position position, double speed, Direction direction) : Actor(position, speed, direction)
 {
-    public double BaseSpeed { get; set; } = speed;
     public EnemyState State { get; set; } = EnemyState.Searching;
     public IEnemyBehaviour Behaviour { get; set; } = new TargetTileBehaviour(new Tile(1, 1));
-    public Func<EnemyActor, IGame, double> SpeedMultiplier { get; init; } = SpeedMultipliers.BasicIncreasingSpeed;
     public Tile? LastTarget { get; set; }
     public bool IgnoreDoors { get; set; } = false;
     private bool _isAlive = true;
@@ -44,11 +42,11 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
             CurrentDirection = CurrentDirection.Opposite();
             _switchDirection = false;
         }
+        SetSpeed(game);
         if (CollidingWithProjectile(game))
         {
             IsAlive = false;
         }
-        SetSpeed(game);
         if (IgnoreDoors)
         {
             game = new DelegateBoardGame(game, game.Board.WithoutDoors());
@@ -76,7 +74,6 @@ public class EnemyActor(Position position, double speed, Direction direction) : 
             this.Speed *= 0.75;
         }
     }
-
     public void Reset()
     {
         Position = StartPosition;

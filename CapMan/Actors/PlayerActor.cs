@@ -8,6 +8,7 @@ public class PlayerActor(Position startPosition, double speed, Direction directi
     public override void Update(IGame game, double deltaTime)
     {
         PickUpProjectiles(game.Projectiles);
+        SetSpeed(game);
         base.Update(game, deltaTime);
     }
 
@@ -20,6 +21,12 @@ public class PlayerActor(Position startPosition, double speed, Direction directi
             CreateProjectile = PlayerProjectileExtensions.BowlerHatProjectile;
             projectile.IsPickedUp = true;
         }
+    }
+
+    private void SetSpeed(IGame game)
+    {
+        this.Speed = BaseSpeed * SpeedMultiplier(this, game);
+        this.Speed *= 1.5;
     }
 }
 
