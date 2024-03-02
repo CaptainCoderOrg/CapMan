@@ -11,9 +11,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
@@ -22,13 +20,26 @@ jobs:
         dotnet-version: 8.0.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: Check styling
-      run: dotnet format style --verify-no-changes --verbosity diagnostic
     - name: Build
       run: dotnet build --no-restore
+  style-check:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check styling
+      run: dotnet format style --verify-no-changes --verbosity diagnostic
+  tests:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
     - name: Test
       run: dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura --no-build --verbosity normal
-    - name: ReportGenerator
+  generate-report:
+    needs: tests
+    runs-on: ubuntu-latest
+    if: ${{ github.event.action }} == 'pull_request'
+    steps:
+    - name: Generate Report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.2.2
       with:
         reports: CapMan.Tests/coverage.cobertura.xml
