@@ -11,9 +11,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
@@ -28,15 +26,30 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura --no-build --verbosity normal
-    - name: ReportGenerator
+    - name: Generate coverage report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.2.2
+      if: ${{ github.event_name == 'pull_request' }}
       with:
         reports: CapMan.Tests/coverage.cobertura.xml
         targetdir: docs/coverage
-        reporttypes: MarkdownSummaryGithub
+        reporttypes: MarkdownSummaryGithub;Html
+    - name: Save coverage artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: docs/coverage
+  comment-report:
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download report
+      uses: actions/download-artifact@v4
+      with:
+          name: coverage-report
     - name: Add Report to PR
       uses: mshick/add-pr-comment@v2
       if: always()
       with:
         message-path: |
-          docs/coverage/*.md
+          SummaryGithub.md
