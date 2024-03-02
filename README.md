@@ -26,3 +26,12 @@ Iconic hats: https://screenrant.com/most-iconic-movie-hats/
 # We "Fixed" Cap Man to flip rather than rotate
 
 We voted on it! https://clips.twitch.tv/InexpensiveFitPrariedogShazBotstix-f3rtsBDRI1KQ0UOX
+
+## Generating Test Coverage
+
+This requires ReportGenerator: [LINK](https://github.com/danielpalme/ReportGenerator)
+
+```
+dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura
+reportgenerator -reports:CapMan.Tests/coverage.cobertura.xml  -targetdir:html-coverage-report/
+```
