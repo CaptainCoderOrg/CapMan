@@ -366,3 +366,4 @@ FodyWeavers.xsd
 
 CapMan.RayLib/assets/
 capman.config
+html-coverage-report/
